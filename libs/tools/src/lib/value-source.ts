@@ -1,6 +1,7 @@
-import { isSignal, Signal } from '@angular/core';
+import { Signal, isSignal } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
-import { isObservable, Observable, of } from 'rxjs';
+
+import { Observable, isObservable, of } from 'rxjs';
 
 export type ValueSource<TValue> = TValue | Signal<TValue> | Observable<TValue>;
 
