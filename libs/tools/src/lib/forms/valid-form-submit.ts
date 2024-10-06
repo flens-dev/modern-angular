@@ -1,10 +1,14 @@
 import { AbstractControl, FormSubmittedEvent } from '@angular/forms';
-import { Observable, filter, map, switchMap } from 'rxjs';
+import { Observable, filter, map, share, switchMap } from 'rxjs';
 
 import { ValueSource, sourceToObservable } from '../value-source';
 
 import { FormValueOf } from './form-value-of';
 
+/**
+ * Returns an observable which emits the raw value of the control when the control is valid and submitted.
+ * Can be used to declaratively react to form submissions.
+ */
 export const validFormSubmit = <TControl extends AbstractControl>(
   $form$: ValueSource<TControl>
 ): Observable<FormValueOf<TControl>> => {
@@ -12,12 +16,13 @@ export const validFormSubmit = <TControl extends AbstractControl>(
     switchMap((form) =>
       form.events.pipe(
         filter(
-          (controlEvent): controlEvent is FormSubmittedEvent =>
+          (controlEvent) =>
             controlEvent instanceof FormSubmittedEvent &&
-            controlEvent.source.status === 'VALID'
+            form.status === 'VALID'
         ),
         map(() => form.getRawValue())
       )
-    )
+    ),
+    share()
   );
 };

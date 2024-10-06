@@ -45,6 +45,10 @@ const getControlPath = (control: AbstractControl | null): ControlPath => {
   return path;
 };
 
+/**
+ * Returns the path of the control from the root to itself.
+ * Can be used by `.get(...)` on the root.
+ */
 export const getPathFromRoot = (control: AbstractControl | null): string => {
   return controlPathToFormPath(getControlPath(control));
 };
