@@ -13,16 +13,12 @@ export const validFormSubmit = <TControl extends AbstractControl>(
   $form$: ValueSource<TControl>
 ): Observable<FormValueOf<TControl>> => {
   return sourceToObservable($form$).pipe(
-    switchMap((form) =>
-      form.events.pipe(
-        filter(
-          (controlEvent) =>
-            controlEvent instanceof FormSubmittedEvent &&
-            form.status === 'VALID'
-        ),
-        map(() => form.getRawValue())
-      )
+    switchMap((form) => form.events),
+    filter(
+      (event) =>
+        event instanceof FormSubmittedEvent && event.source.status === 'VALID'
     ),
+    map((event) => event.source.getRawValue()),
     share()
   );
 };
