@@ -1,5 +1,5 @@
 {
-  "name": "@fest/tools",
+  "name": "@flens-dev/tools",
   "version": "0.0.1",
   "peerDependencies": {
     "@angular/core": "*",
