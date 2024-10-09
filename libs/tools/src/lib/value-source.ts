@@ -9,7 +9,7 @@ export type ValueSourceOptions = Readonly<{
   injector?: Injector;
 }>;
 /**
- * Converts any valid `ValueSource` into an observable.
+ * Converts any `ValueSource` into an observable.
  * Usefull to create observable streams from any value source.
  */
 export const sourceToObservable = <TValue>(
