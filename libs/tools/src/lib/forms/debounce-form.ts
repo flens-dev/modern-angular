@@ -23,7 +23,7 @@ import { getControlPathFromRoot } from './get-control-path-from-root';
 
 type ValueAndCause<TValue> = Readonly<{
   value: TValue;
-  cause: 'NOT_VALID' | 'DEBOUNCE' | 'SUBMIT';
+  reason: 'NOT_VALID' | 'DEBOUNCE' | 'SUBMIT';
 }>;
 
 const filterForValueChangeAndSubmittedEvents = () =>
@@ -32,7 +32,7 @@ const filterForValueChangeAndSubmittedEvents = () =>
       event instanceof ValueChangeEvent || event instanceof FormSubmittedEvent
   );
 
-const mapToValueAndCause = <TControl extends AbstractControl>(
+const mapToValueAndReason = <TControl extends AbstractControl>(
   form: TControl,
   debounceOnSet: ReadonlySet<string>
 ) =>
@@ -41,7 +41,7 @@ const mapToValueAndCause = <TControl extends AbstractControl>(
       event: ValueChangeEvent<FormValueOf<TControl>> | FormSubmittedEvent
     ): ValueAndCause<FormValueOf<TControl>> => ({
       value: form.getRawValue(),
-      cause:
+      reason:
         form.status !== 'VALID'
           ? 'NOT_VALID'
           : debounceOnSet.has(getControlPathFromRoot(event.source))
@@ -56,8 +56,8 @@ const debounceIf = <T>(predicate: DebounceIfPredicate<T>, debounceMs: number) =>
   debounce((value: T) => (predicate(value) ? timer(debounceMs) : of(0)));
 
 const mapToValidValueOrNull = <TValue>() =>
-  map(({ cause, value }: ValueAndCause<TValue>) =>
-    cause === 'NOT_VALID' ? null : value
+  map(({ reason, value }: ValueAndCause<TValue>) =>
+    reason === 'NOT_VALID' ? null : value
   );
 
 /**
@@ -81,8 +81,8 @@ export const debounceForm = <TControl extends AbstractControl>(
     switchMap((form) =>
       form.events.pipe(
         filterForValueChangeAndSubmittedEvents(),
-        mapToValueAndCause(form, debounceOnSet),
-        debounceIf(({ cause }) => cause === 'DEBOUNCE', debounceMs),
+        mapToValueAndReason(form, debounceOnSet),
+        debounceIf(({ reason }) => reason === 'DEBOUNCE', debounceMs),
         mapToValidValueOrNull(),
         distinctUntilChanged()
       )
