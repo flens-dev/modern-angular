@@ -21,7 +21,7 @@ import { sourceToObservable, ValueSource } from '../value-source';
 import { FormValueOf } from './form-value-of';
 import { getControlPathFromRoot } from './get-control-path-from-root';
 
-type ValueAndCause<TValue> = Readonly<{
+type ValueAndReason<TValue> = Readonly<{
   value: TValue;
   reason: 'NOT_VALID' | 'DEBOUNCE' | 'SUBMIT';
 }>;
@@ -39,7 +39,7 @@ const mapToValueAndReason = <TControl extends AbstractControl>(
   map(
     (
       event: ValueChangeEvent<FormValueOf<TControl>> | FormSubmittedEvent
-    ): ValueAndCause<FormValueOf<TControl>> => ({
+    ): ValueAndReason<FormValueOf<TControl>> => ({
       value: form.getRawValue(),
       reason:
         form.status !== 'VALID'
@@ -56,7 +56,7 @@ const debounceIf = <T>(predicate: DebounceIfPredicate<T>, debounceMs: number) =>
   debounce((value: T) => (predicate(value) ? timer(debounceMs) : of(0)));
 
 const mapToValidValueOrNull = <TValue>() =>
-  map(({ reason, value }: ValueAndCause<TValue>) =>
+  map(({ reason, value }: ValueAndReason<TValue>) =>
     reason === 'NOT_VALID' ? null : value
   );
 
