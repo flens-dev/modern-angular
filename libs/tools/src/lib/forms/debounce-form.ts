@@ -20,6 +20,7 @@ import { sourceToObservable, ValueSource } from '../value-source';
 
 import { FormValueOf } from './form-value-of';
 import { getControlPathFromRoot } from './get-control-path-from-root';
+import { FormControlPath } from './form-control-path';
 
 type ValueAndReason<TValue> = Readonly<{
   value: TValue;
@@ -73,7 +74,7 @@ const mapToValidValueOrNull = <TValue>() =>
 export const debounceForm = <TControl extends AbstractControl>(
   $form$: ValueSource<TControl>,
   debounceMs: number,
-  ...debounceOn: string[]
+  ...debounceOn: FormControlPath<TControl>[]
 ): Observable<FormValueOf<TControl> | null> => {
   const debounceOnSet = new Set<string>(debounceOn);
 
