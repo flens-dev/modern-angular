@@ -1,8 +1,8 @@
 import { Signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { AbstractControl } from '@angular/forms';
+import { AbstractControl, FormControlStatus } from '@angular/forms';
 
-import { map, startWith, switchMap } from 'rxjs';
+import { map, of, startWith, switchMap } from 'rxjs';
 
 import { sourceToObservable, ValueSource } from '../value-source';
 
@@ -22,14 +22,18 @@ import { sourceToObservable, ValueSource } from '../value-source';
  * ```
  */
 export const formNotValid = <TControl extends AbstractControl>(
-  $form$: ValueSource<TControl>
+  $form$: ValueSource<TControl | null | undefined>
 ): Signal<boolean> => {
   const formStatus$ = sourceToObservable($form$).pipe(
-    switchMap((form) => form.statusChanges.pipe(startWith(form.status))),
+    switchMap((form) =>
+      form == null
+        ? of<FormControlStatus>('INVALID')
+        : form.statusChanges.pipe(startWith(form.status))
+    ),
     map((status) => status !== 'VALID')
   );
 
   return toSignal(formStatus$, {
-    requireSync: true,
+    initialValue: true,
   });
 };
