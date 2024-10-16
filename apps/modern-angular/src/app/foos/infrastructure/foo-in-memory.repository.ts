@@ -10,6 +10,7 @@ import {
   FooRead,
   FooRepository,
   FooUpdated,
+  makeFooId,
   provideFooRepository,
 } from '../model';
 
@@ -23,7 +24,7 @@ export class FooInMemoryRepository extends FooRepository {
   override createFoo(foo: Foo): Observable<FooCreated> {
     return timer(1000).pipe(
       map((): FooCreated => {
-        const fooId = `${this.#nextFooId}`;
+        const fooId = makeFooId(`${this.#nextFooId}`);
         this.#nextFooId++;
 
         const createdFoo = { ...foo };

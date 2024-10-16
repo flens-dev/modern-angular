@@ -8,9 +8,9 @@ import {
   FooDeleted,
   FooId,
   FooRead,
-  FooRepository,
   FooUpdated,
 } from './foo.model';
+import { FooRepository } from './foo.repository';
 
 @Injectable()
 export class FooService {
