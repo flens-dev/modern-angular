@@ -2,6 +2,8 @@ import { Injectable, Type, Provider } from '@angular/core';
 
 import { Observable } from 'rxjs';
 
+import { Immutable } from '@flens-dev/tools';
+
 import {
   Foo,
   FooCreated,
@@ -11,8 +13,19 @@ import {
   FooDeleted,
 } from './foo.model';
 
+export type GetFoosRequest = Immutable<{
+  withNameLike?: string;
+  withMaxCount?: number;
+  orderBy?: keyof Pick<Foo, 'name' | 'count'>;
+}>;
+
+export type GetFoosResponse = Immutable<{
+  foos: FooRead[];
+}>;
+
 @Injectable()
 export abstract class FooRepository {
+  abstract getFoos(request: GetFoosRequest): Observable<GetFoosResponse>;
   abstract createFoo(foo: Foo): Observable<FooCreated>;
   abstract readFoo(fooId: FooId): Observable<FooRead>;
   abstract updateFoo(fooId: FooId, foo: Partial<Foo>): Observable<FooUpdated>;

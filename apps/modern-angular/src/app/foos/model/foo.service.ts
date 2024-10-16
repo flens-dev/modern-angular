@@ -10,11 +10,20 @@ import {
   FooRead,
   FooUpdated,
 } from './foo.model';
-import { FooRepository } from './foo.repository';
+import {
+  FooRepository,
+  GetFoosRequest,
+  GetFoosResponse,
+} from './foo.repository';
 
 @Injectable()
 export class FooService {
   readonly #repository = inject(FooRepository);
+
+  getFoos(request: GetFoosRequest): Observable<GetFoosResponse> {
+    // TODO validate request
+    return this.#repository.getFoos(request);
+  }
 
   createFoo(foo: Foo): Observable<FooCreated> {
     // TODO validate foo

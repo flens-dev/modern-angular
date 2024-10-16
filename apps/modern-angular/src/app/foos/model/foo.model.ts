@@ -1,14 +1,6 @@
 import { Immutable } from '@flens-dev/tools';
 
-export type FooId = string & { __brand: 'FooId' };
-
-export const makeFooId = (fooId: string): FooId => {
-  if (fooId == null || typeof fooId !== 'string' || fooId === '') {
-    throw new Error();
-  }
-
-  return fooId as FooId;
-};
+export type FooId = string;
 
 export type Foo = Immutable<{
   name: string;

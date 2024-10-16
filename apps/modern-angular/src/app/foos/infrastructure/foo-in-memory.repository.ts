@@ -10,7 +10,8 @@ import {
   FooRead,
   FooRepository,
   FooUpdated,
-  makeFooId,
+  GetFoosRequest,
+  GetFoosResponse,
   provideFooRepository,
 } from '../model';
 
@@ -21,10 +22,40 @@ export class FooInMemoryRepository extends FooRepository {
   #nextFooId = 1;
   readonly #foos = new Map<FooId, Foo>();
 
+  override getFoos(request: GetFoosRequest): Observable<GetFoosResponse> {
+    return timer(1000).pipe(
+      map((): GetFoosResponse => {
+        const foos = [...this.#foos.entries()]
+          .filter(
+            ([_, foo]) =>
+              (request.withNameLike == null ||
+                foo.name
+                  .toLowerCase()
+                  .includes(request.withNameLike.toLowerCase())) &&
+              (request.withMaxCount == null ||
+                foo.count <= request.withMaxCount)
+          )
+          .map(([fooId, foo]): FooRead => ({ fooId, foo }));
+
+        foos.sort(
+          request.orderBy === 'name'
+            ? (a, b) => a.foo.name.localeCompare(b.foo.name)
+            : request.orderBy === 'count'
+            ? (a, b) => a.foo.count - b.foo.count
+            : (a, b) => a.fooId.localeCompare(b.fooId)
+        );
+
+        return {
+          foos,
+        };
+      })
+    );
+  }
+
   override createFoo(foo: Foo): Observable<FooCreated> {
     return timer(1000).pipe(
       map((): FooCreated => {
-        const fooId = makeFooId(`${this.#nextFooId}`);
+        const fooId = `${this.#nextFooId}`;
         this.#nextFooId++;
 
         const createdFoo = { ...foo };
