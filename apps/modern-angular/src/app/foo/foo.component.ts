@@ -1,5 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { FooService } from './model/foo.service';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
   standalone: true,
@@ -7,6 +6,4 @@ import { FooService } from './model/foo.service';
   selector: 'app-foo',
   template: `TODO FOO`,
 })
-export class FooComponent {
-  readonly #fooService = inject(FooService);
-}
+export class FooComponent {}

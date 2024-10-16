@@ -1,4 +1,3 @@
-/* eslint-disable */
 export default {
   displayName: 'modern-angular',
   preset: '../../jest.preset.js',
