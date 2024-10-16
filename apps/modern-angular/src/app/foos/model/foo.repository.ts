@@ -13,10 +13,20 @@ import {
   FooDeleted,
 } from './foo.model';
 
+export type FooOrderBy = keyof Pick<Foo, 'name' | 'count'>;
+
+export const isFooOrderBy = (orderBy: unknown): orderBy is FooOrderBy => {
+  return (
+    orderBy != null &&
+    typeof orderBy === 'string' &&
+    (orderBy === 'name' || orderBy === 'count')
+  );
+};
+
 export type GetFoosRequest = Immutable<{
   withNameLike?: string;
   withMaxCount?: number;
-  orderBy?: keyof Pick<Foo, 'name' | 'count'>;
+  orderBy?: FooOrderBy;
 }>;
 
 export type GetFoosResponse = Immutable<{

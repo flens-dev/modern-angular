@@ -6,7 +6,7 @@ import { provideFooInMemoryRepository } from './infrastructure';
 const FOO_CHILD_ROUTES: Routes = [
   {
     path: '',
-    loadComponent: () => import('./foo.component').then((m) => m.FooComponent),
+    loadComponent: () => import('./foos.component').then((m) => m.FoosComponent),
   },
 ];
 
