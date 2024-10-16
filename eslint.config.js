@@ -7,11 +7,23 @@ const compat = new FlatCompat({
   recommendedConfig: js.configs.recommended,
 });
 
+const baseRules = {
+  '@typescript-eslint/no-unused-vars': [
+    'error',
+    {
+      args: 'none',
+      argsIgnorePattern: '^_',
+      varsIgnorePattern: '^_',
+    },
+  ],
+};
+
 module.exports = [
   { plugins: { '@nx': nxEslintPlugin } },
   {
     files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],
     rules: {
+      ...baseRules,
       '@nx/enforce-module-boundaries': [
         'error',
         {
@@ -32,6 +44,7 @@ module.exports = [
     files: ['**/*.ts', '**/*.tsx'],
     rules: {
       ...config.rules,
+      ...baseRules,
     },
   })),
   ...compat.config({ extends: ['plugin:@nx/javascript'] }).map((config) => ({
@@ -39,6 +52,7 @@ module.exports = [
     files: ['**/*.js', '**/*.jsx'],
     rules: {
       ...config.rules,
+      ...baseRules,
     },
   })),
   ...compat.config({ env: { jest: true } }).map((config) => ({
@@ -46,6 +60,7 @@ module.exports = [
     files: ['**/*.spec.ts', '**/*.spec.tsx', '**/*.spec.js', '**/*.spec.jsx'],
     rules: {
       ...config.rules,
+      ...baseRules,
     },
   })),
 ];
