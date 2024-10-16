@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { map, Observable, timer } from 'rxjs';
+import { Observable, map, timer } from 'rxjs';
 
 import {
   Foo,

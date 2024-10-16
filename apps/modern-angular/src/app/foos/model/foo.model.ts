@@ -1,7 +1,8 @@
+import { Injectable, Provider, Type } from '@angular/core';
+
 import { Observable } from 'rxjs';
 
 import { Immutable } from '@flens-dev/tools';
-import { Provider, Type } from '@angular/core';
 
 export type Foo = Immutable<{
   name: string;
@@ -29,6 +30,7 @@ export type FooDeleted = Immutable<{
   fooId: FooId;
 }>;
 
+@Injectable()
 export abstract class FooRepository {
   abstract createFoo(foo: Foo): Observable<FooCreated>;
   abstract readFoo(fooId: FooId): Observable<FooRead>;
@@ -36,6 +38,7 @@ export abstract class FooRepository {
   abstract deleteFoo(fooId: FooId): Observable<FooDeleted>;
 }
 
+/** Helper function to generate special provide-function for repository implementations */
 export const provideFooRepository =
   <T extends FooRepository>(repository: Type<T>): (() => Provider[]) =>
   () =>

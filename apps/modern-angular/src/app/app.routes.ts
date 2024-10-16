@@ -2,8 +2,8 @@ import { Route } from '@angular/router';
 
 export const appRoutes: Route[] = [
   {
-    path: 'foo',
-    loadChildren: () => import('./foo').then((m) => m.FOO_ROUTES),
+    path: 'foos',
+    loadChildren: () => import('./foos').then((m) => m.FOO_ROUTES),
   },
   {
     path: 'typical',
