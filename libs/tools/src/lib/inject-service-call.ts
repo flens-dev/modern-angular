@@ -18,7 +18,7 @@ import {
 import { sourceToObservable, ValueSource } from './value-source';
 
 export type ServiceCallFn<TRequest, TResponse> = (
-  request: TRequest
+  request: TRequest,
 ) => Observable<TResponse>;
 
 export type ServiceCallStateIdle = {
@@ -53,7 +53,7 @@ const idleServiceCallState: ServiceCallStateIdle = {
 };
 
 const busyServiceCallState = <TRequest>(
-  request: TRequest
+  request: TRequest,
 ): ServiceCallStateBusy<TRequest> => ({
   type: 'BUSY',
   request,
@@ -61,7 +61,7 @@ const busyServiceCallState = <TRequest>(
 
 const errorServiceCallState = <TRequest>(
   request: TRequest,
-  error: unknown
+  error: unknown,
 ): ServiceCallStateError<TRequest> => ({
   type: 'ERROR',
   request,
@@ -70,7 +70,7 @@ const errorServiceCallState = <TRequest>(
 
 const successServiceCallState = <TRequest, TResponse>(
   request: TRequest,
-  response: TResponse
+  response: TResponse,
 ): ServiceCallStateSuccess<TRequest, TResponse> => ({
   type: 'SUCCESS',
   request,
@@ -102,7 +102,7 @@ const defaultServiceCallOptions: ServiceCallOptions = {
 const setupServiceCall = <TRequest, TResponse>(
   $request$: ValueSource<TRequest>,
   serviceFn: ServiceCallFn<TRequest, TResponse>,
-  options: ServiceCallOptions
+  options: ServiceCallOptions,
 ): Observable<ServiceCallState<TRequest, TResponse>> => {
   const request$ = sourceToObservable($request$, {
     injector: options.injector,
@@ -129,11 +129,11 @@ const setupServiceCall = <TRequest, TResponse>(
           }),
           catchError((error) => of(errorServiceCallState(request, error))),
           startWith(busyServiceCallState(request)),
-          takeUntil(reset$)
-        )
-      )
+          takeUntil(reset$),
+        ),
+      ),
     ),
-    reset$
+    reset$,
   ).pipe(takeUntilDestroyed(options.destroyRef), share());
 };
 
@@ -153,7 +153,7 @@ const setupServiceCall = <TRequest, TResponse>(
 export const injectServiceCall = <TRequest, TResponse>(
   $request$: ValueSource<TRequest>,
   serviceFn: ServiceCallFn<TRequest, TResponse>,
-  options?: ServiceCallOptions
+  options?: ServiceCallOptions,
 ): ServiceCall<TRequest, TResponse> => {
   const reset$ = new Subject<void>();
   const resetOn =

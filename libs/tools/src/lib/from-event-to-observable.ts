@@ -12,11 +12,11 @@ import { ValueSource, sourceToObservable } from './value-source';
  */
 export const fromEventToObservable = <TEvent extends Event = Event>(
   $elementRef$: ValueSource<ElementRef | null | undefined>,
-  eventName: string
+  eventName: string,
 ): Observable<TEvent> => {
   return sourceToObservable($elementRef$).pipe(
     switchMap((el) =>
-      el == null ? NEVER : fromEvent<TEvent>(el.nativeElement, eventName)
-    )
+      el == null ? NEVER : fromEvent<TEvent>(el.nativeElement, eventName),
+    ),
   );
 };

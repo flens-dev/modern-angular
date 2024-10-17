@@ -14,10 +14,10 @@ export type ValueSourceOptions = Readonly<{
  */
 export const sourceToObservable = <TValue>(
   source: ValueSource<TValue>,
-  options?: ValueSourceOptions
+  options?: ValueSourceOptions,
 ): Observable<TValue> =>
   isObservable(source)
     ? source
     : isSignal(source)
-    ? toObservable(source, { injector: options?.injector })
-    : of(source);
+      ? toObservable(source, { injector: options?.injector })
+      : of(source);

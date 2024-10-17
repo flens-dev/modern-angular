@@ -47,10 +47,9 @@ export abstract class FooRepository {
  */
 export const provideFooRepository =
   <T extends FooRepository>(repository: Type<T>): (() => Provider[]) =>
-  () =>
-    [
-      {
-        provide: FooRepository,
-        useClass: repository,
-      },
-    ];
+  () => [
+    {
+      provide: FooRepository,
+      useClass: repository,
+    },
+  ];

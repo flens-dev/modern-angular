@@ -34,20 +34,20 @@ export class FooHttpRepository extends FooRepository {
 
   override readFoo(fooId: FooId): Observable<FooRead> {
     return this.#http.get<FooRead>(
-      `${this.#baseUrl}/${encodeURIComponent(fooId)}`
+      `${this.#baseUrl}/${encodeURIComponent(fooId)}`,
     );
   }
 
   override updateFoo(fooId: FooId, foo: Partial<Foo>): Observable<FooUpdated> {
     return this.#http.put<FooUpdated>(
       `${this.#baseUrl}/${encodeURIComponent(fooId)}`,
-      foo
+      foo,
     );
   }
 
   override deleteFoo(fooId: FooId): Observable<FooDeleted> {
     return this.#http.delete<FooDeleted>(
-      `${this.#baseUrl}/${encodeURIComponent(fooId)}`
+      `${this.#baseUrl}/${encodeURIComponent(fooId)}`,
     );
   }
 }

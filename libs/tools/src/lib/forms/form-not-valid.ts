@@ -22,15 +22,15 @@ import { sourceToObservable, ValueSource } from '../value-source';
  * ```
  */
 export const formNotValid = <TControl extends AbstractControl>(
-  $form$: ValueSource<TControl | null | undefined>
+  $form$: ValueSource<TControl | null | undefined>,
 ): Signal<boolean> => {
   const formStatus$ = sourceToObservable($form$).pipe(
     switchMap((form) =>
       form == null
         ? of<FormControlStatus>('INVALID')
-        : form.statusChanges.pipe(startWith(form.status))
+        : form.statusChanges.pipe(startWith(form.status)),
     ),
-    map((status) => status !== 'VALID')
+    map((status) => status !== 'VALID'),
   );
 
   return toSignal(formStatus$, {

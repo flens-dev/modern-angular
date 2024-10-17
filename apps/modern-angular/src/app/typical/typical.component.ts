@@ -20,7 +20,7 @@ export class AppTypicalComponent {
               title: '',
             })
           : typicalService.getTypical(id);
-      })
+      }),
     );
   }
 }

@@ -55,7 +55,7 @@ import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
  */
 export type FormControlPath<
   TControl extends AbstractControl,
-  TPrefix extends string = ''
+  TPrefix extends string = '',
 > = TControl extends FormGroup | FormArray
   ? {
       [K in keyof TControl['controls']]: TControl['controls'][K] extends
@@ -68,7 +68,7 @@ export type FormControlPath<
                 `${string & TPrefix}${(string | number) & K}.`
               >
         : TControl['controls'][K] extends AbstractControl
-        ? `${string & TPrefix}${(string | number) & K}`
-        : never;
+          ? `${string & TPrefix}${(string | number) & K}`
+          : never;
     }[keyof TControl['controls']]
   : never;

@@ -36,7 +36,7 @@ export class FoosComponent {
       withNameLike: this.withNameLike(),
       withMaxCount: this.withMaxCount(),
       orderBy: this.orderBy(),
-    })
+    }),
   );
 
   protected readonly getFoos = injectServiceCall(
@@ -44,6 +44,6 @@ export class FoosComponent {
     (req) => this.#fooService.getFoos(req),
     {
       behavior: 'SWITCH',
-    }
+    },
   );
 }

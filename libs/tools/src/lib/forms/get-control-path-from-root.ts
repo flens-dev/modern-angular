@@ -50,7 +50,7 @@ const getControlPath = (control: AbstractControl | null): ControlPath => {
  * Can be used by `.get(...)` on the root.
  */
 export const getControlPathFromRoot = (
-  control: AbstractControl | null
+  control: AbstractControl | null,
 ): string => {
   return controlPathToFormPath(getControlPath(control));
 };

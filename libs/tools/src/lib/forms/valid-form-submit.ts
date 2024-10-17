@@ -10,15 +10,15 @@ import { FormValueOf } from './form-value-of';
  * Can be used to declaratively react to form submissions.
  */
 export const validFormSubmit = <TControl extends AbstractControl>(
-  $form$: ValueSource<TControl>
+  $form$: ValueSource<TControl>,
 ): Observable<FormValueOf<TControl>> => {
   return sourceToObservable($form$).pipe(
     switchMap((form) => form.events),
     filter(
       (event) =>
-        event instanceof FormSubmittedEvent && event.source.status === 'VALID'
+        event instanceof FormSubmittedEvent && event.source.status === 'VALID',
     ),
     map((event) => event.source.getRawValue()),
-    share()
+    share(),
   );
 };

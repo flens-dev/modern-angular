@@ -30,25 +30,25 @@ type ValueAndReason<TValue> = Readonly<{
 const filterForValueChangeAndSubmittedEvents = () =>
   filter(
     (event: ControlEvent) =>
-      event instanceof ValueChangeEvent || event instanceof FormSubmittedEvent
+      event instanceof ValueChangeEvent || event instanceof FormSubmittedEvent,
   );
 
 const mapToValueAndReason = <TControl extends AbstractControl>(
   form: TControl,
-  debounceOnSet: ReadonlySet<string>
+  debounceOnSet: ReadonlySet<string>,
 ) =>
   map(
     (
-      event: ValueChangeEvent<FormValueOf<TControl>> | FormSubmittedEvent
+      event: ValueChangeEvent<FormValueOf<TControl>> | FormSubmittedEvent,
     ): ValueAndReason<FormValueOf<TControl>> => ({
       value: form.getRawValue(),
       reason:
         form.status !== 'VALID'
           ? 'NOT_VALID'
           : debounceOnSet.has(getControlPathFromRoot(event.source))
-          ? 'DEBOUNCE'
-          : 'SUBMIT',
-    })
+            ? 'DEBOUNCE'
+            : 'SUBMIT',
+    }),
   );
 
 type DebounceIfPredicate<T> = (value: T) => boolean;
@@ -58,7 +58,7 @@ const debounceIf = <T>(predicate: DebounceIfPredicate<T>, debounceMs: number) =>
 
 const mapToValidValueOrNull = <TValue>() =>
   map(({ reason, value }: ValueAndReason<TValue>) =>
-    reason === 'NOT_VALID' ? null : value
+    reason === 'NOT_VALID' ? null : value,
   );
 
 /**
@@ -85,9 +85,9 @@ export const debounceForm = <TControl extends AbstractControl>(
         mapToValueAndReason(form, debounceOnSet),
         debounceIf(({ reason }) => reason === 'DEBOUNCE', debounceMs),
         mapToValidValueOrNull(),
-        distinctUntilChanged()
-      )
+        distinctUntilChanged(),
+      ),
     ),
-    share()
+    share(),
   );
 };

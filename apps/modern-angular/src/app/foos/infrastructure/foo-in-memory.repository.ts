@@ -33,7 +33,7 @@ export class FooInMemoryRepository extends FooRepository {
                   .toLowerCase()
                   .includes(request.withNameLike.toLowerCase())) &&
               (request.withMaxCount == null ||
-                foo.count <= request.withMaxCount)
+                foo.count <= request.withMaxCount),
           )
           .map(([fooId, foo]): FooRead => ({ fooId, foo }));
 
@@ -41,14 +41,14 @@ export class FooInMemoryRepository extends FooRepository {
           request.orderBy === 'name'
             ? (a, b) => a.foo.name.localeCompare(b.foo.name)
             : request.orderBy === 'count'
-            ? (a, b) => a.foo.count - b.foo.count
-            : (a, b) => a.fooId.localeCompare(b.fooId)
+              ? (a, b) => a.foo.count - b.foo.count
+              : (a, b) => a.fooId.localeCompare(b.fooId),
         );
 
         return {
           foos,
         };
-      })
+      }),
     );
   }
 
@@ -65,7 +65,7 @@ export class FooInMemoryRepository extends FooRepository {
           fooId,
           foo: { ...createdFoo },
         };
-      })
+      }),
     );
   }
 
@@ -81,7 +81,7 @@ export class FooInMemoryRepository extends FooRepository {
           fooId,
           foo: { ...foo },
         };
-      })
+      }),
     );
   }
 
@@ -103,7 +103,7 @@ export class FooInMemoryRepository extends FooRepository {
           fooId,
           foo: { ...updatedFoo },
         };
-      })
+      }),
     );
   }
 
@@ -118,11 +118,11 @@ export class FooInMemoryRepository extends FooRepository {
         }
 
         throw new Error('Foo not found!');
-      })
+      }),
     );
   }
 }
 
 export const provideFooInMemoryRepository = provideFooRepository(
-  FooInMemoryRepository
+  FooInMemoryRepository,
 );
