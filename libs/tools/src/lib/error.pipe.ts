@@ -2,8 +2,12 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Pipe, PipeTransform } from '@angular/core';
 
 export const errorToString = (error: unknown): string | null => {
-  if (error == null || error === false) {
+  if (error == null || error === false || error === '') {
     return null;
+  }
+
+  if (typeof error === 'string') {
+    return error;
   }
 
   if (error instanceof Error) {
@@ -17,8 +21,14 @@ export const errorToString = (error: unknown): string | null => {
     } catch {
       // ignore
     }
-    const ret = errorToString(e);
-    return ret == null ? error.message : ret;
+    let ret = errorToString(e);
+    if (ret == null) {
+      ret = error.message;
+    }
+    if (ret == null || ret === '') {
+      ret = `${error.status}: ${error.statusText}`;
+    }
+    return ret;
   }
 
   try {
