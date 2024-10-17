@@ -1,1 +1,17 @@
-TODO FOOS
+<h2>Foos</h2>
+
+<div>TODO search form</div>
+
+@let state = getFoos.state();
+@switch (state.type) {
+  @case ('IDLE') {}
+  @case ('BUSY') {
+    <div>Fetching data...</div>
+  }
+  @case ('ERROR') {
+    <div class="error">{{ state.error }}</div>
+  }
+  @case ('SUCCESS') {
+    <div>TODO display foos from state.response</div>
+  }
+}
