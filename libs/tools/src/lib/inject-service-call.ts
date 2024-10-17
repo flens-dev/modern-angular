@@ -148,9 +148,9 @@ const setupServiceCall = <TRequest, TResponse>(
  * With `autoResetOnSuccess` enabled, every "SUCCESS" state is immediately followed by an "IDLE" state.
  * This may be usefull on service calls where the response is not needed, but just the execution of the call.
  *
- * `serviceCall` is intended to be called inside an injection context, but that can be overriden with an injector in the options.
+ * `injectServiceCall` is intended to be called inside an injection context, but that can be overriden with an injector in the options.
  */
-export const serviceCall = <TRequest, TResponse>(
+export const injectServiceCall = <TRequest, TResponse>(
   $request$: ValueSource<TRequest>,
   serviceFn: ServiceCallFn<TRequest, TResponse>,
   options?: ServiceCallOptions

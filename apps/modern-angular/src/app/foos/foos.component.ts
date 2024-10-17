@@ -7,7 +7,7 @@ import {
   numberAttribute,
 } from '@angular/core';
 
-import { serviceCall } from '@flens-dev/tools';
+import { injectServiceCall } from '@flens-dev/tools';
 
 import { FooOrderBy, FooService, GetFoosRequest, isFooOrderBy } from './model';
 
@@ -39,7 +39,7 @@ export class FoosComponent {
     })
   );
 
-  protected readonly getFoos = serviceCall(
+  protected readonly getFoos = injectServiceCall(
     this.#getFoosRequest,
     (req) => this.#fooService.getFoos(req),
     {
