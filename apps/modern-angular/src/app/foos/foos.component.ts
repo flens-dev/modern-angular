@@ -16,6 +16,7 @@ import { FooOrderBy, FooService, GetFoosRequest, isFooOrderBy } from './model';
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-foos',
   templateUrl: './foos.component.html',
+  styleUrl: './foos.css',
 })
 export class FoosComponent {
   readonly #fooService = inject(FooService);
