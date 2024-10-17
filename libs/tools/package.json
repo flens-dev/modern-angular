@@ -1,6 +1,11 @@
 {
   "name": "@flens-dev/tools",
   "version": "0.0.1",
-  "peerDependencies": {},
+  "peerDependencies": {
+    "@angular/common": "18.2.7",
+    "@angular/core": "18.2.7",
+    "@angular/forms": "18.2.7",
+    "rxjs": "~7.8.0"
+  },
   "sideEffects": false
 }
