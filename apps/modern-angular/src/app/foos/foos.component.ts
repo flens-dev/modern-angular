@@ -7,7 +7,7 @@ import {
   numberAttribute,
 } from '@angular/core';
 
-import { injectServiceCall } from '@flens-dev/tools';
+import { ErrorPipe, injectServiceCall } from '@flens-dev/tools';
 
 import { FooOrderBy, FooService, GetFoosRequest, isFooOrderBy } from './model';
 
@@ -17,6 +17,7 @@ import { FooOrderBy, FooService, GetFoosRequest, isFooOrderBy } from './model';
   selector: 'app-foos',
   templateUrl: './foos.component.html',
   styleUrl: './foos.css',
+  imports: [ErrorPipe],
 })
 export class FoosComponent {
   readonly #fooService = inject(FooService);

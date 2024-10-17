@@ -9,7 +9,7 @@
     <div>Fetching data...</div>
   }
   @case ('ERROR') {
-    <div class="error">{{ state.error }}</div>
+    <div class="error">{{ state.error | error }}</div>
   }
   @case ('SUCCESS') {
     <div>TODO display foos from state.response</div>
