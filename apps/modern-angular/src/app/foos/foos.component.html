@@ -13,7 +13,9 @@
   }
   @case ('SUCCESS') {
     @for (item of state.response.foos; track item.fooId) {
-      <app-foo-list-item [foo]="item.foo" class="list-item" />
+      <a [routerLink]="[item.fooId, 'edit']">
+        <app-foo-list-item [foo]="item.foo" class="list-item" />
+      </a>
     }
   }
 }

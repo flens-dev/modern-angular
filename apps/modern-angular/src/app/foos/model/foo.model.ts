@@ -1,4 +1,5 @@
 import { numberAttribute } from '@angular/core';
+import { Validators } from '@angular/forms';
 
 import { Immutable } from '@flens-dev/tools';
 
@@ -8,6 +9,14 @@ export type Foo = Immutable<{
   name: string;
   count: number;
 }>;
+
+export const initialFoo: Foo = {
+  name: '',
+  count: 0,
+};
+
+export const nameValidator = Validators.required;
+export const countValidator = Validators.min(0);
 
 export type FooCreated = Immutable<{
   fooId: FooId;

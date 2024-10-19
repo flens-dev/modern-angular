@@ -10,7 +10,7 @@ import {
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 import {
   ErrorPipe,
@@ -37,6 +37,7 @@ import { FoosSearchFormComponent } from './foos-search-form.component';
   styleUrl: './foos.css',
   imports: [
     ReactiveFormsModule,
+    RouterLink,
     ErrorPipe,
     FooListItemComponent,
     FoosSearchFormComponent,

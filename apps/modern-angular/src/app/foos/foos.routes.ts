@@ -9,6 +9,11 @@ const FOO_CHILD_ROUTES: Routes = [
     loadComponent: () =>
       import('./foos.component').then((m) => m.FoosComponent),
   },
+  {
+    path: ':fooId/edit',
+    loadComponent: () =>
+      import('./foo-edit.component').then((m) => m.FooEditComponent),
+  },
 ];
 
 export const FOO_ROUTES: Routes = [

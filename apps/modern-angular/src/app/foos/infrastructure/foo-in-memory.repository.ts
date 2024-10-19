@@ -19,6 +19,7 @@ import {
   providedIn: 'root',
 })
 export class FooInMemoryRepository extends FooRepository {
+  readonly #timeoutMs = 400;
   #nextFooId = 1;
   readonly #foos = new Map<FooId, Foo>();
 
@@ -30,7 +31,7 @@ export class FooInMemoryRepository extends FooRepository {
   }
 
   override getFoos(request: GetFoosRequest): Observable<GetFoosResponse> {
-    return timer(1000).pipe(
+    return timer(this.#timeoutMs).pipe(
       map((): GetFoosResponse => {
         const foos = [...this.#foos.entries()]
           .filter(
@@ -73,11 +74,11 @@ export class FooInMemoryRepository extends FooRepository {
   }
 
   override createFoo(foo: Foo): Observable<FooCreated> {
-    return timer(1000).pipe(map(() => this.#createFoo(foo)));
+    return timer(this.#timeoutMs).pipe(map(() => this.#createFoo(foo)));
   }
 
   override readFoo(fooId: FooId): Observable<FooRead> {
-    return timer(1000).pipe(
+    return timer(this.#timeoutMs).pipe(
       map((): FooRead => {
         const foo = this.#foos.get(fooId);
         if (foo == null) {
@@ -93,7 +94,7 @@ export class FooInMemoryRepository extends FooRepository {
   }
 
   override updateFoo(fooId: FooId, foo: Partial<Foo>): Observable<FooUpdated> {
-    return timer(1000).pipe(
+    return timer(this.#timeoutMs).pipe(
       map((): FooUpdated => {
         const currentFoo = this.#foos.get(fooId);
         if (currentFoo == null) {
@@ -115,7 +116,7 @@ export class FooInMemoryRepository extends FooRepository {
   }
 
   override deleteFoo(fooId: FooId): Observable<FooDeleted> {
-    return timer(1000).pipe(
+    return timer(this.#timeoutMs).pipe(
       map((): FooDeleted => {
         const deleted = this.#foos.delete(fooId);
         if (deleted) {
