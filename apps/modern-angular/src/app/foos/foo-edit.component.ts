@@ -5,12 +5,11 @@ import {
   input,
 } from '@angular/core';
 
-import { EMPTY, filter } from 'rxjs';
+import { EMPTY } from 'rxjs';
 
 import { ErrorPipe, injectServiceCall } from '@flens-dev/tools';
 
 import { createFooEditForm, FooId, FooService } from './model';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule } from '@angular/forms';
 
 @Component({
@@ -40,19 +39,7 @@ export class FooEditComponent {
     (fooId) => (fooId == null ? EMPTY : this.#fooService.readFoo(fooId)),
     {
       behavior: 'SWITCH',
+      onSuccess: (_request, response) => this.editForm.setValue(response.foo),
     },
   );
-
-  constructor() {
-    this.readFoo.stateChanges
-      .pipe(
-        filter((state) => state.type === 'SUCCESS'),
-        takeUntilDestroyed(),
-      )
-      .subscribe({
-        next: (state) => {
-          this.editForm.setValue(state.response.foo);
-        },
-      });
-  }
 }

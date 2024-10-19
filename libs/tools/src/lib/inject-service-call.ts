@@ -14,6 +14,7 @@ import {
   startWith,
   switchMap,
   takeUntil,
+  filter,
 } from 'rxjs';
 import { sourceToObservable, ValueSource } from './value-source';
 
@@ -83,26 +84,28 @@ export type ServiceCall<TRequest, TResponse> = {
   readonly reset: () => void;
 };
 
-export type ServiceCallOptions = {
+export type ServiceCallOptions<TRequest, TResponse> = {
   readonly behavior: 'SWITCH' | 'CONCAT';
   readonly injector?: Injector;
   readonly destroyRef?: DestroyRef;
   readonly resetOn?: Observable<unknown>;
   readonly autoResetOnSuccess?: boolean;
+  readonly onSuccess?: (request: TRequest, response: TResponse) => void;
 };
 
-const defaultServiceCallOptions: ServiceCallOptions = {
+const defaultServiceCallOptions: ServiceCallOptions<unknown, unknown> = {
   behavior: 'SWITCH',
   injector: undefined,
   destroyRef: undefined,
   resetOn: undefined,
   autoResetOnSuccess: undefined,
+  onSuccess: undefined,
 };
 
 const setupServiceCall = <TRequest, TResponse>(
   $request$: ValueSource<TRequest>,
   serviceFn: ServiceCallFn<TRequest, TResponse>,
-  options: ServiceCallOptions,
+  options: ServiceCallOptions<TRequest, TResponse>,
 ): Observable<ServiceCallState<TRequest, TResponse>> => {
   const request$ = sourceToObservable($request$, {
     injector: options.injector,
@@ -153,7 +156,7 @@ const setupServiceCall = <TRequest, TResponse>(
 export const injectServiceCall = <TRequest, TResponse>(
   $request$: ValueSource<TRequest>,
   serviceFn: ServiceCallFn<TRequest, TResponse>,
-  options?: ServiceCallOptions,
+  options?: ServiceCallOptions<TRequest, TResponse>,
 ): ServiceCall<TRequest, TResponse> => {
   const reset$ = new Subject<void>();
   const resetOn =
@@ -168,6 +171,20 @@ export const injectServiceCall = <TRequest, TResponse>(
   };
 
   const state$ = setupServiceCall($request$, serviceFn, options);
+
+  if (options.onSuccess) {
+    const onSuccess = options.onSuccess;
+    state$
+      .pipe(
+        filter((state) => state.type === 'SUCCESS'),
+        takeUntilDestroyed(options.destroyRef),
+      )
+      .subscribe({
+        next: (state) => {
+          onSuccess(state.request, state.response);
+        },
+      });
+  }
 
   const state = toSignal(state$, {
     initialValue: idleServiceCallState,
