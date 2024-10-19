@@ -19,7 +19,7 @@ import { ReactiveFormsModule } from '@angular/forms';
   imports: [ReactiveFormsModule, ErrorPipe],
   styleUrl: './foos.css',
   styles: `
-    .form: {
+    .form {
       display: grid;
       grid-template-columns: auto 1fr;
       grid-template-rows: auto auto auto;
