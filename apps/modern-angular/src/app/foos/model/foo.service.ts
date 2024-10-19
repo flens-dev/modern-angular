@@ -9,12 +9,10 @@ import {
   FooId,
   FooRead,
   FooUpdated,
-} from './foo.model';
-import {
-  FooRepository,
   GetFoosRequest,
   GetFoosResponse,
-} from './foo.repository';
+} from './foo.model';
+import { FooRepository } from './foo.repository';
 
 @Injectable()
 export class FooService {

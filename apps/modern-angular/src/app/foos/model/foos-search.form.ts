@@ -1,6 +1,6 @@
 import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
 
-import { FooOrderBy } from './foo.repository';
+import { FooOrderBy } from './foo.model';
 
 export type FoosSearchFormGroup = FormGroup<{
   withNameLike: FormControl<string | undefined>;

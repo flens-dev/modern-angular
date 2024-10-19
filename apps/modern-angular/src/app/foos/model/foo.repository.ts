@@ -2,8 +2,6 @@ import { Injectable, Type, Provider } from '@angular/core';
 
 import { Observable } from 'rxjs';
 
-import { Immutable } from '@flens-dev/tools';
-
 import {
   Foo,
   FooCreated,
@@ -11,27 +9,9 @@ import {
   FooRead,
   FooUpdated,
   FooDeleted,
+  GetFoosRequest,
+  GetFoosResponse,
 } from './foo.model';
-
-export type FooOrderBy = keyof Pick<Foo, 'name' | 'count'>;
-
-export const isFooOrderBy = (orderBy: unknown): orderBy is FooOrderBy => {
-  return (
-    orderBy != null &&
-    typeof orderBy === 'string' &&
-    (orderBy === 'name' || orderBy === 'count')
-  );
-};
-
-export type GetFoosRequest = Immutable<{
-  withNameLike?: string;
-  withMaxCount?: number;
-  orderBy?: FooOrderBy;
-}>;
-
-export type GetFoosResponse = Immutable<{
-  foos: FooRead[];
-}>;
 
 @Injectable()
 export abstract class FooRepository {
