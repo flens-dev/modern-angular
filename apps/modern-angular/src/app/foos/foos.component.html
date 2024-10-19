@@ -1,6 +1,30 @@
 <h2>Foos</h2>
 
-<div>TODO search form</div>
+<form [formGroup]="searchForm">
+  <div class="form">
+    <label for="withNameLike" class="form-label-name"> with name like </label>
+    <input
+      id="withNameLike"
+      type="text"
+      formControlName="withNameLike"
+      class="form-input-name"
+    />
+    <label for="withMaxCount" class="form-label-count"> with max. count </label>
+    <input
+      id="withMaxCount"
+      type="number"
+      formControlName="withMaxCount"
+      class="form-input-count"
+    />
+    <label for="orderBy" class="form-label-order-by"> order by </label>
+    <select id="orderBy" formControlName="orderBy" class="form-input-order-by">
+      <option [value]="undefined">-</option>
+      <option value="name">name</option>
+      <option value="count">count</option>
+    </select>
+  </div>
+  <button #btnSearch type="submit" class="form-submit">search</button>
+</form>
 
 @let state = getFoos.state();
 @switch (state.type) {

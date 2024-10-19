@@ -1,3 +1,43 @@
+.form {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto auto auto;
+  grid-template-areas:
+    'label-name  input-name'
+    'label-count input-count'
+    'label-order-by input-order-by'
+    'submit      .';
+  gap: 0.5em 1em;
+}
+
+.form-label-name {
+  grid-area: label-name;
+}
+
+.form-input-name {
+  grid-area: input-name;
+}
+
+.form-label-count {
+  grid-area: label-count;
+}
+
+.form-input-count {
+  grid-area: input-count;
+}
+
+.form-label-order-by {
+  grid-area: label-order-by;
+}
+
+.form-input-order-by {
+  grid-area: input-order-by;
+}
+
+.form-submit {
+  grid-area: submit;
+}
+
 .error {
   color: red;
   font-weight: bold;
@@ -6,6 +46,6 @@
 .list-item {
   display: block;
   border: 1px darkblue solid;
-  margin: 2px;
-  padding: 2px;
+  margin: 0.5em;
+  padding: 0.5em;
 }

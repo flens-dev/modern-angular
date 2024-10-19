@@ -24,9 +24,9 @@ export class FooInMemoryRepository extends FooRepository {
 
   constructor() {
     super();
-    this.#createFoo({ name: 'First', count: 1 });
+    this.#createFoo({ name: 'First', count: 3 });
     this.#createFoo({ name: 'Second', count: 2 });
-    this.#createFoo({ name: 'Thrid', count: 3 });
+    this.#createFoo({ name: 'Third', count: 1 });
   }
 
   override getFoos(request: GetFoosRequest): Observable<GetFoosResponse> {
