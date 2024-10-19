@@ -2,11 +2,9 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  effect,
   inject,
   input,
   numberAttribute,
-  untracked,
 } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 
@@ -14,7 +12,8 @@ import { ErrorPipe, injectServiceCall } from '@flens-dev/tools';
 
 import { FooOrderBy, FooService, GetFoosRequest, isFooOrderBy } from './model';
 import { FooListItemComponent } from './views';
-import { createFoosSearchForm } from './foos-search.form';
+
+import { FoosSearchFormComponent } from './foos-search-form.component';
 
 @Component({
   standalone: true,
@@ -22,12 +21,15 @@ import { createFoosSearchForm } from './foos-search.form';
   selector: 'app-foos',
   templateUrl: './foos.component.html',
   styleUrl: './foos.css',
-  imports: [ReactiveFormsModule, ErrorPipe, FooListItemComponent],
+  imports: [
+    ReactiveFormsModule,
+    ErrorPipe,
+    FooListItemComponent,
+    FoosSearchFormComponent,
+  ],
 })
 export class FoosComponent {
   readonly #fooService = inject(FooService);
-
-  protected readonly searchForm = createFoosSearchForm();
 
   readonly withNameLike = input<string | undefined, unknown>(undefined, {
     transform: (value) =>
@@ -42,7 +44,7 @@ export class FoosComponent {
     transform: (value) => (isFooOrderBy(value) ? value : undefined),
   });
 
-  readonly #getFoosRequest = computed(
+  protected readonly getFoosRequest = computed(
     (): GetFoosRequest => ({
       withNameLike: this.withNameLike(),
       withMaxCount: this.withMaxCount(),
@@ -50,16 +52,8 @@ export class FoosComponent {
     }),
   );
 
-  // eslint-disable-next-line no-unused-private-class-members
-  readonly #setSearchFormEffect = effect(() => {
-    const getFoosRequest = this.#getFoosRequest();
-    untracked(() => {
-      this.searchForm.patchValue(getFoosRequest, { emitEvent: false });
-    });
-  });
-
   protected readonly getFoos = injectServiceCall(
-    this.#getFoosRequest,
+    this.getFoosRequest,
     (req) => this.#fooService.getFoos(req),
     {
       behavior: 'SWITCH',
