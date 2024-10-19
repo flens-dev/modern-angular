@@ -8,7 +8,7 @@ import {
 import { outputFromObservable } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule } from '@angular/forms';
 
-import { validFormSubmit } from '@flens-dev/tools';
+import { formNotValid, validFormSubmit } from '@flens-dev/tools';
 
 import { GetFoosRequest, createFoosSearchForm } from './model';
 
@@ -24,6 +24,8 @@ export class FoosSearchFormComponent {
   protected readonly searchForm = createFoosSearchForm();
 
   readonly value = input<GetFoosRequest>();
+
+  protected readonly submitDisabled = formNotValid(this.searchForm);
 
   readonly submit = outputFromObservable(validFormSubmit(this.searchForm));
 
