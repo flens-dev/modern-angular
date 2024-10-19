@@ -1,7 +1,7 @@
 import { NEVER, Observable, switchMap } from 'rxjs';
 
 import { ValueSource, sourceToObservable } from './value-source';
-import { OutputsOf } from './outputs-of';
+import { OutputsOf, OutputValueOf } from './outputs-of';
 import { outputToObservable } from '@angular/core/rxjs-interop';
 import { OutputRef } from '@angular/core';
 
@@ -11,14 +11,19 @@ import { OutputRef } from '@angular/core';
  *
  * Usefull to declaratively subscribe to outputs of components retrieved with `viewChild` from a template.
  */
-export const fromOutputToObservable = <TComponent extends object, TOutput>(
+export const fromOutputToObservable = <
+  TComponent extends object,
+  TOutput extends OutputsOf<TComponent>,
+>(
   $component$: ValueSource<TComponent | null | undefined>,
-  outputName: OutputsOf<TComponent>,
-): Observable<TOutput> => {
+  outputName: TOutput,
+): Observable<OutputValueOf<TComponent, TOutput>> => {
   return sourceToObservable($component$).pipe(
     switchMap((comp) =>
       comp != null && outputName in comp
-        ? outputToObservable(comp[outputName] as OutputRef<TOutput>)
+        ? outputToObservable(
+            comp[outputName] as OutputRef<OutputValueOf<TComponent, TOutput>>,
+          )
         : NEVER,
     ),
   );

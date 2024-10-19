@@ -72,10 +72,7 @@ export class FoosComponent {
 
   protected readonly search = viewChild(FoosSearchFormComponent);
   readonly #searchSubmit = toSignal(
-    fromOutputToObservable<FoosSearchFormComponent, GetFoosRequest>(
-      this.search,
-      'submit',
-    ),
+    fromOutputToObservable(this.search, 'submit'),
   );
 
   constructor() {
