@@ -18,13 +18,6 @@ import { ReactiveFormsModule } from '@angular/forms';
   selector: 'app-foo-edit',
   imports: [ReactiveFormsModule, ErrorPipe],
   styleUrl: './foos.css',
-  styles: `
-    .form {
-      display: grid;
-      grid-template-columns: auto 1fr;
-      grid-template-rows: auto auto auto;
-    }
-  `,
   templateUrl: './foo-edit.component.html',
 })
 export class FooEditComponent {

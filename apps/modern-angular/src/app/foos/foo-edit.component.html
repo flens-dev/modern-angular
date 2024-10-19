@@ -1,3 +1,11 @@
+<style>
+  .form {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-rows: auto auto auto;
+  }
+</style>
+
 @let state = readFoo.state();
 @switch (state.type) {
   @case ('IDLE') {}
