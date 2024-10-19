@@ -2,3 +2,10 @@
   color: red;
   font-weight: bold;
 }
+
+.list-item {
+  display: block;
+  border: 1px darkblue solid;
+  margin: 2px;
+  padding: 2px;
+}

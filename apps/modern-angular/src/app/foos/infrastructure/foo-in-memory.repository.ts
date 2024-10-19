@@ -22,6 +22,13 @@ export class FooInMemoryRepository extends FooRepository {
   #nextFooId = 1;
   readonly #foos = new Map<FooId, Foo>();
 
+  constructor() {
+    super();
+    this.#createFoo({ name: 'First', count: 1 });
+    this.#createFoo({ name: 'Second', count: 2 });
+    this.#createFoo({ name: 'Thrid', count: 3 });
+  }
+
   override getFoos(request: GetFoosRequest): Observable<GetFoosResponse> {
     return timer(1000).pipe(
       map((): GetFoosResponse => {
@@ -52,21 +59,21 @@ export class FooInMemoryRepository extends FooRepository {
     );
   }
 
+  #createFoo(foo: Foo): FooCreated {
+    const fooId = `${this.#nextFooId}`;
+    this.#nextFooId++;
+
+    const createdFoo = { ...foo };
+    this.#foos.set(fooId, createdFoo);
+
+    return {
+      fooId,
+      foo: { ...createdFoo },
+    };
+  }
+
   override createFoo(foo: Foo): Observable<FooCreated> {
-    return timer(1000).pipe(
-      map((): FooCreated => {
-        const fooId = `${this.#nextFooId}`;
-        this.#nextFooId++;
-
-        const createdFoo = { ...foo };
-        this.#foos.set(fooId, createdFoo);
-
-        return {
-          fooId,
-          foo: { ...createdFoo },
-        };
-      }),
-    );
+    return timer(1000).pipe(map(() => this.#createFoo(foo)));
   }
 
   override readFoo(fooId: FooId): Observable<FooRead> {

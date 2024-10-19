@@ -10,6 +10,7 @@ import {
 import { ErrorPipe, injectServiceCall } from '@flens-dev/tools';
 
 import { FooOrderBy, FooService, GetFoosRequest, isFooOrderBy } from './model';
+import { FooListItemComponent } from './views';
 
 @Component({
   standalone: true,
@@ -17,7 +18,7 @@ import { FooOrderBy, FooService, GetFoosRequest, isFooOrderBy } from './model';
   selector: 'app-foos',
   templateUrl: './foos.component.html',
   styleUrl: './foos.css',
-  imports: [ErrorPipe],
+  imports: [ErrorPipe, FooListItemComponent],
 })
 export class FoosComponent {
   readonly #fooService = inject(FooService);
