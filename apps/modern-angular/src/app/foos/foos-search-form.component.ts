@@ -5,7 +5,10 @@ import {
   input,
   untracked,
 } from '@angular/core';
+import { outputFromObservable } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule } from '@angular/forms';
+
+import { validFormSubmit } from '@flens-dev/tools';
 
 import { GetFoosRequest, createFoosSearchForm } from './model';
 
@@ -21,6 +24,8 @@ export class FoosSearchFormComponent {
   protected readonly searchForm = createFoosSearchForm();
 
   readonly value = input<GetFoosRequest>();
+
+  readonly submit = outputFromObservable(validFormSubmit(this.searchForm));
 
   constructor() {
     effect(() => {
