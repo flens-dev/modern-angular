@@ -5,9 +5,9 @@ import {
   input,
   untracked,
 } from '@angular/core';
-import { GetFoosRequest } from './model';
-import { createFoosSearchForm } from './model/foos-search.form';
 import { ReactiveFormsModule } from '@angular/forms';
+
+import { GetFoosRequest, createFoosSearchForm } from './model';
 
 @Component({
   standalone: true,
