@@ -6,7 +6,6 @@ import {
   input,
   untracked,
 } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule } from '@angular/forms';
 
 import { EMPTY, filter, map } from 'rxjs';
@@ -65,6 +64,13 @@ export class FooEditComponent {
     ({ fooId, foo }) => this.#fooService.updateFoo(fooId, foo),
     {
       behavior: 'CONCAT',
+      onBusyChange: (busy) => {
+        if (busy && !this.editForm.disabled) {
+          this.editForm.disable({ emitEvent: false });
+        } else if (!busy && this.editForm.disabled) {
+          this.editForm.enable({ emitEvent: false });
+        }
+      },
     },
   );
 
@@ -78,16 +84,4 @@ export class FooEditComponent {
     () =>
       this.#readIsBusy() || this.#updateIsBusy() || this.#editFormNotValid(),
   );
-
-  constructor() {
-    this.updateFoo.stateChanges.pipe(takeUntilDestroyed()).subscribe({
-      next: (state) => {
-        if (state.type === 'BUSY' && !this.editForm.disabled) {
-          this.editForm.disable({ emitEvent: false });
-        } else if (state.type !== 'BUSY' && this.editForm.disabled) {
-          this.editForm.enable({ emitEvent: false });
-        }
-      },
-    });
-  }
 }

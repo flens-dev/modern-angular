@@ -14,7 +14,6 @@ import {
   startWith,
   switchMap,
   takeUntil,
-  filter,
 } from 'rxjs';
 import { sourceToObservable, ValueSource } from './value-source';
 
@@ -114,6 +113,7 @@ export type ServiceCallOptions<TRequest, TResponse> = {
   readonly destroyRef?: DestroyRef;
   readonly resetOn?: Observable<unknown>;
   readonly autoResetOnSuccess?: boolean;
+  readonly onBusyChange?: (busy: boolean) => void;
   readonly onSuccess?: (request: TRequest, response: TResponse) => void;
 };
 
@@ -123,6 +123,7 @@ const defaultServiceCallOptions: ServiceCallOptions<unknown, unknown> = {
   destroyRef: undefined,
   resetOn: undefined,
   autoResetOnSuccess: undefined,
+  onBusyChange: undefined,
   onSuccess: undefined,
 };
 
@@ -196,18 +197,18 @@ export const injectServiceCall = <TRequest, TResponse>(
 
   const state$ = setupServiceCall($request$, serviceFn, options);
 
-  if (options.onSuccess) {
-    const onSuccess = options.onSuccess;
-    state$
-      .pipe(
-        filter((state) => state.type === 'SUCCESS'),
-        takeUntilDestroyed(options.destroyRef),
-      )
-      .subscribe({
-        next: (state) => {
-          onSuccess(state.request, state.response);
-        },
-      });
+  if (options.onSuccess || options.onBusyChange) {
+    state$.pipe(takeUntilDestroyed(options.destroyRef)).subscribe({
+      next: (state) => {
+        if (options.onBusyChange) {
+          options.onBusyChange(state.type === 'BUSY');
+        }
+
+        if (options.onSuccess && state.type === 'SUCCESS') {
+          options.onSuccess(state.request, state.response);
+        }
+      },
+    });
   }
 
   const state = toSignal(state$, {
