@@ -17,7 +17,6 @@ import {
   formNotValid,
   fromEventToObservable,
   injectServiceCall,
-  isBusyState,
   ServiceCallStateComponent,
   validFormSubmit,
 } from '@flens-dev/tools';
@@ -36,7 +35,6 @@ export class FooEditComponent {
   readonly #location = inject(Location);
   readonly #fooService = inject(FooService);
 
-  protected readonly isBusyState = isBusyState;
   protected readonly editForm = createFooEditForm();
 
   readonly fooId = input.required<FooId>();

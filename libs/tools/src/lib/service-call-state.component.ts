@@ -2,6 +2,7 @@ import { NgTemplateOutlet } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   input,
   TemplateRef,
 } from '@angular/core';
@@ -17,17 +18,21 @@ import { ServiceCallErrorComponent } from './service-call-error.component';
   template: `@let s = state();
     @switch (s.type) {
       @case ('IDLE') {
-        @if (idle(); as idleTmpl) {
+        @if (idleTmpl(); as idleTmpl) {
           <ng-container
             *ngTemplateOutlet="idleTmpl; context: { $implicit: s }"
           />
+        } @else if (idleText()) {
+          <div>{{ idleText() }}</div>
         }
       }
       @case ('BUSY') {
-        @if (busy(); as busyTmpl) {
+        @if (busyTmpl(); as busyTmpl) {
           <ng-container
             *ngTemplateOutlet="busyTmpl; context: { $implicit: s }"
           />
+        } @else if (busyText()) {
+          <div>{{ busyText() }}</div>
         }
       }
       @case ('ERROR') {
@@ -51,8 +56,26 @@ import { ServiceCallErrorComponent } from './service-call-error.component';
 export class ServiceCallStateComponent<TRequest, TResponse> {
   readonly state = input.required<ServiceCallState<TRequest, TResponse>>();
 
-  readonly idle = input<TemplateRef<unknown>>();
-  readonly busy = input<TemplateRef<unknown>>();
+  readonly idle = input<TemplateRef<unknown> | string>();
+  readonly busy = input<TemplateRef<unknown> | string>();
   readonly error = input<TemplateRef<unknown>>();
   readonly success = input<TemplateRef<unknown>>();
+
+  readonly idleTmpl = computed(() => {
+    const idle = this.idle();
+    return idle == null || typeof idle === 'string' ? undefined : idle;
+  });
+  readonly idleText = computed(() => {
+    const idle = this.idle();
+    return idle != null && typeof idle === 'string' ? idle : undefined;
+  });
+
+  readonly busyTmpl = computed(() => {
+    const busy = this.busy();
+    return busy == null || typeof busy === 'string' ? undefined : busy;
+  });
+  readonly busyText = computed(() => {
+    const busy = this.busy();
+    return busy != null && typeof busy === 'string' ? busy : undefined;
+  });
 }

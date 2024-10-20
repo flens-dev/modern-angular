@@ -8,15 +8,9 @@
 
 <fest-service-call-state
   [state]="readFoo.state()"
-  [busy]="readBusyTmpl"
+  busy="Fetching foo..."
   [success]="readSuccessTmpl"
 />
-
-<ng-template #readBusyTmpl let-state>
-  @if (isBusyState(state)) {
-    <div>Fetching foo with id {{ state.request }}...</div>
-  }
-</ng-template>
 
 <ng-template #readSuccessTmpl>
   <form [formGroup]="editForm" class="form">
@@ -47,21 +41,7 @@
     </div>
   </form>
 
-  <fest-service-call-state
-    [state]="updateFoo.state()"
-    [busy]="updateBusyTmpl"
-  />
+  <fest-service-call-state [state]="updateFoo.state()" busy="Updating foo..." />
 
-  <fest-service-call-state
-    [state]="deleteFoo.state()"
-    [busy]="deleteBusyTmpl"
-  />
-</ng-template>
-
-<ng-template #updateBusyTmpl>
-  <div>Saving foo...</div>
-</ng-template>
-
-<ng-template #deleteBusyTmpl>
-  <div>Deleting foo...</div>
+  <fest-service-call-state [state]="deleteFoo.state()" busy="Deleting foo..." />
 </ng-template>

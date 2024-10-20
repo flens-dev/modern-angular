@@ -8,13 +8,9 @@
 
 <fest-service-call-state
   [state]="getFoos.state()"
-  [busy]="busyTmpl"
+  busy="Searching for foos..."
   [success]="successTmpl"
 />
-
-<ng-template #busyTmpl>
-  <div>Searching for foos...</div>
-</ng-template>
 
 <ng-template #successTmpl let-state>
   @if (isSuccessState(state)) {
