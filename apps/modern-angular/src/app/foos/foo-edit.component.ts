@@ -71,6 +71,9 @@ export class FooEditComponent {
           this.editForm.enable({ emitEvent: false });
         }
       },
+      onSuccess: (_request, _response) => {
+        this.editForm.markAsPristine({ emitEvent: false });
+      },
     },
   );
 
