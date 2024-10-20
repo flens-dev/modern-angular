@@ -80,13 +80,13 @@ export class FooEditComponent {
     'click',
   ).pipe(map(() => untracked(() => this.fooId())));
 
-  protected readonly deleteFoo = injectDeleteFoo(
-    this.form,
-    this.#deleteFooRequest,
-    (_request, _response) => {
+  protected readonly deleteFoo = injectDeleteFoo({
+    request: this.#deleteFooRequest,
+    form: this.form,
+    onSuccess: (_request, _response) => {
       this.#location.back();
     },
-  );
+  });
 
   readonly #editFormNotValid = formNotValid(this.form);
 
