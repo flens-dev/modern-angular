@@ -1,4 +1,4 @@
-import { DestroyRef, Injector, Signal } from '@angular/core';
+import { computed, DestroyRef, Signal } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import {
   Observable,
@@ -104,12 +104,12 @@ export const isSuccessState = <TRequest, TResponse>(
 export type ServiceCall<TRequest, TResponse> = {
   readonly state: Signal<ServiceCallState<TRequest, TResponse>>;
   readonly stateChanges: Observable<ServiceCallState<TRequest, TResponse>>;
+  readonly busy: Signal<boolean>;
   readonly reset: () => void;
 };
 
 export type ServiceCallOptions<TRequest, TResponse> = {
   readonly behavior: 'SWITCH' | 'CONCAT';
-  readonly injector?: Injector;
   readonly destroyRef?: DestroyRef;
   readonly resetOn?: Observable<unknown>;
   readonly autoResetOnSuccess?: boolean;
@@ -119,7 +119,6 @@ export type ServiceCallOptions<TRequest, TResponse> = {
 
 const defaultServiceCallOptions: ServiceCallOptions<unknown, unknown> = {
   behavior: 'SWITCH',
-  injector: undefined,
   destroyRef: undefined,
   resetOn: undefined,
   autoResetOnSuccess: undefined,
@@ -132,9 +131,7 @@ const setupServiceCall = <TRequest, TResponse>(
   serviceFn: ServiceCallFn<TRequest, TResponse>,
   options: ServiceCallOptions<TRequest, TResponse>,
 ): Observable<ServiceCallState<TRequest, TResponse>> => {
-  const request$ = sourceToObservable($request$, {
-    injector: options.injector,
-  });
+  const request$ = sourceToObservable($request$);
   const mapFn = options.behavior === 'CONCAT' ? concatMap : switchMap;
 
   const reset$ =
@@ -176,7 +173,7 @@ const setupServiceCall = <TRequest, TResponse>(
  * With `autoResetOnSuccess` enabled, every "SUCCESS" state is immediately followed by an "IDLE" state.
  * This may be usefull on service calls where the response is not needed, but just the execution of the call.
  *
- * `injectServiceCall` is intended to be called inside an injection context, but that can be overriden with an injector in the options.
+ * `injectServiceCall` is intended to be called inside an injection context.
  */
 export const injectServiceCall = <TRequest, TResponse>(
   $request$: ValueSource<TRequest>,
@@ -213,12 +210,14 @@ export const injectServiceCall = <TRequest, TResponse>(
 
   const state = toSignal(state$, {
     initialValue: idleServiceCallState,
-    injector: options.injector,
   });
+
+  const busy = computed(() => state().type === 'BUSY');
 
   return {
     state,
     stateChanges: state$,
+    busy,
     reset: () => {
       reset$.next();
     },

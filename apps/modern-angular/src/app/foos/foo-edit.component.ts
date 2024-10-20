@@ -86,15 +86,8 @@ export class FooEditComponent {
 
   readonly #editFormNotValid = formNotValid(this.editForm);
 
-  readonly #readIsBusy = computed(() => this.readFoo.state().type === 'BUSY');
-  readonly #updateIsBusy = computed(
-    () => this.updateFoo.state().type === 'BUSY',
-  );
-  readonly #deleteIsBusy = computed(
-    () => this.deleteFoo.state().type === 'BUSY',
-  );
   readonly #isBusy = computed(
-    () => this.#readIsBusy() || this.#updateIsBusy() || this.#deleteIsBusy(),
+    () => this.readFoo.busy() || this.updateFoo.busy() || this.deleteFoo.busy(),
   );
 
   protected readonly submitDisabled = computed(
