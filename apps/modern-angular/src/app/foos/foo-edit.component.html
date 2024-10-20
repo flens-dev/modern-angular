@@ -6,42 +6,38 @@
   }
 </style>
 
-<fest-service-call-state
-  [state]="readFoo.state()"
-  busy="Fetching foo..."
-  [success]="readSuccessTmpl"
-/>
+<fest-service-call-state [state]="readFoo.state()" busy="Fetching foo...">
+  <ng-template #success>
+    <form [formGroup]="editForm" class="form">
+      <label for="name" style="grid-column: 1 / 2; grid-row: 1 / 2">Name</label>
+      <input
+        id="name"
+        type="text"
+        formControlName="name"
+        style="grid-column: 2 / 3; grid-row: 1 / 2"
+      />
 
-<ng-template #readSuccessTmpl>
-  <form [formGroup]="editForm" class="form">
-    <label for="name" style="grid-column: 1 / 2; grid-row: 1 / 2">Name</label>
-    <input
-      id="name"
-      type="text"
-      formControlName="name"
-      style="grid-column: 2 / 3; grid-row: 1 / 2"
-    />
+      <label for="count" style="grid-column: 1 / 2; grid-row: 2 / 3">
+        Count
+      </label>
+      <input
+        id="count"
+        type="number"
+        formControlName="count"
+        style="grid-column: 2 / 3; grid-row: 2 / 3"
+      />
 
-    <label for="count" style="grid-column: 1 / 2; grid-row: 2 / 3">
-      Count
-    </label>
-    <input
-      id="count"
-      type="number"
-      formControlName="count"
-      style="grid-column: 2 / 3; grid-row: 2 / 3"
-    />
+      <div style="grid-column: 1 / 2; grid-row: 3 / 4">
+        <button type="submit" [disabled]="submitDisabled()">save</button>
 
-    <div style="grid-column: 1 / 2; grid-row: 3 / 4">
-      <button type="submit" [disabled]="submitDisabled()">save</button>
+        <button #btnDelete type="button" [disabled]="deleteDisabled()">
+          delete
+        </button>
+      </div>
+    </form>
+  </ng-template>
+</fest-service-call-state>
 
-      <button #btnDelete type="button" [disabled]="deleteDisabled()">
-        delete
-      </button>
-    </div>
-  </form>
+<fest-service-call-state [state]="updateFoo.state()" busy="Updating foo..." />
 
-  <fest-service-call-state [state]="updateFoo.state()" busy="Updating foo..." />
-
-  <fest-service-call-state [state]="deleteFoo.state()" busy="Deleting foo..." />
-</ng-template>
+<fest-service-call-state [state]="deleteFoo.state()" busy="Deleting foo..." />

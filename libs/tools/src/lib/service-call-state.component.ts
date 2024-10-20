@@ -3,6 +3,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  contentChild,
   input,
   TemplateRef,
 } from '@angular/core';
@@ -45,7 +46,7 @@ import { ServiceCallErrorComponent } from './service-call-error.component';
         }
       }
       @case ('SUCCESS') {
-        @if (success(); as successTmpl) {
+        @if (successTmpl(); as successTmpl) {
           <ng-container
             *ngTemplateOutlet="successTmpl; context: { $implicit: s }"
           />
@@ -61,21 +62,33 @@ export class ServiceCallStateComponent<TRequest, TResponse> {
   readonly error = input<TemplateRef<unknown>>();
   readonly success = input<TemplateRef<unknown>>();
 
-  readonly idleTmpl = computed(() => {
+  protected readonly idleTmpl = computed(() => {
     const idle = this.idle();
     return idle == null || typeof idle === 'string' ? undefined : idle;
   });
-  readonly idleText = computed(() => {
+  protected readonly idleText = computed(() => {
     const idle = this.idle();
     return idle != null && typeof idle === 'string' ? idle : undefined;
   });
 
-  readonly busyTmpl = computed(() => {
+  protected readonly busyTmpl = computed(() => {
     const busy = this.busy();
     return busy == null || typeof busy === 'string' ? undefined : busy;
   });
-  readonly busyText = computed(() => {
+  protected readonly busyText = computed(() => {
     const busy = this.busy();
     return busy != null && typeof busy === 'string' ? busy : undefined;
+  });
+
+  protected readonly successFromContent = contentChild('success', {
+    read: TemplateRef,
+  });
+  protected readonly successTmpl = computed(() => {
+    const success = this.success();
+    if (success != null) {
+      return success;
+    }
+
+    return this.successFromContent();
   });
 }

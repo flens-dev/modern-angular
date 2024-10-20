@@ -6,18 +6,14 @@
   <a routerLink="create">create new foo</a>
 </div>
 
-<fest-service-call-state
-  [state]="getFoos.state()"
-  busy="Searching for foos..."
-  [success]="successTmpl"
-/>
-
-<ng-template #successTmpl let-state>
-  @if (isSuccessState(state)) {
-    @for (item of state.response.foos; track item.fooId) {
-      <a [routerLink]="[item.fooId, 'edit']">
-        <app-foo-list-item [foo]="item.foo" class="list-item" />
-      </a>
+<fest-service-call-state [state]="getFoos.state()" busy="Searching for foos...">
+  <ng-template #success let-state>
+    @if (isSuccessState(state)) {
+      @for (item of state.response.foos; track item.fooId) {
+        <a [routerLink]="[item.fooId, 'edit']">
+          <app-foo-list-item [foo]="item.foo" class="list-item" />
+        </a>
+      }
     }
-  }
-</ng-template>
+  </ng-template>
+</fest-service-call-state>
