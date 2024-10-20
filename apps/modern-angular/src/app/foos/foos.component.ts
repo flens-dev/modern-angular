@@ -28,9 +28,7 @@ import {
   transformWithMaxCount,
   transformWithNameLike,
 } from './model';
-import { FooListItemComponent } from './views';
-
-import { FoosSearchFormComponent } from './views/foos-search-form.component';
+import { FooListItemComponent, FoosSearchFormComponent } from './views';
 
 @Component({
   standalone: true,
