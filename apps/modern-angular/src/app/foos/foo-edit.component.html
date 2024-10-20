@@ -3,7 +3,7 @@
     <form [formGroup]="form">
       <app-foo-form [form]="form" />
 
-      <div>
+      <div style="margin: 1em 0">
         <button type="submit" [disabled]="submitDisabled()">save</button>
 
         <button #btnDelete type="button" [disabled]="deleteDisabled()">

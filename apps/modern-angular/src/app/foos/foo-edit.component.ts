@@ -21,7 +21,12 @@ import {
   validFormSubmit,
 } from '@flens-dev/tools';
 
-import { createFooForm, FooId, FooService } from './model';
+import {
+  FooId,
+  FooService,
+  createFooForm,
+  disableOrEnableFooFormOnBusyChange,
+} from './model';
 import { FooFormComponent } from './views';
 
 @Component({
@@ -58,7 +63,8 @@ export class FooEditComponent {
     ({ fooId, foo }) => this.#fooService.updateFoo(fooId, foo),
     {
       behavior: 'CONCAT',
-      onBusyChange: (busy) => this.#disableOrEnableEditFormOnBusyChange(busy),
+      onBusyChange: (busy) =>
+        disableOrEnableFooFormOnBusyChange(this.form, busy),
       onSuccess: (_request, _response) => {
         this.form.markAsPristine({ emitEvent: false });
       },
@@ -76,7 +82,8 @@ export class FooEditComponent {
     (fooId) => this.#fooService.deleteFoo(fooId),
     {
       behavior: 'CONCAT',
-      onBusyChange: (busy) => this.#disableOrEnableEditFormOnBusyChange(busy),
+      onBusyChange: (busy) =>
+        disableOrEnableFooFormOnBusyChange(this.form, busy),
       onSuccess: (_request, _response) => {
         this.#location.back();
       },
@@ -94,12 +101,4 @@ export class FooEditComponent {
   );
 
   protected readonly deleteDisabled = computed(() => this.#isBusy());
-
-  #disableOrEnableEditFormOnBusyChange(busy: boolean): void {
-    if (busy && !this.form.disabled) {
-      this.form.disable({ emitEvent: false });
-    } else if (!busy && this.form.disabled) {
-      this.form.enable({ emitEvent: false });
-    }
-  }
 }
