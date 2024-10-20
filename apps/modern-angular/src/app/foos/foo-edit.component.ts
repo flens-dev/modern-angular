@@ -21,13 +21,14 @@ import {
   validFormSubmit,
 } from '@flens-dev/tools';
 
-import { createFooEditForm, FooId, FooService } from './model';
+import { createFooForm, FooId, FooService } from './model';
+import { FooFormComponent } from './views';
 
 @Component({
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-foo-edit',
-  imports: [ReactiveFormsModule, ServiceCallStateComponent],
+  imports: [ReactiveFormsModule, ServiceCallStateComponent, FooFormComponent],
   styleUrl: './foos.css',
   templateUrl: './foo-edit.component.html',
 })
@@ -35,7 +36,7 @@ export class FooEditComponent {
   readonly #location = inject(Location);
   readonly #fooService = inject(FooService);
 
-  protected readonly editForm = createFooEditForm();
+  protected readonly form = createFooForm();
 
   readonly fooId = input.required<FooId>();
 
@@ -44,11 +45,11 @@ export class FooEditComponent {
     (fooId) => this.#fooService.readFoo(fooId),
     {
       behavior: 'SWITCH',
-      onSuccess: (_request, response) => this.editForm.setValue(response.foo),
+      onSuccess: (_request, response) => this.form.setValue(response.foo),
     },
   );
 
-  readonly #updateFooRequest = validFormSubmit(this.editForm).pipe(
+  readonly #updateFooRequest = validFormSubmit(this.form).pipe(
     map((foo) => untracked(() => ({ fooId: this.fooId(), foo }))),
   );
 
@@ -59,7 +60,7 @@ export class FooEditComponent {
       behavior: 'CONCAT',
       onBusyChange: (busy) => this.#disableOrEnableEditFormOnBusyChange(busy),
       onSuccess: (_request, _response) => {
-        this.editForm.markAsPristine({ emitEvent: false });
+        this.form.markAsPristine({ emitEvent: false });
       },
     },
   );
@@ -82,7 +83,7 @@ export class FooEditComponent {
     },
   );
 
-  readonly #editFormNotValid = formNotValid(this.editForm);
+  readonly #editFormNotValid = formNotValid(this.form);
 
   readonly #isBusy = computed(
     () => this.readFoo.busy() || this.updateFoo.busy() || this.deleteFoo.busy(),
@@ -95,10 +96,10 @@ export class FooEditComponent {
   protected readonly deleteDisabled = computed(() => this.#isBusy());
 
   #disableOrEnableEditFormOnBusyChange(busy: boolean): void {
-    if (busy && !this.editForm.disabled) {
-      this.editForm.disable({ emitEvent: false });
-    } else if (!busy && this.editForm.disabled) {
-      this.editForm.enable({ emitEvent: false });
+    if (busy && !this.form.disabled) {
+      this.form.disable({ emitEvent: false });
+    } else if (!busy && this.form.disabled) {
+      this.form.enable({ emitEvent: false });
     }
   }
 }
