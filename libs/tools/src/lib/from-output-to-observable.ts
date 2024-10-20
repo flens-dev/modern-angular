@@ -1,7 +1,7 @@
 import { NEVER, Observable, switchMap } from 'rxjs';
 
 import { ValueSource, sourceToObservable } from './value-source';
-import { OutputsOf, OutputValueOf } from './outputs-of';
+import { OutputNamesOf, OutputValueOf } from './outputs-of';
 import { outputToObservable } from '@angular/core/rxjs-interop';
 import { OutputRef } from '@angular/core';
 
@@ -13,16 +13,16 @@ import { OutputRef } from '@angular/core';
  */
 export const fromOutputToObservable = <
   TComponent extends object,
-  TOutput extends OutputsOf<TComponent>,
+  TOutput extends OutputNamesOf<TComponent>,
 >(
   $component$: ValueSource<TComponent | null | undefined>,
-  outputName: TOutput,
+  output: TOutput,
 ): Observable<OutputValueOf<TComponent, TOutput>> => {
   return sourceToObservable($component$).pipe(
     switchMap((comp) =>
-      comp != null && outputName in comp
+      comp != null && output in comp
         ? outputToObservable(
-            comp[outputName] as OutputRef<OutputValueOf<TComponent, TOutput>>,
+            comp[output] as OutputRef<OutputValueOf<TComponent, TOutput>>,
           )
         : NEVER,
     ),
