@@ -33,6 +33,16 @@ export type FooUpdated = Immutable<{
   foo: Foo;
 }>;
 
+export type DeleteFoo = FooId;
+
+export const validateDeleteFoo = (command: DeleteFoo): DeleteFoo => {
+  if (command == null || typeof command !== 'string' || command === '') {
+    throw new Error('Invalid DeleteFoo command!');
+  }
+
+  return command;
+};
+
 export type FooDeleted = Immutable<{
   fooId: FooId;
 }>;

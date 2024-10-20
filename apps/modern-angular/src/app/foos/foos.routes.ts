@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 
-import { provideFooServices } from './model';
+import { provideFooServices } from './services';
 import { provideFooInMemoryRepository } from './infrastructure';
 
 export const FOO_ROUTES: Routes = [

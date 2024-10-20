@@ -5,18 +5,18 @@ import { Observable } from 'rxjs';
 import {
   Foo,
   FooCreated,
-  FooDeleted,
   FooId,
   FooRead,
   FooUpdated,
   GetFoosRequest,
   GetFoosResponse,
-} from './foo.model';
-import { FooRepository } from './foo.repository';
+} from '../model';
+
+import { FOO_REPOSITORY } from './foo.repository';
 
 @Injectable()
 export class FooService {
-  readonly #repository = inject(FooRepository);
+  readonly #repository = inject(FOO_REPOSITORY);
 
   getFoos(request: GetFoosRequest): Observable<GetFoosResponse> {
     // TODO validate request
@@ -35,9 +35,5 @@ export class FooService {
   updateFoo(fooId: FooId, foo: Partial<Foo>): Observable<FooUpdated> {
     // TODO validate foo
     return this.#repository.updateFoo(fooId, foo);
-  }
-
-  deleteFoo(fooId: FooId): Observable<FooDeleted> {
-    return this.#repository.deleteFoo(fooId);
   }
 }

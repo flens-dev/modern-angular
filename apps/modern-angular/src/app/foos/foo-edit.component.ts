@@ -27,6 +27,7 @@ import {
   createFooForm,
   disableOrEnableFooFormOnBusyChange,
 } from './model';
+import { DeleteFooService } from './services';
 import { FooFormComponent } from './views';
 
 @Component({
@@ -40,6 +41,7 @@ import { FooFormComponent } from './views';
 export class FooEditComponent {
   readonly #location = inject(Location);
   readonly #fooService = inject(FooService);
+  readonly #deleteFooService = inject(DeleteFooService);
 
   protected readonly form = createFooForm();
 
@@ -77,16 +79,11 @@ export class FooEditComponent {
     'click',
   ).pipe(map(() => untracked(() => this.fooId())));
 
-  protected readonly deleteFoo = injectServiceCall(
+  protected readonly deleteFoo = this.#deleteFooService.init(
+    this.form,
     this.#deleteFooRequest,
-    (fooId) => this.#fooService.deleteFoo(fooId),
-    {
-      behavior: 'CONCAT',
-      onBusyChange: (busy) =>
-        disableOrEnableFooFormOnBusyChange(this.form, busy),
-      onSuccess: (_request, _response) => {
-        this.#location.back();
-      },
+    (_request, _response) => {
+      this.#location.back();
     },
   );
 

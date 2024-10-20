@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, map, timer } from 'rxjs';
 
 import {
+  DeleteFoo,
   Foo,
   FooCreated,
   FooDeleted,
@@ -18,24 +19,23 @@ import {
 @Injectable({
   providedIn: 'root',
 })
-export class FooInMemoryRepository extends FooRepository {
+export class FooInMemoryRepository implements FooRepository {
   readonly #timeoutMs = 400;
   #nextFooId = 1;
   readonly #foos = new Map<FooId, Foo>();
 
   constructor() {
-    super();
     // for testing if the edit-route is matched with a conflicting fooId
     this.#foos.set('create', {
       name: 'Create',
-      count: -1,
+      count: 0,
     });
     this.#createFoo({ name: 'First', count: 3 });
     this.#createFoo({ name: 'Second', count: 2 });
     this.#createFoo({ name: 'Third', count: 1 });
   }
 
-  override getFoos(request: GetFoosRequest): Observable<GetFoosResponse> {
+  getFoos(request: GetFoosRequest): Observable<GetFoosResponse> {
     return timer(this.#timeoutMs).pipe(
       map((): GetFoosResponse => {
         if (request.withNameLike?.startsWith('err')) {
@@ -84,11 +84,11 @@ export class FooInMemoryRepository extends FooRepository {
     };
   }
 
-  override createFoo(foo: Foo): Observable<FooCreated> {
+  createFoo(foo: Foo): Observable<FooCreated> {
     return timer(this.#timeoutMs).pipe(map(() => this.#createFoo(foo)));
   }
 
-  override readFoo(fooId: FooId): Observable<FooRead> {
+  readFoo(fooId: FooId): Observable<FooRead> {
     return timer(this.#timeoutMs).pipe(
       map((): FooRead => {
         const foo = this.#foos.get(fooId);
@@ -104,7 +104,7 @@ export class FooInMemoryRepository extends FooRepository {
     );
   }
 
-  override updateFoo(fooId: FooId, foo: Partial<Foo>): Observable<FooUpdated> {
+  updateFoo(fooId: FooId, foo: Partial<Foo>): Observable<FooUpdated> {
     return timer(this.#timeoutMs).pipe(
       map((): FooUpdated => {
         if (foo.name?.startsWith('err')) {
@@ -130,7 +130,7 @@ export class FooInMemoryRepository extends FooRepository {
     );
   }
 
-  override deleteFoo(fooId: FooId): Observable<FooDeleted> {
+  deleteFoo(fooId: DeleteFoo): Observable<FooDeleted> {
     return timer(this.#timeoutMs).pipe(
       map((): FooDeleted => {
         const deleted = this.#foos.delete(fooId);
