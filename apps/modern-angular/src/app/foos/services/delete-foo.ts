@@ -10,19 +10,19 @@ import {
 import {
   DeleteFoo,
   disableOrEnableFooFormOnBusyChange,
-  FOO_FORM,
   FOO_REPOSITORY,
   FooDeleted,
+  FooFormGroup,
   FooId,
   validateDeleteFoo,
 } from '../model';
 
 export const injectDeleteFoo = (
+  form: FooFormGroup,
   request: ValueSource<FooId>,
   onSuccess?: ServiceCallOptions<FooId, FooDeleted>['onSuccess'],
 ) => {
   const fooRepository = inject(FOO_REPOSITORY);
-  const fooform = inject(FOO_FORM);
 
   const deleteFooFn: ServiceCallFn<DeleteFoo, FooDeleted> = (
     command: DeleteFoo,
@@ -33,7 +33,7 @@ export const injectDeleteFoo = (
 
   return injectServiceCall(request, deleteFooFn, {
     behavior: 'CONCAT',
-    onBusyChange: (busy) => disableOrEnableFooFormOnBusyChange(fooform, busy),
+    onBusyChange: (busy) => disableOrEnableFooFormOnBusyChange(form, busy),
     onSuccess,
   });
 };

@@ -81,6 +81,7 @@ export class FooEditComponent {
   ).pipe(map(() => untracked(() => this.fooId())));
 
   protected readonly deleteFoo = injectDeleteFoo(
+    this.form,
     this.#deleteFooRequest,
     (_request, _response) => {
       this.#location.back();
