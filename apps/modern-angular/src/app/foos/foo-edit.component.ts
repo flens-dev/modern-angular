@@ -2,9 +2,11 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  ElementRef,
   inject,
   input,
   untracked,
+  viewChild,
 } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 
@@ -12,6 +14,7 @@ import { map } from 'rxjs';
 
 import {
   formNotValid,
+  fromEventToObservable,
   injectServiceCall,
   isBusyState,
   ServiceCallStateComponent,
@@ -19,6 +22,7 @@ import {
 } from '@flens-dev/tools';
 
 import { createFooEditForm, FooId, FooService } from './model';
+import { Location } from '@angular/common';
 
 @Component({
   standalone: true,
@@ -29,6 +33,7 @@ import { createFooEditForm, FooId, FooService } from './model';
   templateUrl: './foo-edit.component.html',
 })
 export class FooEditComponent {
+  readonly #location = inject(Location);
   readonly #fooService = inject(FooService);
 
   protected readonly isBusyState = isBusyState;
@@ -54,27 +59,55 @@ export class FooEditComponent {
     ({ fooId, foo }) => this.#fooService.updateFoo(fooId, foo),
     {
       behavior: 'CONCAT',
-      onBusyChange: (busy) => {
-        if (busy && !this.editForm.disabled) {
-          this.editForm.disable({ emitEvent: false });
-        } else if (!busy && this.editForm.disabled) {
-          this.editForm.enable({ emitEvent: false });
-        }
-      },
+      onBusyChange: (busy) => this.#disableOrEnableEditFormOnBusyChange(busy),
       onSuccess: (_request, _response) => {
         this.editForm.markAsPristine({ emitEvent: false });
       },
     },
   );
 
+  protected readonly btnDelete = viewChild('btnDelete', { read: ElementRef });
+  readonly #deleteFooRequest = fromEventToObservable(
+    this.btnDelete,
+    'click',
+  ).pipe(map(() => untracked(() => this.fooId())));
+
+  protected readonly deleteFoo = injectServiceCall(
+    this.#deleteFooRequest,
+    (fooId) => this.#fooService.deleteFoo(fooId),
+    {
+      behavior: 'CONCAT',
+      onBusyChange: (busy) => this.#disableOrEnableEditFormOnBusyChange(busy),
+      onSuccess: (_request, _response) => {
+        this.#location.back();
+      },
+    },
+  );
+
   readonly #editFormNotValid = formNotValid(this.editForm);
+
   readonly #readIsBusy = computed(() => this.readFoo.state().type === 'BUSY');
   readonly #updateIsBusy = computed(
     () => this.updateFoo.state().type === 'BUSY',
   );
+  readonly #deleteIsBusy = computed(
+    () => this.deleteFoo.state().type === 'BUSY',
+  );
+  readonly #isBusy = computed(
+    () => this.#readIsBusy() || this.#updateIsBusy() || this.#deleteIsBusy(),
+  );
 
   protected readonly submitDisabled = computed(
-    () =>
-      this.#readIsBusy() || this.#updateIsBusy() || this.#editFormNotValid(),
+    () => this.#editFormNotValid() || this.#isBusy(),
   );
+
+  protected readonly deleteDisabled = computed(() => this.#isBusy());
+
+  #disableOrEnableEditFormOnBusyChange(busy: boolean): void {
+    if (busy && !this.editForm.disabled) {
+      this.editForm.disable({ emitEvent: false });
+    } else if (!busy && this.editForm.disabled) {
+      this.editForm.enable({ emitEvent: false });
+    }
+  }
 }

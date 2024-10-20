@@ -38,23 +38,30 @@
       style="grid-column: 2 / 3; grid-row: 2 / 3"
     />
 
-    <button
-      type="submit"
-      style="grid-column: 1 / 2; grid-row: 3 / 4"
-      [disabled]="submitDisabled()"
-    >
-      save
-    </button>
+    <div style="grid-column: 1 / 2; grid-row: 3 / 4">
+      <button type="submit" [disabled]="submitDisabled()">save</button>
+
+      <button #btnDelete type="button" [disabled]="deleteDisabled()">
+        delete
+      </button>
+    </div>
   </form>
 
   <fest-service-call-state
     [state]="updateFoo.state()"
     [busy]="updateBusyTmpl"
   />
+
+  <fest-service-call-state
+    [state]="deleteFoo.state()"
+    [busy]="deleteBusyTmpl"
+  />
 </ng-template>
 
-<ng-template #updateBusyTmpl let-state>
-  @if (isBusyState(state)) {
-    <div>Saving foo...</div>
-  }
+<ng-template #updateBusyTmpl>
+  <div>Saving foo...</div>
+</ng-template>
+
+<ng-template #deleteBusyTmpl>
+  <div>Deleting foo...</div>
 </ng-template>
