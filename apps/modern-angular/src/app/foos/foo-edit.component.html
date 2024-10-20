@@ -6,40 +6,40 @@
   }
 </style>
 
-@let state = readFoo.state();
-@switch (state.type) {
-  @case ('IDLE') {}
-  @case ('BUSY') {
+<fest-service-call-state
+  [state]="readFoo.state()"
+  [busy]="busyTmpl"
+  [success]="successTmpl"
+/>
+
+<ng-template #busyTmpl let-state>
+  @if (isBusyState(state)) {
     <div>Fetching foo with id {{ state.request }}...</div>
   }
-  @case ('ERROR') {
-    <div class="error">{{ state.error | error }}</div>
-  }
-  @case ('SUCCESS') {
-    <form [formGroup]="editForm" class="form">
-      <label for="name" style="grid-column: 1 / 2; grid-row: 1 / 2">
-        Name
-      </label>
-      <input
-        id="name"
-        type="text"
-        formControlName="name"
-        style="grid-column: 2 / 3; grid-row: 1 / 2"
-      />
+</ng-template>
 
-      <label for="count" style="grid-column: 1 / 2; grid-row: 2 / 3">
-        Count
-      </label>
-      <input
-        id="count"
-        type="number"
-        formControlName="count"
-        style="grid-column: 2 / 3; grid-row: 2 / 3"
-      />
+<ng-template #successTmpl>
+  <form [formGroup]="editForm" class="form">
+    <label for="name" style="grid-column: 1 / 2; grid-row: 1 / 2">Name</label>
+    <input
+      id="name"
+      type="text"
+      formControlName="name"
+      style="grid-column: 2 / 3; grid-row: 1 / 2"
+    />
 
-      <button type="submit" style="grid-column: 1 / 2; grid-row: 3 / 4">
-        save
-      </button>
-    </form>
-  }
-}
+    <label for="count" style="grid-column: 1 / 2; grid-row: 2 / 3">
+      Count
+    </label>
+    <input
+      id="count"
+      type="number"
+      formControlName="count"
+      style="grid-column: 2 / 3; grid-row: 2 / 3"
+    />
+
+    <button type="submit" style="grid-column: 1 / 2; grid-row: 3 / 4">
+      save
+    </button>
+  </form>
+</ng-template>

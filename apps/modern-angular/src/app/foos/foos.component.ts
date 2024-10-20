@@ -16,11 +16,14 @@ import {
   ErrorPipe,
   fromOutputToObservable,
   injectServiceCall,
+  isSuccessState,
+  ServiceCallStateComponent,
 } from '@flens-dev/tools';
 
 import {
   FooService,
   GetFoosRequest,
+  GetFoosResponse,
   transformOrderBy,
   transformWithMaxCount,
   transformWithNameLike,
@@ -39,6 +42,7 @@ import { FoosSearchFormComponent } from './views/foos-search-form.component';
     ReactiveFormsModule,
     RouterLink,
     ErrorPipe,
+    ServiceCallStateComponent,
     FooListItemComponent,
     FoosSearchFormComponent,
   ],
@@ -46,6 +50,11 @@ import { FoosSearchFormComponent } from './views/foos-search-form.component';
 export class FoosComponent {
   readonly #router = inject(Router);
   readonly #fooService = inject(FooService);
+
+  protected readonly isSuccessState: typeof isSuccessState<
+    GetFoosRequest,
+    GetFoosResponse
+  > = isSuccessState;
 
   readonly withNameLike = input(undefined, {
     transform: transformWithNameLike,

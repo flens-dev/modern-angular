@@ -78,6 +78,30 @@ const successServiceCallState = <TRequest, TResponse>(
   response,
 });
 
+export const isIdleState = <TRequest, TResponse>(
+  state: ServiceCallState<TRequest, TResponse>,
+): state is ServiceCallStateIdle => {
+  return state != null && state.type === 'IDLE';
+};
+
+export const isBusyState = <TRequest, TResponse>(
+  state: ServiceCallState<TRequest, TResponse>,
+): state is ServiceCallStateBusy<TRequest> => {
+  return state != null && state.type === 'BUSY';
+};
+
+export const isErrorState = <TRequest, TResponse>(
+  state: ServiceCallState<TRequest, TResponse>,
+): state is ServiceCallStateError<TRequest> => {
+  return state != null && state.type === 'ERROR';
+};
+
+export const isSuccessState = <TRequest, TResponse>(
+  state: ServiceCallState<TRequest, TResponse>,
+): state is ServiceCallStateSuccess<TRequest, TResponse> => {
+  return state != null && state.type === 'SUCCESS';
+};
+
 export type ServiceCall<TRequest, TResponse> = {
   readonly state: Signal<ServiceCallState<TRequest, TResponse>>;
   readonly stateChanges: Observable<ServiceCallState<TRequest, TResponse>>;

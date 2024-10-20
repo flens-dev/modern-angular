@@ -6,20 +6,22 @@
   <a routerLink="create">create new foo</a>
 </div>
 
-@let state = getFoos.state();
-@switch (state.type) {
-  @case ('IDLE') {}
-  @case ('BUSY') {
-    <div>Fetching data...</div>
-  }
-  @case ('ERROR') {
-    <div class="error">{{ state.error | error }}</div>
-  }
-  @case ('SUCCESS') {
+<fest-service-call-state
+  [state]="getFoos.state()"
+  [busy]="busyTmpl"
+  [success]="successTmpl"
+/>
+
+<ng-template #busyTmpl>
+  <div>Searching for foos...</div>
+</ng-template>
+
+<ng-template #successTmpl let-state>
+  @if (isSuccessState(state)) {
     @for (item of state.response.foos; track item.fooId) {
       <a [routerLink]="[item.fooId, 'edit']">
         <app-foo-list-item [foo]="item.foo" class="list-item" />
       </a>
     }
   }
-}
+</ng-template>

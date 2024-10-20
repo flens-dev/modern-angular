@@ -38,6 +38,12 @@ export class FooInMemoryRepository extends FooRepository {
   override getFoos(request: GetFoosRequest): Observable<GetFoosResponse> {
     return timer(this.#timeoutMs).pipe(
       map((): GetFoosResponse => {
+        if (request.withNameLike?.startsWith('err')) {
+          throw new Error(
+            'Internal Server Error ' + request.withNameLike.substring(3),
+          );
+        }
+
         const foos = [...this.#foos.entries()]
           .filter(
             ([_, foo]) =>

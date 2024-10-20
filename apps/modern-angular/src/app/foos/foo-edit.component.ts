@@ -7,7 +7,11 @@ import {
 
 import { EMPTY } from 'rxjs';
 
-import { ErrorPipe, injectServiceCall } from '@flens-dev/tools';
+import {
+  injectServiceCall,
+  isBusyState,
+  ServiceCallStateComponent,
+} from '@flens-dev/tools';
 
 import { createFooEditForm, FooId, FooService } from './model';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -16,13 +20,14 @@ import { ReactiveFormsModule } from '@angular/forms';
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-foo-edit',
-  imports: [ReactiveFormsModule, ErrorPipe],
+  imports: [ReactiveFormsModule, ServiceCallStateComponent],
   styleUrl: './foos.css',
   templateUrl: './foo-edit.component.html',
 })
 export class FooEditComponent {
   readonly #fooService = inject(FooService);
 
+  protected readonly isBusyState = isBusyState;
   protected readonly editForm = createFooEditForm();
 
   readonly fooId = input<FooId>();
