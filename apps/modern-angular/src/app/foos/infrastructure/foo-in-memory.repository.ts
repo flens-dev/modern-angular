@@ -107,6 +107,10 @@ export class FooInMemoryRepository extends FooRepository {
   override updateFoo(fooId: FooId, foo: Partial<Foo>): Observable<FooUpdated> {
     return timer(this.#timeoutMs).pipe(
       map((): FooUpdated => {
+        if (foo.name?.startsWith('err')) {
+          throw new Error('Internal Server Error ' + foo.name.substring(3));
+        }
+
         const currentFoo = this.#foos.get(fooId);
         if (currentFoo == null) {
           throw new Error('Foo not found!');
