@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -22,7 +23,6 @@ import {
 } from '@flens-dev/tools';
 
 import { createFooEditForm, FooId, FooService } from './model';
-import { Location } from '@angular/common';
 
 @Component({
   standalone: true,
