@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 
-import { EMPTY, filter, map } from 'rxjs';
+import { map } from 'rxjs';
 
 import {
   formNotValid,
@@ -34,11 +34,11 @@ export class FooEditComponent {
   protected readonly isBusyState = isBusyState;
   protected readonly editForm = createFooEditForm();
 
-  readonly fooId = input<FooId>();
+  readonly fooId = input.required<FooId>();
 
   protected readonly readFoo = injectServiceCall(
     this.fooId,
-    (fooId) => (fooId == null ? EMPTY : this.#fooService.readFoo(fooId)),
+    (fooId) => this.#fooService.readFoo(fooId),
     {
       behavior: 'SWITCH',
       onSuccess: (_request, response) => this.editForm.setValue(response.foo),
@@ -46,17 +46,7 @@ export class FooEditComponent {
   );
 
   readonly #updateFooRequest = validFormSubmit(this.editForm).pipe(
-    map((foo) =>
-      untracked(() => {
-        const fooId = this.fooId();
-        if (fooId == null) {
-          return null;
-        }
-
-        return { fooId, foo };
-      }),
-    ),
-    filter((request) => request != null),
+    map((foo) => untracked(() => ({ fooId: this.fooId(), foo }))),
   );
 
   protected readonly updateFoo = injectServiceCall(
