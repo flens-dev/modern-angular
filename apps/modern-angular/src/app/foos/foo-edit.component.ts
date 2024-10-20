@@ -22,18 +22,20 @@ import {
 } from '@flens-dev/tools';
 
 import {
+  FOO_FORM,
   FooId,
   FooService,
-  createFooForm,
   disableOrEnableFooFormOnBusyChange,
+  provideFooForm,
 } from './model';
-import { DeleteFooService } from './services';
+import { injectDeleteFoo } from './services';
 import { FooFormComponent } from './views';
 
 @Component({
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-foo-edit',
+  providers: [provideFooForm()],
   imports: [ReactiveFormsModule, ServiceCallStateComponent, FooFormComponent],
   styleUrl: './foos.css',
   templateUrl: './foo-edit.component.html',
@@ -41,9 +43,8 @@ import { FooFormComponent } from './views';
 export class FooEditComponent {
   readonly #location = inject(Location);
   readonly #fooService = inject(FooService);
-  readonly #deleteFooService = inject(DeleteFooService);
 
-  protected readonly form = createFooForm();
+  protected readonly form = inject(FOO_FORM);
 
   readonly fooId = input.required<FooId>();
 
@@ -79,8 +80,7 @@ export class FooEditComponent {
     'click',
   ).pipe(map(() => untracked(() => this.fooId())));
 
-  protected readonly deleteFoo = this.#deleteFooService.init(
-    this.form,
+  protected readonly deleteFoo = injectDeleteFoo(
     this.#deleteFooRequest,
     (_request, _response) => {
       this.#location.back();

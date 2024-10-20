@@ -1,19 +1,29 @@
-import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
+import { FormControl, FormGroup, NonNullableFormBuilder } from '@angular/forms';
 
-import { countValidator, Foo, initialFoo, nameValidator } from './foo.model';
+import { countValidator, initialFoo, nameValidator } from './foo.model';
+import { InjectionToken, Provider } from '@angular/core';
 
 export type FooFormGroup = FormGroup<{
   name: FormControl<string>;
   count: FormControl<number>;
 }>;
 
-export const createFooForm = (foo: Foo = initialFoo): FooFormGroup => {
-  const fb = new FormBuilder().nonNullable;
+export const createFooForm = (fb: NonNullableFormBuilder): FooFormGroup => {
   return fb.group({
-    name: fb.control<string>(foo.name, { validators: nameValidator }),
-    count: fb.control<number>(foo.count, { validators: countValidator }),
+    name: fb.control<string>(initialFoo.name, { validators: nameValidator }),
+    count: fb.control<number>(initialFoo.count, { validators: countValidator }),
   });
 };
+
+export const FOO_FORM = new InjectionToken<FooFormGroup>('FooFormGroup');
+
+export const provideFooForm = (): Provider[] => [
+  {
+    provide: FOO_FORM,
+    useFactory: (fb: NonNullableFormBuilder) => createFooForm(fb),
+    deps: [NonNullableFormBuilder],
+  },
+];
 
 export const disableOrEnableFooFormOnBusyChange = (
   form: FooFormGroup,

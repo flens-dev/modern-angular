@@ -1,2 +1,2 @@
-export * from './delete-foo.service';
+export * from './delete-foo';
 export * from './provide-foo-services';

@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { FooFormGroup } from '../model';
 import { ReactiveFormsModule } from '@angular/forms';
+
+import { FooFormGroup } from '../model';
 
 @Component({
   standalone: true,
