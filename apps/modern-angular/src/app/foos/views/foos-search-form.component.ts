@@ -10,14 +10,14 @@ import { ReactiveFormsModule } from '@angular/forms';
 
 import { formNotValid, validFormSubmit } from '@flens-dev/tools';
 
-import { GetFoosRequest, createFoosSearchForm } from './model';
+import { GetFoosRequest, createFoosSearchForm } from '../model';
 
 @Component({
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-foos-search-form',
   templateUrl: './foos-search-form.component.html',
-  styleUrl: './foos.css',
+  styleUrl: '../foos.css',
   imports: [ReactiveFormsModule],
 })
 export class FoosSearchFormComponent {

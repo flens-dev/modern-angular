@@ -25,6 +25,11 @@ export class FooInMemoryRepository extends FooRepository {
 
   constructor() {
     super();
+    // for testing if the edit-route is matched with a conflicting fooId
+    this.#foos.set('create', {
+      name: 'Create',
+      count: -1,
+    });
     this.#createFoo({ name: 'First', count: 3 });
     this.#createFoo({ name: 'Second', count: 2 });
     this.#createFoo({ name: 'Third', count: 1 });

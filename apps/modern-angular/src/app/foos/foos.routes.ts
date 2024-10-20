@@ -5,14 +5,23 @@ import { provideFooInMemoryRepository } from './infrastructure';
 
 const FOO_CHILD_ROUTES: Routes = [
   {
-    path: '',
+    path: 'create',
     loadComponent: () =>
-      import('./foos.component').then((m) => m.FoosComponent),
+      import('./foo-create.component').then(
+        ({ FooCreateComponent }) => FooCreateComponent,
+      ),
   },
   {
     path: ':fooId/edit',
     loadComponent: () =>
-      import('./foo-edit.component').then((m) => m.FooEditComponent),
+      import('./foo-edit.component').then(
+        ({ FooEditComponent }) => FooEditComponent,
+      ),
+  },
+  {
+    path: '',
+    loadComponent: () =>
+      import('./foos.component').then(({ FoosComponent }) => FoosComponent),
   },
 ];
 

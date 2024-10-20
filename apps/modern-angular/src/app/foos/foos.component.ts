@@ -27,7 +27,7 @@ import {
 } from './model';
 import { FooListItemComponent } from './views';
 
-import { FoosSearchFormComponent } from './foos-search-form.component';
+import { FoosSearchFormComponent } from './views/foos-search-form.component';
 
 @Component({
   standalone: true,

@@ -2,6 +2,10 @@
 
 <app-foos-search-form [value]="getFoosRequest()" />
 
+<div style="margin: 1em 0">
+  <a routerLink="create">create new foo</a>
+</div>
+
 @let state = getFoos.state();
 @switch (state.type) {
   @case ('IDLE') {}
