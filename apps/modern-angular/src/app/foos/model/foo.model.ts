@@ -31,10 +31,16 @@ export type FooCreated = Immutable<{
   foo: Foo;
 }>;
 
-export type ReadFoo = FooId;
+export type ReadFoo = Immutable<{
+  fooId: FooId;
+}>;
 
 export const validateReadFoo = (command: ReadFoo): ReadFoo => {
-  validateFooId(command);
+  if (command == null) {
+    throw new Error('Invalid ReadFoo query!');
+  }
+
+  validateFooId(command.fooId);
   return command;
 };
 

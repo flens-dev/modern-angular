@@ -40,7 +40,7 @@ export class FooEditComponent {
 
   readonly fooId = input.required<FooId>();
 
-  readonly #readFooRequest = computed((): ReadFoo => this.fooId());
+  readonly #readFooRequest = computed((): ReadFoo => ({ fooId: this.fooId() }));
 
   protected readonly readFoo = injectReadFoo({
     request: this.#readFooRequest,

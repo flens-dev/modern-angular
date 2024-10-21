@@ -12,6 +12,7 @@ import {
   FooUpdated,
   GetFoosRequest,
   GetFoosResponse,
+  ReadFoo,
   UpdateFoo,
 } from '../model';
 import { FooRepository, provideFooRepository } from '../services';
@@ -88,16 +89,16 @@ export class FooInMemoryRepository implements FooRepository {
     return timer(this.#timeoutMs).pipe(map(() => this.#createFoo(foo)));
   }
 
-  readFoo(fooId: FooId): Observable<FooRead> {
+  readFoo(query: ReadFoo): Observable<FooRead> {
     return timer(this.#timeoutMs).pipe(
       map((): FooRead => {
-        const foo = this.#foos.get(fooId);
+        const foo = this.#foos.get(query.fooId);
         if (foo == null) {
           throw new Error('Foo not found!');
         }
 
         return {
-          fooId,
+          fooId: query.fooId,
           foo: { ...foo },
         };
       }),
