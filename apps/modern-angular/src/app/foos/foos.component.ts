@@ -15,7 +15,6 @@ import { Router, RouterLink } from '@angular/router';
 import {
   ErrorPipe,
   fromOutputToObservable,
-  injectServiceCall,
   isSuccessState,
   ServiceCallStateComponent,
 } from '@flens-dev/tools';
@@ -27,7 +26,7 @@ import {
   transformWithMaxCount,
   transformWithNameLike,
 } from './model';
-import { FooService } from './services';
+import { injectGetFoos } from './services';
 import { FooListItemComponent, FoosSearchFormComponent } from './views';
 
 @Component({
@@ -47,7 +46,6 @@ import { FooListItemComponent, FoosSearchFormComponent } from './views';
 })
 export class FoosComponent {
   readonly #router = inject(Router);
-  readonly #fooService = inject(FooService);
 
   protected readonly isSuccessState: typeof isSuccessState<
     GetFoosRequest,
@@ -72,14 +70,9 @@ export class FoosComponent {
     }),
   );
 
-  // TODO replace with Angular API "resource" when it's landed
-  protected readonly getFoos = injectServiceCall(
-    this.getFoosRequest,
-    (req) => this.#fooService.getFoos(req),
-    {
-      behavior: 'SWITCH',
-    },
-  );
+  protected readonly getFoos = injectGetFoos({
+    request: this.getFoosRequest,
+  });
 
   protected readonly search = viewChild(FoosSearchFormComponent);
   readonly #searchSubmit = toSignal(

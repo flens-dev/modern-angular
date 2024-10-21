@@ -87,13 +87,13 @@ export type ReadFooRequest = Immutable<{
   fooId: FooId;
 }>;
 
-export const validateReadFoo = (command: ReadFooRequest): ReadFooRequest => {
-  if (command == null) {
+export const validateReadFoo = (request: ReadFooRequest): ReadFooRequest => {
+  if (request == null) {
     throw new Error('Invalid ReadFoo query!');
   }
 
-  validateFooId(command.fooId);
-  return command;
+  validateFooId(request.fooId);
+  return request;
 };
 
 export type ReadFooResponse = Immutable<{
@@ -116,6 +116,14 @@ export type GetFoosRequest = Immutable<{
   withMaxCount?: number;
   orderBy?: FooOrderBy;
 }>;
+
+export const validateGetFoos = (request: GetFoosRequest): GetFoosRequest => {
+  if (request == null) {
+    throw new Error('Invalid GetFoos query!');
+  }
+
+  return request;
+};
 
 export type GetFoosResponse = Immutable<{
   foos: ReadFooResponse[];

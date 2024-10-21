@@ -1,12 +1,11 @@
 import { Routes } from '@angular/router';
 
-import { provideFooServices } from './services';
 import { provideFooInMemoryRepository } from './infrastructure';
 
 export const FOO_ROUTES: Routes = [
   {
     path: '',
-    providers: [provideFooInMemoryRepository(), provideFooServices()],
+    providers: [provideFooInMemoryRepository()],
     children: [
       {
         path: 'create',
