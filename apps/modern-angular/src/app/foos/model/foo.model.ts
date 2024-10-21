@@ -68,10 +68,16 @@ export type FooUpdated = Immutable<{
   foo: Foo;
 }>;
 
-export type DeleteFoo = FooId;
+export type DeleteFoo = Immutable<{
+  fooId: FooId;
+}>;
 
 export const validateDeleteFoo = (command: DeleteFoo): DeleteFoo => {
-  validateFooId(command);
+  if (command == null) {
+    throw new Error('Invalid DeleteFoo command!');
+  }
+
+  validateFooId(command.fooId);
   return command;
 };
 

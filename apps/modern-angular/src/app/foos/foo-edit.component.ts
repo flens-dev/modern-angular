@@ -20,7 +20,14 @@ import {
   validFormSubmit,
 } from '@flens-dev/tools';
 
-import { FOO_FORM, FooId, provideFooForm, ReadFoo, UpdateFoo } from './model';
+import {
+  DeleteFoo,
+  FOO_FORM,
+  FooId,
+  provideFooForm,
+  ReadFoo,
+  UpdateFoo,
+} from './model';
 import { injectDeleteFoo, injectReadFoo, injectUpdateFoo } from './services';
 import { FooFormComponent } from './views';
 
@@ -63,7 +70,7 @@ export class FooEditComponent {
   readonly #deleteFooRequest = fromEventToObservable(
     this.btnDelete,
     'click',
-  ).pipe(map(() => untracked(() => this.fooId())));
+  ).pipe(map(() => untracked((): DeleteFoo => ({ fooId: this.fooId() }))));
 
   protected readonly deleteFoo = injectDeleteFoo({
     request: this.#deleteFooRequest,

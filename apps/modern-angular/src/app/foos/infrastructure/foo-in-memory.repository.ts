@@ -136,10 +136,10 @@ export class FooInMemoryRepository implements FooRepository {
   deleteFoo(command: DeleteFoo): Observable<FooDeleted> {
     return timer(this.#timeoutMs).pipe(
       map((): FooDeleted => {
-        const deleted = this.#foos.delete(command);
+        const deleted = this.#foos.delete(command.fooId);
         if (deleted) {
           return {
-            fooId: command,
+            fooId: command.fooId,
           };
         }
 

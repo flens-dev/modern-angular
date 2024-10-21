@@ -48,7 +48,7 @@ export class FooHttpRepository implements FooRepository {
 
   deleteFoo(command: DeleteFoo): Observable<FooDeleted> {
     return this.#http.delete<FooDeleted>(
-      `${this.#baseUrl}/${encodeURIComponent(command)}`,
+      `${this.#baseUrl}/${encodeURIComponent(command.fooId)}`,
     );
   }
 }
