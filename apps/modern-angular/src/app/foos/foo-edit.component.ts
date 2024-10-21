@@ -16,13 +16,12 @@ import { map } from 'rxjs';
 import {
   formNotValid,
   fromEventToObservable,
-  injectServiceCall,
   ServiceCallStateComponent,
   validFormSubmit,
 } from '@flens-dev/tools';
 
-import { FOO_FORM, FooId, provideFooForm, UpdateFoo } from './model';
-import { FooService, injectDeleteFoo, injectUpdateFoo } from './services';
+import { FOO_FORM, FooId, provideFooForm, ReadFoo, UpdateFoo } from './model';
+import { injectDeleteFoo, injectReadFoo, injectUpdateFoo } from './services';
 import { FooFormComponent } from './views';
 
 @Component({
@@ -36,20 +35,17 @@ import { FooFormComponent } from './views';
 })
 export class FooEditComponent {
   readonly #location = inject(Location);
-  readonly #fooService = inject(FooService);
 
   protected readonly form = inject(FOO_FORM);
 
   readonly fooId = input.required<FooId>();
 
-  protected readonly readFoo = injectServiceCall(
-    this.fooId,
-    (fooId) => this.#fooService.readFoo(fooId),
-    {
-      behavior: 'SWITCH',
-      onSuccess: (_request, response) => this.form.setValue(response.foo),
-    },
-  );
+  readonly #readFooRequest = computed((): ReadFoo => this.fooId());
+
+  protected readonly readFoo = injectReadFoo({
+    request: this.#readFooRequest,
+    form: this.form,
+  });
 
   readonly #updateFooRequest = validFormSubmit(this.form).pipe(
     map((foo) => untracked((): UpdateFoo => ({ fooId: this.fooId(), foo }))),

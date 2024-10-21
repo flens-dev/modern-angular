@@ -5,6 +5,14 @@ import { Immutable } from '@flens-dev/tools';
 
 export type FooId = string;
 
+export const validateFooId = (fooId: FooId): FooId => {
+  if (fooId == null || typeof fooId !== 'string' || fooId === '') {
+    throw new Error('Invalid fooId!');
+  }
+
+  return fooId;
+};
+
 export type Foo = Immutable<{
   name: string;
   count: number;
@@ -23,6 +31,13 @@ export type FooCreated = Immutable<{
   foo: Foo;
 }>;
 
+export type ReadFoo = FooId;
+
+export const validateReadFoo = (command: ReadFoo): ReadFoo => {
+  validateFooId(command);
+  return command;
+};
+
 export type FooRead = Immutable<{
   fooId: FooId;
   foo: Foo;
@@ -34,14 +49,11 @@ export type UpdateFoo = Immutable<{
 }>;
 
 export const validateUpdateFoo = (command: UpdateFoo): UpdateFoo => {
-  if (
-    command == null ||
-    typeof command.fooId !== 'string' ||
-    command.fooId === ''
-  ) {
+  if (command == null) {
     throw new Error('Invalid UpdateFoo command!');
   }
 
+  validateFooId(command.fooId);
   return command;
 };
 
@@ -53,10 +65,7 @@ export type FooUpdated = Immutable<{
 export type DeleteFoo = FooId;
 
 export const validateDeleteFoo = (command: DeleteFoo): DeleteFoo => {
-  if (command == null || typeof command !== 'string' || command === '') {
-    throw new Error('Invalid DeleteFoo command!');
-  }
-
+  validateFooId(command);
   return command;
 };
 

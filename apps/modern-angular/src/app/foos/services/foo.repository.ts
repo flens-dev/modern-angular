@@ -6,19 +6,19 @@ import {
   DeleteFoo,
   Foo,
   FooCreated,
-  FooId,
   FooRead,
   FooUpdated,
   FooDeleted,
   GetFoosRequest,
   GetFoosResponse,
+  ReadFoo,
   UpdateFoo,
 } from '../model';
 
 export type FooRepository = {
   getFoos: (request: GetFoosRequest) => Observable<GetFoosResponse>;
   createFoo: (foo: Foo) => Observable<FooCreated>;
-  readFoo: (fooId: FooId) => Observable<FooRead>;
+  readFoo: (command: ReadFoo) => Observable<FooRead>;
   updateFoo: (command: UpdateFoo) => Observable<FooUpdated>;
   deleteFoo: (command: DeleteFoo) => Observable<FooDeleted>;
 };
