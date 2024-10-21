@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, map, timer } from 'rxjs';
 
 import {
+  CreateFoo,
   DeleteFoo,
   Foo,
   FooCreated,
@@ -31,9 +32,9 @@ export class FooInMemoryRepository implements FooRepository {
       name: 'Create',
       count: 0,
     });
-    this.#createFoo({ name: 'First', count: 3 });
-    this.#createFoo({ name: 'Second', count: 2 });
-    this.#createFoo({ name: 'Third', count: 1 });
+    this.#createFoo({ foo: { name: 'First', count: 3 } });
+    this.#createFoo({ foo: { name: 'Second', count: 2 } });
+    this.#createFoo({ foo: { name: 'Third', count: 1 } });
   }
 
   getFoos(request: GetFoosRequest): Observable<GetFoosResponse> {
@@ -88,11 +89,11 @@ export class FooInMemoryRepository implements FooRepository {
     );
   }
 
-  #createFoo(foo: Foo): FooCreated {
+  #createFoo(command: CreateFoo): FooCreated {
     const fooId = `${this.#nextFooId}`;
     this.#nextFooId++;
 
-    const createdFoo = { ...foo };
+    const createdFoo = { ...command.foo };
     this.#foos.set(fooId, createdFoo);
 
     return {
@@ -101,8 +102,8 @@ export class FooInMemoryRepository implements FooRepository {
     };
   }
 
-  createFoo(foo: Foo): Observable<FooCreated> {
-    return timer(this.#timeoutMs).pipe(map(() => this.#createFoo(foo)));
+  createFoo(command: CreateFoo): Observable<FooCreated> {
+    return timer(this.#timeoutMs).pipe(map(() => this.#createFoo(command)));
   }
 
   updateFoo(command: UpdateFoo): Observable<FooUpdated> {

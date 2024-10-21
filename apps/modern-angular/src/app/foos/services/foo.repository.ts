@@ -3,8 +3,8 @@ import { Type, Provider, InjectionToken } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import {
+  CreateFoo,
   DeleteFoo,
-  Foo,
   FooCreated,
   FooUpdated,
   FooDeleted,
@@ -19,7 +19,7 @@ export type FooRepository = {
   getFoos: (request: GetFoosRequest) => Observable<GetFoosResponse>;
   readFoo: (request: ReadFooRequest) => Observable<ReadFooResponse>;
 
-  createFoo: (foo: Foo) => Observable<FooCreated>;
+  createFoo: (command: CreateFoo) => Observable<FooCreated>;
   updateFoo: (command: UpdateFoo) => Observable<FooUpdated>;
   deleteFoo: (command: DeleteFoo) => Observable<FooDeleted>;
 };

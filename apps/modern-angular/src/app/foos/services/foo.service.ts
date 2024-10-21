@@ -2,7 +2,12 @@ import { Injectable, inject } from '@angular/core';
 
 import { Observable } from 'rxjs';
 
-import { Foo, FooCreated, GetFoosRequest, GetFoosResponse } from '../model';
+import {
+  CreateFoo,
+  FooCreated,
+  GetFoosRequest,
+  GetFoosResponse,
+} from '../model';
 
 import { FOO_REPOSITORY } from './foo.repository';
 
@@ -15,8 +20,8 @@ export class FooService {
     return this.#repository.getFoos(request);
   }
 
-  createFoo(foo: Foo): Observable<FooCreated> {
+  createFoo(command: CreateFoo): Observable<FooCreated> {
     // TODO validate foo
-    return this.#repository.createFoo(foo);
+    return this.#repository.createFoo(command);
   }
 }

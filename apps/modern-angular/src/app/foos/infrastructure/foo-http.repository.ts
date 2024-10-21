@@ -4,8 +4,8 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import {
+  CreateFoo,
   DeleteFoo,
-  Foo,
   FooCreated,
   FooDeleted,
   FooUpdated,
@@ -35,8 +35,8 @@ export class FooHttpRepository implements FooRepository {
     );
   }
 
-  createFoo(foo: Foo): Observable<FooCreated> {
-    return this.#http.post<FooCreated>(`${this.#baseUrl}`, foo);
+  createFoo(command: CreateFoo): Observable<FooCreated> {
+    return this.#http.post<FooCreated>(`${this.#baseUrl}`, command.foo);
   }
 
   updateFoo(command: UpdateFoo): Observable<FooUpdated> {

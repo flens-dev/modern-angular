@@ -28,6 +28,18 @@ export const countValidator = Validators.min(0);
 
 // ----- Commands
 
+export type CreateFoo = Immutable<{
+  foo: Foo;
+}>;
+
+export const validateCreateFoo = (command: CreateFoo): CreateFoo => {
+  if (command == null) {
+    throw new Error('Invalid CreateFoo command!');
+  }
+
+  return command;
+};
+
 export type FooCreated = Immutable<{
   fooId: FooId;
   foo: Foo;
