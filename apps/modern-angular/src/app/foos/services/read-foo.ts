@@ -6,17 +6,24 @@ import {
   injectServiceCall,
 } from '@flens-dev/tools';
 
-import { FooFormGroup, FooRead, ReadFoo, validateReadFoo } from '../model';
+import {
+  FooFormGroup,
+  ReadFooResponse,
+  ReadFooRequest,
+  validateReadFoo,
+} from '../model';
 
 import { FOO_REPOSITORY } from './foo.repository';
 
 export const injectReadFoo = (options: {
-  request: ValueSource<ReadFoo>;
+  request: ValueSource<ReadFooRequest>;
   form?: FooFormGroup;
 }) => {
   const fooRepository = inject(FOO_REPOSITORY);
 
-  const readFooFn: ServiceCallFn<ReadFoo, FooRead> = (command: ReadFoo) => {
+  const readFooFn: ServiceCallFn<ReadFooRequest, ReadFooResponse> = (
+    command: ReadFooRequest,
+  ) => {
     const validatedCommand = validateReadFoo(command);
     return fooRepository.readFoo(validatedCommand);
   };
@@ -25,7 +32,8 @@ export const injectReadFoo = (options: {
   const onSuccess =
     form == null
       ? undefined
-      : (_request: ReadFoo, response: FooRead) => form.setValue(response.foo);
+      : (_request: ReadFooRequest, response: ReadFooResponse) =>
+          form.setValue(response.foo);
 
   return injectServiceCall(options.request, readFooFn, {
     behavior: 'SWITCH',

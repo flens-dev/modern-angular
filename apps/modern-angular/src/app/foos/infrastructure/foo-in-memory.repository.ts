@@ -8,11 +8,11 @@ import {
   FooCreated,
   FooDeleted,
   FooId,
-  FooRead,
   FooUpdated,
   GetFoosRequest,
   GetFoosResponse,
-  ReadFoo,
+  ReadFooRequest,
+  ReadFooResponse,
   UpdateFoo,
 } from '../model';
 import { FooRepository, provideFooRepository } from '../services';
@@ -55,7 +55,7 @@ export class FooInMemoryRepository implements FooRepository {
               (request.withMaxCount == null ||
                 foo.count <= request.withMaxCount),
           )
-          .map(([fooId, foo]): FooRead => ({ fooId, foo }));
+          .map(([fooId, foo]): ReadFooResponse => ({ fooId, foo }));
 
         foos.sort(
           request.orderBy === 'name'
@@ -67,6 +67,22 @@ export class FooInMemoryRepository implements FooRepository {
 
         return {
           foos,
+        };
+      }),
+    );
+  }
+
+  readFoo(request: ReadFooRequest): Observable<ReadFooResponse> {
+    return timer(this.#timeoutMs).pipe(
+      map((): ReadFooResponse => {
+        const foo = this.#foos.get(request.fooId);
+        if (foo == null) {
+          throw new Error('Foo not found!');
+        }
+
+        return {
+          fooId: request.fooId,
+          foo: { ...foo },
         };
       }),
     );
@@ -87,22 +103,6 @@ export class FooInMemoryRepository implements FooRepository {
 
   createFoo(foo: Foo): Observable<FooCreated> {
     return timer(this.#timeoutMs).pipe(map(() => this.#createFoo(foo)));
-  }
-
-  readFoo(query: ReadFoo): Observable<FooRead> {
-    return timer(this.#timeoutMs).pipe(
-      map((): FooRead => {
-        const foo = this.#foos.get(query.fooId);
-        if (foo == null) {
-          throw new Error('Foo not found!');
-        }
-
-        return {
-          fooId: query.fooId,
-          foo: { ...foo },
-        };
-      }),
-    );
   }
 
   updateFoo(command: UpdateFoo): Observable<FooUpdated> {

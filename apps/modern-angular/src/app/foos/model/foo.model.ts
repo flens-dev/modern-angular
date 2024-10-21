@@ -26,25 +26,9 @@ export const initialFoo: Foo = {
 export const nameValidator = Validators.required;
 export const countValidator = Validators.min(0);
 
+// ----- Commands
+
 export type FooCreated = Immutable<{
-  fooId: FooId;
-  foo: Foo;
-}>;
-
-export type ReadFoo = Immutable<{
-  fooId: FooId;
-}>;
-
-export const validateReadFoo = (command: ReadFoo): ReadFoo => {
-  if (command == null) {
-    throw new Error('Invalid ReadFoo query!');
-  }
-
-  validateFooId(command.fooId);
-  return command;
-};
-
-export type FooRead = Immutable<{
   fooId: FooId;
   foo: Foo;
 }>;
@@ -85,6 +69,26 @@ export type FooDeleted = Immutable<{
   fooId: FooId;
 }>;
 
+// ----- Queries
+
+export type ReadFooRequest = Immutable<{
+  fooId: FooId;
+}>;
+
+export const validateReadFoo = (command: ReadFooRequest): ReadFooRequest => {
+  if (command == null) {
+    throw new Error('Invalid ReadFoo query!');
+  }
+
+  validateFooId(command.fooId);
+  return command;
+};
+
+export type ReadFooResponse = Immutable<{
+  fooId: FooId;
+  foo: Foo;
+}>;
+
 export type FooOrderBy = keyof Pick<Foo, 'name' | 'count'>;
 
 export const isFooOrderBy = (orderBy: unknown): orderBy is FooOrderBy => {
@@ -102,7 +106,7 @@ export type GetFoosRequest = Immutable<{
 }>;
 
 export type GetFoosResponse = Immutable<{
-  foos: FooRead[];
+  foos: ReadFooResponse[];
 }>;
 
 export const transformWithNameLike = (value: unknown) =>

@@ -25,7 +25,7 @@ import {
   FOO_FORM,
   FooId,
   provideFooForm,
-  ReadFoo,
+  ReadFooRequest,
   UpdateFoo,
 } from './model';
 import { injectDeleteFoo, injectReadFoo, injectUpdateFoo } from './services';
@@ -47,7 +47,9 @@ export class FooEditComponent {
 
   readonly fooId = input.required<FooId>();
 
-  readonly #readFooRequest = computed((): ReadFoo => ({ fooId: this.fooId() }));
+  readonly #readFooRequest = computed(
+    (): ReadFooRequest => ({ fooId: this.fooId() }),
+  );
 
   protected readonly readFoo = injectReadFoo({
     request: this.#readFooRequest,

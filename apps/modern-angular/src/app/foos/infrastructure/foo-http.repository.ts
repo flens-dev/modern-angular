@@ -8,11 +8,11 @@ import {
   Foo,
   FooCreated,
   FooDeleted,
-  FooRead,
   FooUpdated,
   GetFoosRequest,
   GetFoosResponse,
-  ReadFoo,
+  ReadFooRequest,
+  ReadFooResponse,
   UpdateFoo,
 } from '../model';
 import { FooRepository, provideFooRepository } from '../services';
@@ -29,14 +29,14 @@ export class FooHttpRepository implements FooRepository {
     return this.#http.get<GetFoosResponse>(this.#baseUrl, { params });
   }
 
-  createFoo(foo: Foo): Observable<FooCreated> {
-    return this.#http.post<FooCreated>(`${this.#baseUrl}`, foo);
+  readFoo(request: ReadFooRequest): Observable<ReadFooResponse> {
+    return this.#http.get<ReadFooResponse>(
+      `${this.#baseUrl}/${encodeURIComponent(request.fooId)}`,
+    );
   }
 
-  readFoo(query: ReadFoo): Observable<FooRead> {
-    return this.#http.get<FooRead>(
-      `${this.#baseUrl}/${encodeURIComponent(query.fooId)}`,
-    );
+  createFoo(foo: Foo): Observable<FooCreated> {
+    return this.#http.post<FooCreated>(`${this.#baseUrl}`, foo);
   }
 
   updateFoo(command: UpdateFoo): Observable<FooUpdated> {
