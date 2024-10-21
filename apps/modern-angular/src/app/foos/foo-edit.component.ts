@@ -21,14 +21,8 @@ import {
   validFormSubmit,
 } from '@flens-dev/tools';
 
-import {
-  FOO_FORM,
-  FooId,
-  FooService,
-  disableOrEnableFooFormOnBusyChange,
-  provideFooForm,
-} from './model';
-import { injectDeleteFoo } from './services';
+import { FOO_FORM, FooId, provideFooForm, UpdateFoo } from './model';
+import { FooService, injectDeleteFoo, injectUpdateFoo } from './services';
 import { FooFormComponent } from './views';
 
 @Component({
@@ -58,21 +52,16 @@ export class FooEditComponent {
   );
 
   readonly #updateFooRequest = validFormSubmit(this.form).pipe(
-    map((foo) => untracked(() => ({ fooId: this.fooId(), foo }))),
+    map((foo) => untracked((): UpdateFoo => ({ fooId: this.fooId(), foo }))),
   );
 
-  protected readonly updateFoo = injectServiceCall(
-    this.#updateFooRequest,
-    ({ fooId, foo }) => this.#fooService.updateFoo(fooId, foo),
-    {
-      behavior: 'CONCAT',
-      onBusyChange: (busy) =>
-        disableOrEnableFooFormOnBusyChange(this.form, busy),
-      onSuccess: (_request, _response) => {
-        this.form.markAsPristine({ emitEvent: false });
-      },
+  protected readonly updateFoo = injectUpdateFoo({
+    request: this.#updateFooRequest,
+    form: this.form,
+    onSuccess: (_request, _response) => {
+      this.form.markAsPristine({ emitEvent: false });
     },
-  );
+  });
 
   protected readonly btnDelete = viewChild('btnDelete', { read: ElementRef });
   readonly #deleteFooRequest = fromEventToObservable(

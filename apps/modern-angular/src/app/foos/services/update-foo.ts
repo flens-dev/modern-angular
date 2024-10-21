@@ -8,39 +8,39 @@ import {
 } from '@flens-dev/tools';
 
 import {
-  DeleteFoo,
-  FooDeleted,
   FooFormGroup,
+  FooUpdated,
+  UpdateFoo,
   disableOrEnableFooFormOnBusyChange,
-  validateDeleteFoo,
+  validateUpdateFoo,
 } from '../model';
 
 import { FOO_REPOSITORY } from './foo.repository';
 
-export const injectDeleteFoo = (options: {
-  request: ValueSource<DeleteFoo>;
+export const injectUpdateFoo = (options: {
+  request: ValueSource<UpdateFoo>;
   form?: FooFormGroup;
-  onSuccess?: ServiceCallOptions<DeleteFoo, FooDeleted>['onSuccess'];
+  onSuccess?: ServiceCallOptions<UpdateFoo, FooUpdated>['onSuccess'];
 }) => {
   const fooRepository = inject(FOO_REPOSITORY);
 
-  const deleteFooFn: ServiceCallFn<DeleteFoo, FooDeleted> = (
-    command: DeleteFoo,
+  const updateFooFn: ServiceCallFn<UpdateFoo, FooUpdated> = (
+    command: UpdateFoo,
   ) => {
-    const validatedCommand = validateDeleteFoo(command);
-    return fooRepository.deleteFoo(validatedCommand);
+    const validatedCommand = validateUpdateFoo(command);
+    return fooRepository.updateFoo(validatedCommand);
   };
 
   const form = options.form;
   const onBusyChange:
-    | ServiceCallOptions<DeleteFoo, FooDeleted>['onBusyChange']
+    | ServiceCallOptions<UpdateFoo, FooUpdated>['onBusyChange']
     | undefined =
     form == null
       ? undefined
       : (busy) => disableOrEnableFooFormOnBusyChange(form, busy);
   const onSuccess = options.onSuccess;
 
-  return injectServiceCall(options.request, deleteFooFn, {
+  return injectServiceCall(options.request, updateFooFn, {
     behavior: 'CONCAT',
     onBusyChange,
     onSuccess,

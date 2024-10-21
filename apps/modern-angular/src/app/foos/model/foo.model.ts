@@ -28,6 +28,23 @@ export type FooRead = Immutable<{
   foo: Foo;
 }>;
 
+export type UpdateFoo = Immutable<{
+  fooId: FooId;
+  foo: Partial<Foo>;
+}>;
+
+export const validateUpdateFoo = (command: UpdateFoo): UpdateFoo => {
+  if (
+    command == null ||
+    typeof command.fooId !== 'string' ||
+    command.fooId === ''
+  ) {
+    throw new Error('Invalid UpdateFoo command!');
+  }
+
+  return command;
+};
+
 export type FooUpdated = Immutable<{
   fooId: FooId;
   foo: Foo;

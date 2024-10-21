@@ -1,5 +1,5 @@
 import { Provider } from '@angular/core';
 
-import { FooService } from '../model';
+import { FooService } from './foo.service';
 
 export const provideFooServices = (): Provider[] => [FooService];

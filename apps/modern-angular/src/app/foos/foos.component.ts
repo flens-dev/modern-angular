@@ -21,13 +21,13 @@ import {
 } from '@flens-dev/tools';
 
 import {
-  FooService,
   GetFoosRequest,
   GetFoosResponse,
   transformOrderBy,
   transformWithMaxCount,
   transformWithNameLike,
 } from './model';
+import { FooService } from './services';
 import { FooListItemComponent, FoosSearchFormComponent } from './views';
 
 @Component({

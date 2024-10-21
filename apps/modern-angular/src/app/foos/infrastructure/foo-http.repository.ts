@@ -10,12 +10,12 @@ import {
   FooDeleted,
   FooId,
   FooRead,
-  FooRepository,
   FooUpdated,
   GetFoosRequest,
   GetFoosResponse,
-  provideFooRepository,
+  UpdateFoo,
 } from '../model';
+import { FooRepository, provideFooRepository } from '../services';
 
 @Injectable({
   providedIn: 'root',
@@ -39,16 +39,16 @@ export class FooHttpRepository implements FooRepository {
     );
   }
 
-  updateFoo(fooId: FooId, foo: Partial<Foo>): Observable<FooUpdated> {
+  updateFoo(command: UpdateFoo): Observable<FooUpdated> {
     return this.#http.put<FooUpdated>(
-      `${this.#baseUrl}/${encodeURIComponent(fooId)}`,
-      foo,
+      `${this.#baseUrl}/${encodeURIComponent(command.fooId)}`,
+      command.foo,
     );
   }
 
-  deleteFoo(fooId: DeleteFoo): Observable<FooDeleted> {
+  deleteFoo(command: DeleteFoo): Observable<FooDeleted> {
     return this.#http.delete<FooDeleted>(
-      `${this.#baseUrl}/${encodeURIComponent(fooId)}`,
+      `${this.#baseUrl}/${encodeURIComponent(command)}`,
     );
   }
 }

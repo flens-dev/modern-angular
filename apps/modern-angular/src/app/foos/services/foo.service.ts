@@ -7,7 +7,6 @@ import {
   FooCreated,
   FooId,
   FooRead,
-  FooUpdated,
   GetFoosRequest,
   GetFoosResponse,
 } from '../model';
@@ -30,10 +29,5 @@ export class FooService {
 
   readFoo(fooId: FooId): Observable<FooRead> {
     return this.#repository.readFoo(fooId);
-  }
-
-  updateFoo(fooId: FooId, foo: Partial<Foo>): Observable<FooUpdated> {
-    // TODO validate foo
-    return this.#repository.updateFoo(fooId, foo);
   }
 }

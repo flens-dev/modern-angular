@@ -12,14 +12,15 @@ import {
   FooDeleted,
   GetFoosRequest,
   GetFoosResponse,
+  UpdateFoo,
 } from '../model';
 
 export type FooRepository = {
   getFoos: (request: GetFoosRequest) => Observable<GetFoosResponse>;
   createFoo: (foo: Foo) => Observable<FooCreated>;
   readFoo: (fooId: FooId) => Observable<FooRead>;
-  updateFoo: (fooId: FooId, foo: Partial<Foo>) => Observable<FooUpdated>;
-  deleteFoo: (fooId: DeleteFoo) => Observable<FooDeleted>;
+  updateFoo: (command: UpdateFoo) => Observable<FooUpdated>;
+  deleteFoo: (command: DeleteFoo) => Observable<FooDeleted>;
 };
 
 export const FOO_REPOSITORY = new InjectionToken<FooRepository>(

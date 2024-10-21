@@ -9,12 +9,12 @@ import {
   FooDeleted,
   FooId,
   FooRead,
-  FooRepository,
   FooUpdated,
   GetFoosRequest,
   GetFoosResponse,
-  provideFooRepository,
+  UpdateFoo,
 } from '../model';
+import { FooRepository, provideFooRepository } from '../services';
 
 @Injectable({
   providedIn: 'root',
@@ -104,39 +104,41 @@ export class FooInMemoryRepository implements FooRepository {
     );
   }
 
-  updateFoo(fooId: FooId, foo: Partial<Foo>): Observable<FooUpdated> {
+  updateFoo(command: UpdateFoo): Observable<FooUpdated> {
     return timer(this.#timeoutMs).pipe(
       map((): FooUpdated => {
-        if (foo.name?.startsWith('err')) {
-          throw new Error('Internal Server Error ' + foo.name.substring(3));
+        if (command.foo.name?.startsWith('err')) {
+          throw new Error(
+            'Internal Server Error ' + command.foo.name.substring(3),
+          );
         }
 
-        const currentFoo = this.#foos.get(fooId);
+        const currentFoo = this.#foos.get(command.fooId);
         if (currentFoo == null) {
           throw new Error('Foo not found!');
         }
 
         const updatedFoo = {
           ...currentFoo,
-          ...foo,
+          ...command.foo,
         };
-        this.#foos.set(fooId, updatedFoo);
+        this.#foos.set(command.fooId, updatedFoo);
 
         return {
-          fooId,
+          fooId: command.fooId,
           foo: { ...updatedFoo },
         };
       }),
     );
   }
 
-  deleteFoo(fooId: DeleteFoo): Observable<FooDeleted> {
+  deleteFoo(command: DeleteFoo): Observable<FooDeleted> {
     return timer(this.#timeoutMs).pipe(
       map((): FooDeleted => {
-        const deleted = this.#foos.delete(fooId);
+        const deleted = this.#foos.delete(command);
         if (deleted) {
           return {
-            fooId,
+            fooId: command,
           };
         }
 
