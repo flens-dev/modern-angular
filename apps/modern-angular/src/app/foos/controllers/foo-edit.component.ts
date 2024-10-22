@@ -27,9 +27,9 @@ import {
   provideFooForm,
   ReadFooRequest,
   UpdateFoo,
-} from './model';
-import { injectDeleteFoo, injectReadFoo, injectUpdateFoo } from './services';
-import { FooFormComponent } from './views';
+} from '../model';
+import { injectDeleteFoo, injectReadFoo, injectUpdateFoo } from '../services';
+import { FooFormComponent } from '../views';
 
 @Component({
   standalone: true,
@@ -37,7 +37,7 @@ import { FooFormComponent } from './views';
   selector: 'app-foo-edit',
   providers: [provideFooForm()],
   imports: [ReactiveFormsModule, ServiceCallStateComponent, FooFormComponent],
-  styleUrl: './foos.css',
+  styleUrl: '../foos.css',
   templateUrl: './foo-edit.component.html',
 })
 export class FooEditComponent {

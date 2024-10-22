@@ -25,16 +25,16 @@ import {
   transformOrderBy,
   transformWithMaxCount,
   transformWithNameLike,
-} from './model';
-import { injectGetFoos } from './services';
-import { FooListItemComponent, FoosSearchFormComponent } from './views';
+} from '../model';
+import { injectGetFoos } from '../services';
+import { FooListItemComponent, FoosSearchFormComponent } from '../views';
 
 @Component({
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-foos',
   templateUrl: './foos.component.html',
-  styleUrl: './foos.css',
+  styleUrl: '../foos.css',
   imports: [
     ReactiveFormsModule,
     RouterLink,
