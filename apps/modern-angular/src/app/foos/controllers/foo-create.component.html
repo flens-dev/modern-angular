@@ -1,1 +1,9 @@
-<h1>TODO FOO CREATE</h1>
+<form [formGroup]="form">
+  <app-foo-form [form]="form" />
+
+  <div style="margin: 1em 0">
+    <button type="submit" [disabled]="submitDisabled()">create</button>
+  </div>
+</form>
+
+<fest-service-call-state [state]="createFoo.state()" busy="Creating foo..." />

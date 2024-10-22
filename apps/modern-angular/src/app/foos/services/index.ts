@@ -1,3 +1,4 @@
+export * from './create-foo';
 export * from './delete-foo';
 export * from './foo.repository';
 export * from './get-foos';
