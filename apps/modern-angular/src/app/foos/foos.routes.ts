@@ -15,10 +15,10 @@ export const FOO_ROUTES: Routes = [
           ),
       },
       {
-        path: ':fooId/edit',
+        path: ':fooId/update',
         loadComponent: () =>
           import('./controllers').then(
-            ({ FooEditComponent }) => FooEditComponent,
+            ({ FooUpdateComponent }) => FooUpdateComponent,
           ),
       },
       {

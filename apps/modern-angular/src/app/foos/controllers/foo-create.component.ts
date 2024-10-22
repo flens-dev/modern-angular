@@ -42,8 +42,9 @@ export class FooCreateComponent {
     request: this.#createFooRequest,
     form: this.form,
     onSuccess: (_request, response) => {
+      // NOTE Or this.#location.back()?
       this.#router.navigate(
-        ['..', encodeURIComponent(response.fooId), 'edit'],
+        ['..', encodeURIComponent(response.fooId), 'update'],
         {
           relativeTo: this.#route,
           replaceUrl: true,

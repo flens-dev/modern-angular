@@ -10,7 +10,7 @@
   <ng-template #success let-state>
     @if (isSuccessState(state)) {
       @for (item of state.response.foos; track item.fooId) {
-        <a [routerLink]="[item.fooId, 'edit']">
+        <a [routerLink]="[item.fooId, 'update']">
           <app-foo-list-item [foo]="item.foo" class="list-item" />
         </a>
       }

@@ -34,13 +34,13 @@ import { FooFormComponent } from '../views';
 @Component({
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'app-foo-edit',
+  selector: 'app-foo-update',
   providers: [provideFooForm()],
   imports: [ReactiveFormsModule, ServiceCallStateComponent, FooFormComponent],
   styleUrl: '../foos.css',
-  templateUrl: './foo-edit.component.html',
+  templateUrl: './foo-update.component.html',
 })
-export class FooEditComponent {
+export class FooUpdateComponent {
   readonly #location = inject(Location);
 
   protected readonly form = inject(FOO_FORM);
@@ -82,14 +82,14 @@ export class FooEditComponent {
     },
   });
 
-  readonly #editFormNotValid = formNotValid(this.form);
+  readonly #formNotValid = formNotValid(this.form);
 
   readonly #isBusy = computed(
     () => this.readFoo.busy() || this.updateFoo.busy() || this.deleteFoo.busy(),
   );
 
   protected readonly submitDisabled = computed(
-    () => this.#editFormNotValid() || this.#isBusy(),
+    () => this.#formNotValid() || this.#isBusy(),
   );
 
   protected readonly deleteDisabled = computed(() => this.#isBusy());
