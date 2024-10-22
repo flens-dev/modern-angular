@@ -2,13 +2,13 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  effect,
   inject,
   input,
+  signal,
   untracked,
   viewChild,
 } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
@@ -22,6 +22,7 @@ import {
 import {
   GetFoosRequest,
   GetFoosResponse,
+  areGetFoosRequestsEqual,
   transformOrderBy,
   transformWithMaxCount,
   transformWithNameLike,
@@ -62,29 +63,34 @@ export class FoosComponent {
     transform: transformOrderBy,
   });
 
-  protected readonly getFoosRequest = computed(
-    (): GetFoosRequest => ({
+  readonly #reload = signal(1);
+  protected readonly getFoosRequest = computed((): GetFoosRequest => {
+    const _justForTracking = this.#reload();
+    return {
       withNameLike: this.withNameLike(),
       withMaxCount: this.withMaxCount(),
       orderBy: this.orderBy(),
-    }),
-  );
+    };
+  });
 
   protected readonly getFoos = injectGetFoos({
     request: this.getFoosRequest,
   });
 
   protected readonly search = viewChild(FoosSearchFormComponent);
-  readonly #searchSubmit = toSignal(
-    fromOutputToObservable(this.search, 'submit'),
-  );
+  readonly #searchSubmit = fromOutputToObservable(this.search, 'submit');
 
   constructor() {
-    effect(() => {
-      const searchSubmit = this.#searchSubmit();
-      untracked(() => {
-        this.#router.navigate([], { queryParams: searchSubmit });
-      });
+    this.#searchSubmit.pipe(takeUntilDestroyed()).subscribe({
+      next: (queryParams) => {
+        const getFoosRequest = untracked(this.getFoosRequest);
+
+        if (areGetFoosRequestsEqual(queryParams, getFoosRequest)) {
+          this.#reload.update((v) => -v);
+        } else {
+          this.#router.navigate([], { queryParams });
+        }
+      },
     });
   }
 }

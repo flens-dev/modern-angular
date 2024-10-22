@@ -117,6 +117,17 @@ export type GetFoosRequest = Immutable<{
   orderBy?: FooOrderBy;
 }>;
 
+export const areGetFoosRequestsEqual = (
+  lhs: GetFoosRequest,
+  rhs: GetFoosRequest,
+): boolean => {
+  return (
+    (lhs.withNameLike ?? null) === (rhs.withNameLike ?? null) &&
+    (lhs.withMaxCount ?? null) === (rhs.withMaxCount ?? null) &&
+    (lhs.orderBy ?? null) === (rhs.orderBy ?? null)
+  );
+};
+
 export const validateGetFoos = (request: GetFoosRequest): GetFoosRequest => {
   if (request == null) {
     throw new Error('Invalid GetFoos query!');
