@@ -4,6 +4,6 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-foo-create',
-  template: `TODO FOO CREATE`,
+  templateUrl: './foo-create.component.html',
 })
 export class FooCreateComponent {}
