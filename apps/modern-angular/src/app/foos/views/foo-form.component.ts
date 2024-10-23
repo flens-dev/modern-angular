@@ -19,6 +19,7 @@ import { FooFormGroup } from '../model';
   template: `<div [formGroup]="form()" class="form">
     <label for="name" style="grid-column: 1 / 2; grid-row: 1 / 2">Name</label>
     <input
+      data-testid="name-input"
       id="name"
       type="text"
       formControlName="name"
@@ -29,6 +30,7 @@ import { FooFormGroup } from '../model';
       Count
     </label>
     <input
+      data-testid="count-input"
       id="count"
       type="number"
       formControlName="count"

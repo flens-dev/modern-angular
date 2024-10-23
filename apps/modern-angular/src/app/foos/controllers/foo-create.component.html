@@ -2,13 +2,18 @@
   <app-foo-form [form]="createFoo.form" />
 
   <div style="margin: 1em 0">
-    <button type="submit" [disabled]="createFoo.submitDisabled()">
+    <button
+      data-testid="submit"
+      type="submit"
+      [disabled]="createFoo.submitDisabled()"
+    >
       create
     </button>
   </div>
 </form>
 
 <fest-service-call-state
+  data-testid="createFooCallState"
   [state]="createFoo.call.state()"
   busy="Creating foo..."
 />
