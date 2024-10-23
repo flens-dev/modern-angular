@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   effect,
+  inject,
   input,
   untracked,
 } from '@angular/core';
@@ -10,7 +11,11 @@ import { ReactiveFormsModule } from '@angular/forms';
 
 import { formNotValid, validFormSubmit } from '@flens-dev/tools';
 
-import { GetFoosRequest, createFoosSearchForm } from '../model';
+import {
+  FOOS_SEARCH_FORM,
+  GetFoosRequest,
+  provideFoosSearchForm,
+} from '../model';
 
 @Component({
   standalone: true,
@@ -18,10 +23,11 @@ import { GetFoosRequest, createFoosSearchForm } from '../model';
   selector: 'app-foos-search-form',
   templateUrl: './foos-search-form.component.html',
   styleUrl: '../foos.css',
+  providers: [provideFoosSearchForm()],
   imports: [ReactiveFormsModule],
 })
 export class FoosSearchFormComponent {
-  protected readonly searchForm = createFoosSearchForm();
+  protected readonly searchForm = inject(FOOS_SEARCH_FORM);
 
   readonly value = input<GetFoosRequest>();
 
