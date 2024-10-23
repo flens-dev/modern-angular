@@ -1,4 +1,4 @@
-import { InjectionToken, Provider } from '@angular/core';
+import { inject, InjectionToken, Provider } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder } from '@angular/forms';
 
 import { FooOrderBy } from './foo.model';
@@ -9,9 +9,8 @@ export type FoosSearchFormGroup = FormGroup<{
   orderBy: FormControl<FooOrderBy | undefined>;
 }>;
 
-export const createFoosSearchForm = (
-  fb: NonNullableFormBuilder,
-): FoosSearchFormGroup => {
+export const injectFoosSearchForm = (): FoosSearchFormGroup => {
+  const fb = inject(NonNullableFormBuilder);
   return fb.group({
     withNameLike: fb.control<string | undefined>(undefined),
     withMaxCount: fb.control<number | undefined>(undefined),
@@ -26,7 +25,6 @@ export const FOOS_SEARCH_FORM = new InjectionToken<FoosSearchFormGroup>(
 export const provideFoosSearchForm = (): Provider[] => [
   {
     provide: FOOS_SEARCH_FORM,
-    useFactory: (fb: NonNullableFormBuilder) => createFoosSearchForm(fb),
-    deps: [NonNullableFormBuilder],
+    useFactory: injectFoosSearchForm,
   },
 ];
