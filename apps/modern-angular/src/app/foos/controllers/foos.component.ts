@@ -78,7 +78,7 @@ export class FoosComponent {
   });
 
   protected readonly search = viewChild(FoosSearchFormComponent);
-  readonly #searchSubmit = fromOutputToObservable(this.search, 'submit');
+  readonly #searchSubmit = fromOutputToObservable(this.search, (c) => c.submit);
 
   constructor() {
     this.#searchSubmit.pipe(takeUntilDestroyed()).subscribe({
