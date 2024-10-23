@@ -1,11 +1,15 @@
 import { Routes } from '@angular/router';
 
 import { provideFooInMemoryRepository } from './infrastructure';
+import { provideCreateFooServiceConfig } from './services';
 
 export const FOO_ROUTES: Routes = [
   {
     path: '',
-    providers: [provideFooInMemoryRepository()],
+    providers: [
+      provideFooInMemoryRepository(),
+      provideCreateFooServiceConfig({ onSuccess: 'UPDATE' }),
+    ],
     children: [
       {
         path: 'create',

@@ -1,9 +1,14 @@
-<form [formGroup]="form">
-  <app-foo-form [form]="form" />
+<form [formGroup]="createFoo.form">
+  <app-foo-form [form]="createFoo.form" />
 
   <div style="margin: 1em 0">
-    <button type="submit" [disabled]="submitDisabled()">create</button>
+    <button type="submit" [disabled]="createFoo.submitDisabled()">
+      create
+    </button>
   </div>
 </form>
 
-<fest-service-call-state [state]="createFoo.state()" busy="Creating foo..." />
+<fest-service-call-state
+  [state]="createFoo.call.state()"
+  busy="Creating foo..."
+/>
