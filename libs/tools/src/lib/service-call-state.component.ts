@@ -16,12 +16,12 @@ import { ServiceCallErrorComponent } from './service-call-error.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'fest-service-call-state',
   imports: [NgTemplateOutlet, ServiceCallErrorComponent],
-  template: `@let s = state();
-    @switch (s.type) {
+  template: `@if (state(); as state) {
+    @switch (state.type) {
       @case ('IDLE') {
         @if (idleTmpl(); as idleTmpl) {
           <ng-container
-            *ngTemplateOutlet="idleTmpl; context: { $implicit: s }"
+            *ngTemplateOutlet="idleTmpl; context: { $implicit: state }"
           />
         } @else if (idleText()) {
           <div>{{ idleText() }}</div>
@@ -30,7 +30,7 @@ import { ServiceCallErrorComponent } from './service-call-error.component';
       @case ('BUSY') {
         @if (busyTmpl(); as busyTmpl) {
           <ng-container
-            *ngTemplateOutlet="busyTmpl; context: { $implicit: s }"
+            *ngTemplateOutlet="busyTmpl; context: { $implicit: state }"
           />
         } @else if (busyText()) {
           <div>{{ busyText() }}</div>
@@ -39,20 +39,21 @@ import { ServiceCallErrorComponent } from './service-call-error.component';
       @case ('ERROR') {
         @if (error(); as errorTmpl) {
           <ng-container
-            *ngTemplateOutlet="errorTmpl; context: { $implicit: s }"
+            *ngTemplateOutlet="errorTmpl; context: { $implicit: state }"
           />
         } @else {
-          <fest-service-call-error [error]="s" />
+          <fest-service-call-error [error]="state" />
         }
       }
       @case ('SUCCESS') {
         @if (successTmpl(); as successTmpl) {
           <ng-container
-            *ngTemplateOutlet="successTmpl; context: { $implicit: s }"
+            *ngTemplateOutlet="successTmpl; context: { $implicit: state }"
           />
         }
       }
-    }`,
+    }
+  }`,
 })
 export class ServiceCallStateComponent<TRequest, TResponse> {
   readonly state = input.required<ServiceCallState<TRequest, TResponse>>();
