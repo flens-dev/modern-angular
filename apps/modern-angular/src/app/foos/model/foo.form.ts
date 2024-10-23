@@ -24,14 +24,3 @@ export const provideFooForm = (): Provider[] => [
     useFactory: injectFooForm,
   },
 ];
-
-export const disableOrEnableFooFormOnBusyChange = (
-  form: FooFormGroup,
-  busy: boolean,
-): void => {
-  if (busy && !form.disabled) {
-    form.disable({ emitEvent: false });
-  } else if (!busy && form.disabled) {
-    form.enable({ emitEvent: false });
-  }
-};

@@ -4,6 +4,7 @@ import {
   ServiceCallFn,
   ServiceCallOptions,
   ValueSource,
+  disableFormOnBusy,
   injectServiceCall,
 } from '@flens-dev/tools';
 
@@ -11,7 +12,6 @@ import {
   FooFormGroup,
   FooUpdated,
   UpdateFoo,
-  disableOrEnableFooFormOnBusyChange,
   validateUpdateFoo,
 } from '../model';
 
@@ -37,7 +37,7 @@ export const injectUpdateFoo = (options: {
     | undefined =
     form == null
       ? undefined
-      : (busy) => disableOrEnableFooFormOnBusyChange(form, busy);
+      : (busy) => disableFormOnBusy(form, busy, { emitEvent: false });
   const onSuccess = options.onSuccess;
 
   return injectServiceCall(options.request, updateFooFn, {
