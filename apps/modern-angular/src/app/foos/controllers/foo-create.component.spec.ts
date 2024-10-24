@@ -1,8 +1,10 @@
+import { Location } from '@angular/common';
 import { provideHttpClient } from '@angular/common/http';
 import {
   HttpTestingController,
   provideHttpClientTesting,
 } from '@angular/common/http/testing';
+import { provideLocationMocks } from '@angular/common/testing';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import {
   ComponentFixture,
@@ -10,11 +12,7 @@ import {
   TestBed,
 } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import {
-  provideRouter,
-  Router,
-  withComponentInputBinding,
-} from '@angular/router';
+import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 
 import { provideFooHttpRepository } from '../infrastructure';
@@ -50,6 +48,8 @@ const testRoutes: FooChildRoutes = [
   },
 ];
 
+const byTestId = (testid: string) => By.css(`[data-testid="${testid}"]`);
+
 const configureTestBed = (config?: CreateFooServiceConfig) => {
   return TestBed.configureTestingModule({
     teardown: {
@@ -58,6 +58,7 @@ const configureTestBed = (config?: CreateFooServiceConfig) => {
     providers: [
       { provide: ComponentFixtureAutoDetect, useValue: true },
       provideRouter(testRoutes, withComponentInputBinding()),
+      provideLocationMocks(),
       provideHttpClient(),
       provideHttpClientTesting(),
       provideFooHttpRepository(),
@@ -80,27 +81,49 @@ describe('FooCreateComponent', () => {
   });
 
   it('should have a disabled submit button', () => {
-    const btnSubmit = fixture.debugElement.query(
-      By.css('[data-testid="submit"]'),
-    );
+    const btnSubmit = fixture.debugElement.query(byTestId('submit'));
 
     expect(btnSubmit.nativeElement.disabled).toBeTruthy();
   });
 
   it('should have an enabled submit button when input is valid', () => {
-    const inputName = fixture.debugElement.query(
-      By.css('[data-testid="name-input"]'),
-    );
+    const inputName = fixture.debugElement.query(byTestId('name-input'));
     inputName.nativeElement.value = 'Test';
     inputName.nativeElement.dispatchEvent(new Event('input'));
 
-    const btnSubmit = fixture.debugElement.query(
-      By.css('[data-testid="submit"]'),
-    );
+    const btnSubmit = fixture.debugElement.query(byTestId('submit'));
 
     expect(btnSubmit.nativeElement.disabled).toBeFalsy();
   });
 });
+
+const enterFoo = async <T>(rootFixture: ComponentFixture<T>, foo: Foo) => {
+  const inputName = rootFixture.debugElement.query(byTestId('name-input'));
+  inputName.nativeElement.value = foo.name;
+  inputName.nativeElement.dispatchEvent(new Event('input'));
+
+  const countName = rootFixture.debugElement.query(byTestId('count-input'));
+  countName.nativeElement.value = foo.count;
+  countName.nativeElement.dispatchEvent(new Event('input'));
+
+  await rootFixture.whenStable();
+};
+
+const expectFooCreated = (
+  http: HttpTestingController,
+  foo: Foo,
+  fooCreated: FooCreated,
+) => {
+  const createFooRequest = http.expectOne(
+    {
+      method: 'POST',
+      url: '/api/foos',
+    },
+    'create foo',
+  );
+  expect(createFooRequest.request.body).toEqual(foo);
+  createFooRequest.flush(fooCreated);
+};
 
 describe('FooCreateComponent with UPDATE', () => {
   beforeEach(async () => {
@@ -111,50 +134,71 @@ describe('FooCreateComponent with UPDATE', () => {
     const routerHarness = await RouterTestingHarness.create('/create');
 
     const http = TestBed.inject(HttpTestingController);
-    const router = TestBed.inject(Router);
+    const location = TestBed.inject(Location);
 
     const foo: Foo = {
       name: 'Test',
       count: 4,
     };
+    const fooCreated: FooCreated = {
+      fooId: '1',
+      foo,
+    };
 
-    const inputName = routerHarness.fixture.debugElement.query(
-      By.css('[data-testid="name-input"]'),
-    );
-    inputName.nativeElement.value = foo.name;
-    inputName.nativeElement.dispatchEvent(new Event('input'));
-
-    const countName = routerHarness.fixture.debugElement.query(
-      By.css('[data-testid="count-input"]'),
-    );
-    countName.nativeElement.value = foo.count;
-    countName.nativeElement.dispatchEvent(new Event('input'));
-
-    await routerHarness.fixture.whenStable();
+    await enterFoo(routerHarness.fixture, foo);
 
     const btnSubmit = routerHarness.fixture.debugElement.query(
-      By.css('[data-testid="submit"]'),
+      byTestId('submit'),
     );
 
     btnSubmit.nativeElement.click();
 
-    const createFooRequest = http.expectOne(
-      {
-        method: 'POST',
-        url: '/api/foos',
-      },
-      'create foo',
-    );
-    expect(createFooRequest.request.body).toEqual(foo);
-    const fooCreatedResponse: FooCreated = {
-      fooId: '1',
-      foo: createFooRequest.request.body,
-    };
-    createFooRequest.flush(fooCreatedResponse);
+    expectFooCreated(http, foo, fooCreated);
 
     await routerHarness.fixture.whenStable();
 
-    expect(router.url).toEqual('/1/update');
+    expect(location.path()).toEqual('/1/update');
+
+    http.verify();
+  });
+});
+
+describe('FooCreateComponent with BACK', () => {
+  beforeEach(async () => {
+    await configureTestBed({ onSuccess: 'BACK' });
+  });
+
+  it('should submit CreateFoo with given input and navigate back to first route', async () => {
+    const routerHarness = await RouterTestingHarness.create('/');
+    const http = TestBed.inject(HttpTestingController);
+    const location = TestBed.inject(Location);
+
+    expect(location.path()).toEqual('/');
+    await routerHarness.navigateByUrl('/create');
+    expect(location.path()).toEqual('/create');
+
+    const foo: Foo = {
+      name: 'Test',
+      count: 4,
+    };
+    const fooCreated: FooCreated = {
+      fooId: '1',
+      foo,
+    };
+
+    await enterFoo(routerHarness.fixture, foo);
+
+    const btnSubmit = routerHarness.fixture.debugElement.query(
+      byTestId('submit'),
+    );
+
+    btnSubmit.nativeElement.click();
+
+    expectFooCreated(http, foo, fooCreated);
+
+    await routerHarness.fixture.whenStable();
+
+    expect(location.path()).toEqual('/');
 
     http.verify();
   });
