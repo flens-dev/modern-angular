@@ -108,16 +108,15 @@ describe('FooCreateComponent', () => {
   });
 });
 
-const enterFoo = async <T>(rootFixture: ComponentFixture<T>, foo: Foo) => {
-  const inputName = rootFixture.debugElement.query(byTestId('name-input'));
-  inputName.nativeElement.value = foo.name;
-  inputName.nativeElement.dispatchEvent(new Event('input'));
-
-  const countName = rootFixture.debugElement.query(byTestId('count-input'));
-  countName.nativeElement.value = foo.count;
-  countName.nativeElement.dispatchEvent(new Event('input'));
-
-  await rootFixture.whenStable();
+const enterFoo = async (foo: Foo) => {
+  const nameInput = screen.getByTestId('name-input');
+  expect(nameInput).toBeInTheDocument();
+  const countInput = screen.getByTestId('count-input');
+  expect(countInput).toBeInTheDocument();
+  await userEvent.click(nameInput);
+  await userEvent.keyboard(foo.name);
+  await userEvent.click(countInput);
+  await userEvent.keyboard(`${foo.count}`);
 };
 
 const expectFooCreated = (
@@ -156,7 +155,7 @@ describe('FooCreateComponent with UPDATE', () => {
       foo,
     };
 
-    await enterFoo(routerHarness.fixture, foo);
+    await enterFoo(foo);
 
     const btnSubmit = routerHarness.fixture.debugElement.query(
       byTestId('submit'),
@@ -197,7 +196,7 @@ describe('FooCreateComponent with BACK', () => {
       foo,
     };
 
-    await enterFoo(routerHarness.fixture, foo);
+    await enterFoo(foo);
 
     const btnSubmit = routerHarness.fixture.debugElement.query(
       byTestId('submit'),
@@ -242,14 +241,7 @@ describe('FooCreateComponent with Testing Library', () => {
     const submitButton = screen.getByTestId('submit');
     expect(submitButton).toBeDisabled();
 
-    const nameInput = screen.getByTestId('name-input');
-    expect(nameInput).toBeInTheDocument();
-    const countInput = screen.getByTestId('count-input');
-    expect(countInput).toBeInTheDocument();
-    await userEvent.click(nameInput);
-    await userEvent.keyboard(foo.name);
-    await userEvent.click(countInput);
-    await userEvent.keyboard(`${foo.count}`);
+    await enterFoo(foo);
 
     expect(submitButton).toBeEnabled();
     await userEvent.click(submitButton);
