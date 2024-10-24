@@ -1,9 +1,21 @@
-import { Routes } from '@angular/router';
+import { Route, Routes } from '@angular/router';
 
 import { provideFooInMemoryRepository } from './infrastructure';
 import { provideCreateFooServiceConfig } from './services';
 
-export const FOO_CHILDREN_ROUTES: Routes = [
+export type CreateFooRoute = Omit<Route, 'path'> & {
+  path: 'create';
+};
+export type UpdateFooRoute = Omit<Route, 'path'> & {
+  path: ':fooId/update';
+};
+export type FoosRoute = Omit<Route, 'path'> & {
+  path: '';
+};
+
+export type FooChildRoutes = [CreateFooRoute, UpdateFooRoute, FoosRoute];
+
+export const FOO_CHILD_ROUTES: FooChildRoutes = [
   {
     path: 'create',
     loadComponent: () =>
@@ -32,6 +44,6 @@ export const FOO_ROUTES: Routes = [
       provideFooInMemoryRepository(),
       provideCreateFooServiceConfig({ onSuccess: 'UPDATE' }),
     ],
-    children: FOO_CHILDREN_ROUTES,
+    children: FOO_CHILD_ROUTES,
   },
 ];

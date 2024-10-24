@@ -33,7 +33,7 @@ import {
 import { FOO_REPOSITORY } from './foo.repository';
 
 export type CreateFooServiceConfig = Immutable<{
-  onSuccess: 'UPDATE' | 'BACK';
+  onSuccess?: 'UPDATE' | 'BACK';
 }>;
 
 export type CreateFooSource = ValueSource<CreateFoo>;
@@ -96,7 +96,9 @@ export const injectCreateFooOnSuccessFromConfig = (): CreateFooOnSuccess => {
 
   return config?.onSuccess === 'BACK'
     ? injectCreateFooOnSuccessToLocationBack()
-    : injectCreateFooOnSuccessToUpdateRoute();
+    : config?.onSuccess === 'UPDATE'
+      ? injectCreateFooOnSuccessToUpdateRoute()
+      : undefined;
 };
 
 export const injectCreateFooService = (): CreateFooService => {
@@ -127,7 +129,7 @@ export const injectCreateFooService = (): CreateFooService => {
 };
 
 export const provideCreateFooServiceConfig = (
-  config: CreateFooServiceConfig,
+  config?: CreateFooServiceConfig,
 ): Provider[] => [
   {
     provide: CREATE_FOO_SERVICE_CONFIG,

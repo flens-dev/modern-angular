@@ -3,6 +3,7 @@ import {
   HttpTestingController,
   provideHttpClientTesting,
 } from '@angular/common/http/testing';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import {
   ComponentFixture,
   ComponentFixtureAutoDetect,
@@ -22,25 +23,47 @@ import {
   CreateFooServiceConfig,
   provideCreateFooServiceConfig,
 } from '../services';
-import { FOO_CHILDREN_ROUTES } from '../foos.routes';
+import { FooChildRoutes } from '../foos.routes';
 
 import { FooCreateComponent } from './foo-create.component';
-import { FooUpdateComponent } from './foo-update.component';
 
-const configureTestBed = (config: CreateFooServiceConfig) => {
+@Component({
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  selector: 'app-noop',
+  template: '',
+})
+export class NoopComponent {}
+
+const testRoutes: FooChildRoutes = [
+  {
+    path: 'create',
+    component: FooCreateComponent,
+  },
+  {
+    path: ':fooId/update',
+    component: NoopComponent,
+  },
+  {
+    path: '',
+    component: NoopComponent,
+  },
+];
+
+const configureTestBed = (config?: CreateFooServiceConfig) => {
   return TestBed.configureTestingModule({
     teardown: {
       destroyAfterEach: true,
     },
     providers: [
       { provide: ComponentFixtureAutoDetect, useValue: true },
-      provideRouter(FOO_CHILDREN_ROUTES, withComponentInputBinding()),
+      provideRouter(testRoutes, withComponentInputBinding()),
       provideHttpClient(),
       provideHttpClientTesting(),
       provideFooHttpRepository(),
       provideCreateFooServiceConfig(config),
     ],
-    imports: [FooCreateComponent, FooUpdateComponent],
+    imports: [FooCreateComponent, NoopComponent],
   }).compileComponents();
 };
 
@@ -48,7 +71,7 @@ describe('FooCreateComponent', () => {
   let fixture: ComponentFixture<FooCreateComponent>;
 
   beforeEach(async () => {
-    await configureTestBed({ onSuccess: 'UPDATE' });
+    await configureTestBed();
     fixture = TestBed.createComponent(FooCreateComponent);
   });
 
@@ -132,14 +155,6 @@ describe('FooCreateComponent with UPDATE', () => {
     await routerHarness.fixture.whenStable();
 
     expect(router.url).toEqual('/1/update');
-
-    http.expectOne(
-      {
-        method: 'GET',
-        url: '/api/foos/1',
-      },
-      'read foo',
-    );
 
     http.verify();
   });
