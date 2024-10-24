@@ -12,8 +12,17 @@ import {
   TestBed,
 } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { provideRouter, withComponentInputBinding } from '@angular/router';
+import {
+  provideRouter,
+  Router,
+  RouterOutlet,
+  withComponentInputBinding,
+} from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
+
+import { render, screen } from '@testing-library/angular';
+import '@testing-library/jest-dom';
+import { userEvent } from '@testing-library/user-event';
 
 import { provideFooHttpRepository } from '../infrastructure';
 import { Foo, FooCreated } from '../model';
@@ -50,20 +59,22 @@ const testRoutes: FooChildRoutes = [
 
 const byTestId = (testid: string) => By.css(`[data-testid="${testid}"]`);
 
+const testProviders = (config?: CreateFooServiceConfig) => [
+  { provide: ComponentFixtureAutoDetect, useValue: true },
+  provideRouter(testRoutes, withComponentInputBinding()),
+  provideLocationMocks(),
+  provideHttpClient(),
+  provideHttpClientTesting(),
+  provideFooHttpRepository(),
+  provideCreateFooServiceConfig(config),
+];
+
 const configureTestBed = (config?: CreateFooServiceConfig) => {
   return TestBed.configureTestingModule({
     teardown: {
       destroyAfterEach: true,
     },
-    providers: [
-      { provide: ComponentFixtureAutoDetect, useValue: true },
-      provideRouter(testRoutes, withComponentInputBinding()),
-      provideLocationMocks(),
-      provideHttpClient(),
-      provideHttpClientTesting(),
-      provideFooHttpRepository(),
-      provideCreateFooServiceConfig(config),
-    ],
+    providers: testProviders(config),
     imports: [FooCreateComponent, NoopComponent],
   }).compileComponents();
 };
@@ -199,6 +210,54 @@ describe('FooCreateComponent with BACK', () => {
     await routerHarness.fixture.whenStable();
 
     expect(location.path()).toEqual('/');
+
+    http.verify();
+  });
+});
+
+describe('FooCreateComponent with Testing Library', () => {
+  it('should submit CreateFoo with given input and navigate to :fooId/update', async () => {
+    const foo: Foo = {
+      name: 'Test',
+      count: 4,
+    };
+    const fooCreated: FooCreated = {
+      fooId: '1',
+      foo,
+    };
+
+    const renderResult = await render('<router-outlet />', {
+      providers: testProviders({ onSuccess: 'UPDATE' }),
+      imports: [RouterOutlet],
+    });
+
+    const routerHarness = await RouterTestingHarness.create('/');
+    const http = renderResult.debugElement.injector.get(HttpTestingController);
+    const router = renderResult.debugElement.injector.get(Router);
+
+    expect(router.url).toEqual('/');
+    await routerHarness.navigateByUrl('/create');
+    expect(router.url).toEqual('/create');
+
+    const submitButton = screen.getByTestId('submit');
+    expect(submitButton).toBeDisabled();
+
+    const nameInput = screen.getByTestId('name-input');
+    expect(nameInput).toBeInTheDocument();
+    const countInput = screen.getByTestId('count-input');
+    expect(countInput).toBeInTheDocument();
+    await userEvent.click(nameInput);
+    await userEvent.keyboard(foo.name);
+    await userEvent.click(countInput);
+    await userEvent.keyboard(`${foo.count}`);
+
+    expect(submitButton).toBeEnabled();
+    await userEvent.click(submitButton);
+
+    expectFooCreated(http, foo, fooCreated);
+    await routerHarness.fixture.whenStable();
+
+    expect(router.url).toEqual('/1/update');
 
     http.verify();
   });
