@@ -2,7 +2,7 @@ import { Type, Provider, InjectionToken } from '@angular/core';
 
 import { Observable } from 'rxjs';
 
-import {
+import type {
   CreateFoo,
   DeleteFoo,
   FooCreated,
@@ -31,12 +31,12 @@ export const FOO_REPOSITORY = new InjectionToken<FooRepository>(
 /**
  * Helper function to generate special provide-function for repository implementations
  */
-export const provideFooRepository =
-  <T extends FooRepository>(repository: Type<T>): (() => Provider[]) =>
-  () => [
-    repository,
-    {
-      provide: FOO_REPOSITORY,
-      useExisting: repository,
-    },
-  ];
+export const provideFooRepository = <T extends FooRepository>(
+  repository: Type<T>,
+): Provider[] => [
+  repository,
+  {
+    provide: FOO_REPOSITORY,
+    useExisting: repository,
+  },
+];

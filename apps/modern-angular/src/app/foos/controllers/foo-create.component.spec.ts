@@ -5,7 +5,7 @@ import {
   provideHttpClientTesting,
 } from '@angular/common/http/testing';
 import { provideLocationMocks } from '@angular/common/testing';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Provider } from '@angular/core';
 import {
   ComponentFixture,
   ComponentFixtureAutoDetect,
@@ -24,14 +24,14 @@ import { render, screen } from '@testing-library/angular';
 import '@testing-library/jest-dom';
 import { userEvent } from '@testing-library/user-event';
 
-import { provideFooHttpRepository } from '../infrastructure';
-import { Foo, FooCreated } from '../model';
+import type { Foo, FooCreated } from '../model';
 
 import {
-  CreateFooServiceConfig,
-  FooRoutes,
-  provideCreateFooServiceConfig,
-} from '../public';
+  provideFooHttpRepository,
+  provideLocationBackOnFooCreated,
+  provideNavigateToUpdateOnFooCreated,
+} from '../infrastructure';
+import type { FooRoutes } from '../public';
 
 import { FooCreateComponent } from './foo-create.component';
 
@@ -60,22 +60,21 @@ const testRoutes: FooRoutes = [
 
 const byTestId = (testid: string) => By.css(`[data-testid="${testid}"]`);
 
-const testProviders = (config?: CreateFooServiceConfig) => [
+const testProviders = () => [
   { provide: ComponentFixtureAutoDetect, useValue: true },
   provideRouter(testRoutes, withComponentInputBinding()),
   provideLocationMocks(),
   provideHttpClient(),
   provideHttpClientTesting(),
   provideFooHttpRepository(),
-  provideCreateFooServiceConfig(config),
 ];
 
-const configureTestBed = (config?: CreateFooServiceConfig) => {
+const configureTestBed = (additionalProviders: Provider[] = []) => {
   return TestBed.configureTestingModule({
     teardown: {
       destroyAfterEach: true,
     },
-    providers: testProviders(config),
+    providers: [testProviders(), additionalProviders],
     imports: [FooCreateComponent, NoopComponent],
   }).compileComponents();
 };
@@ -138,7 +137,7 @@ const expectFooCreated = (
 
 describe('FooCreateComponent with UPDATE', () => {
   beforeEach(async () => {
-    await configureTestBed({ onSuccess: 'UPDATE' });
+    await configureTestBed(provideNavigateToUpdateOnFooCreated());
   });
 
   it('should submit CreateFoo with given input and navigate to :fooId/update', async () => {
@@ -176,7 +175,7 @@ describe('FooCreateComponent with UPDATE', () => {
 
 describe('FooCreateComponent with BACK', () => {
   beforeEach(async () => {
-    await configureTestBed({ onSuccess: 'BACK' });
+    await configureTestBed(provideLocationBackOnFooCreated());
   });
 
   it('should submit CreateFoo with given input and navigate back to first route', async () => {
@@ -227,7 +226,7 @@ describe('FooCreateComponent with Testing Library', () => {
     };
 
     const renderResult = await render('<router-outlet />', {
-      providers: testProviders({ onSuccess: 'UPDATE' }),
+      providers: [testProviders(), provideNavigateToUpdateOnFooCreated()],
       imports: [RouterOutlet],
     });
 

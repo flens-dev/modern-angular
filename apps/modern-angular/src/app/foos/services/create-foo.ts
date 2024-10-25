@@ -1,4 +1,3 @@
-import { Location } from '@angular/common';
 import {
   computed,
   inject,
@@ -6,7 +5,6 @@ import {
   Provider,
   Signal,
 } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
 
 import { map } from 'rxjs';
 
@@ -18,20 +16,13 @@ import {
   validFormSubmit,
 } from '@flens-dev/tools';
 
+import type { CreateFoo, FooCreated, FooFormGroup } from '../model';
+import type { CreateFooSource, FooCreatedHandler } from '../public';
+
+import { FOO_FORM, provideFooForm, validateCreateFoo } from '../model';
 import {
-  CreateFoo,
-  FOO_FORM,
-  FooCreated,
-  FooFormGroup,
-  provideFooForm,
-  validateCreateFoo,
-} from '../model';
-import {
-  CREATE_FOO_ON_SUCCESS,
-  CREATE_FOO_SERVICE_CONFIG,
   CREATE_FOO_SOURCE,
-  CreateFooOnSuccess,
-  CreateFooSource,
+  FOO_CREATED_HANDLER,
   FOO_REPOSITORY,
 } from '../public';
 
@@ -51,43 +42,22 @@ export const injectCreateFooSourceFromForm = (): CreateFooSource => {
   return validFormSubmit(form).pipe(map((foo) => ({ foo })));
 };
 
-export const injectCreateFooOnSuccessToUpdateRoute = (): CreateFooOnSuccess => {
-  const router = inject(Router);
-  const route = inject(ActivatedRoute);
-
-  return (request, response) => {
-    router.navigate(['..', encodeURIComponent(response.fooId), 'update'], {
-      relativeTo: route,
-      replaceUrl: true,
-    });
-  };
-};
-
-export const injectCreateFooOnSuccessToLocationBack =
-  (): CreateFooOnSuccess => {
-    const location = inject(Location);
-
-    return (request, response) => {
-      location.back();
-    };
-  };
-
-export const injectCreateFooOnSuccessFromConfig = (): CreateFooOnSuccess => {
-  const config = inject(CREATE_FOO_SERVICE_CONFIG, { optional: true });
-
-  return config?.onSuccess === 'BACK'
-    ? injectCreateFooOnSuccessToLocationBack()
-    : config?.onSuccess === 'UPDATE'
-      ? injectCreateFooOnSuccessToUpdateRoute()
-      : undefined;
-};
-
 export const injectCreateFooService = (): CreateFooService => {
   const form = inject(FOO_FORM);
   const source = inject(CREATE_FOO_SOURCE);
-  const onSuccess =
-    inject(CREATE_FOO_ON_SUCCESS, { optional: true }) ?? undefined;
   const repository = inject(FOO_REPOSITORY);
+
+  const handler = inject(FOO_CREATED_HANDLER, { optional: true });
+
+  const fooCreatedHandler: readonly FooCreatedHandler[] | null =
+    handler == null ? null : Array.isArray(handler) ? handler : [handler];
+
+  const onSuccess =
+    fooCreatedHandler == null
+      ? undefined
+      : (createFoo: CreateFoo, fooCreated: FooCreated) => {
+          fooCreatedHandler.forEach((handler) => handler.handle(fooCreated));
+        };
 
   const formIsNotValid = formNotValid(form);
   const call = injectServiceCall(
@@ -114,10 +84,6 @@ export const provideCreateFoo = (): Provider[] => [
   {
     provide: CREATE_FOO_SOURCE,
     useFactory: injectCreateFooSourceFromForm,
-  },
-  {
-    provide: CREATE_FOO_ON_SUCCESS,
-    useFactory: injectCreateFooOnSuccessFromConfig,
   },
   {
     provide: CREATE_FOO_SERVICE,

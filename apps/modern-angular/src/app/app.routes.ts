@@ -1,13 +1,15 @@
 import { Route } from '@angular/router';
-import { provideFooInMemoryRepository } from './foos/infrastructure';
-import { provideCreateFooServiceConfig } from './foos/public';
+import {
+  provideFooInMemoryRepository,
+  provideNavigateToUpdateOnFooCreated,
+} from './foos/infrastructure';
 
 export const appRoutes: Route[] = [
   {
     path: 'foos',
     providers: [
       provideFooInMemoryRepository(),
-      provideCreateFooServiceConfig({ onSuccess: 'UPDATE' }),
+      provideNavigateToUpdateOnFooCreated(),
     ],
     loadChildren: () => import('./foos/public').then((m) => m.FOO_ROUTES),
   },

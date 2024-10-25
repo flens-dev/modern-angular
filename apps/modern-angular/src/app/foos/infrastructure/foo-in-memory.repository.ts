@@ -16,7 +16,9 @@ import type {
   ReadFooResponse,
   UpdateFoo,
 } from '../model';
-import { FooRepository, provideFooRepository } from '../public';
+import type { FooRepository } from '../public';
+
+import { provideFooRepository } from '../public';
 
 @Injectable({
   providedIn: 'root',
@@ -150,6 +152,5 @@ export class FooInMemoryRepository implements FooRepository {
   }
 }
 
-export const provideFooInMemoryRepository = provideFooRepository(
-  FooInMemoryRepository,
-);
+export const provideFooInMemoryRepository = () =>
+  provideFooRepository(FooInMemoryRepository);
