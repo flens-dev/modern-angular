@@ -16,6 +16,7 @@ import {
   provideRouter,
   Router,
   RouterOutlet,
+  Routes,
   withComponentInputBinding,
 } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
@@ -43,7 +44,7 @@ import { FooCreateComponent } from './foo-create.component';
 })
 export class NoopComponent {}
 
-const testRoutes: FooRoutes = [
+const testFooRoutes: FooRoutes = [
   {
     path: 'create',
     component: FooCreateComponent,
@@ -55,6 +56,13 @@ const testRoutes: FooRoutes = [
   {
     path: '',
     component: NoopComponent,
+  },
+];
+
+const testRoutes: Routes = [
+  {
+    path: 'foos',
+    children: testFooRoutes,
   },
 ];
 
@@ -141,10 +149,10 @@ describe('FooCreateComponent with UPDATE', () => {
   });
 
   it('should submit CreateFoo with given input and navigate to :fooId/update', async () => {
-    const routerHarness = await RouterTestingHarness.create('/create');
+    const routerHarness = await RouterTestingHarness.create('/foos/create');
 
     const http = TestBed.inject(HttpTestingController);
-    const location = TestBed.inject(Location);
+    const router = TestBed.inject(Router);
 
     const foo: Foo = {
       name: 'Test',
@@ -167,7 +175,7 @@ describe('FooCreateComponent with UPDATE', () => {
 
     await routerHarness.fixture.whenStable();
 
-    expect(location.path()).toEqual('/1/update');
+    expect(router.url).toEqual('/foos/1/update');
 
     http.verify();
   });
@@ -179,13 +187,13 @@ describe('FooCreateComponent with BACK', () => {
   });
 
   it('should submit CreateFoo with given input and navigate back to first route', async () => {
-    const routerHarness = await RouterTestingHarness.create('/');
+    const routerHarness = await RouterTestingHarness.create('/foos');
     const http = TestBed.inject(HttpTestingController);
     const location = TestBed.inject(Location);
 
-    expect(location.path()).toEqual('/');
-    await routerHarness.navigateByUrl('/create');
-    expect(location.path()).toEqual('/create');
+    expect(location.path()).toEqual('/foos');
+    await routerHarness.navigateByUrl('/foos/create');
+    expect(location.path()).toEqual('/foos/create');
 
     const foo: Foo = {
       name: 'Test',
@@ -208,7 +216,7 @@ describe('FooCreateComponent with BACK', () => {
 
     await routerHarness.fixture.whenStable();
 
-    expect(location.path()).toEqual('/');
+    expect(location.path()).toEqual('/foos');
 
     http.verify();
   });
@@ -230,13 +238,13 @@ describe('FooCreateComponent with Testing Library', () => {
       imports: [RouterOutlet],
     });
 
-    const routerHarness = await RouterTestingHarness.create('/');
+    const routerHarness = await RouterTestingHarness.create('/foos');
     const http = renderResult.debugElement.injector.get(HttpTestingController);
     const router = renderResult.debugElement.injector.get(Router);
 
-    expect(router.url).toEqual('/');
-    await routerHarness.navigateByUrl('/create');
-    expect(router.url).toEqual('/create');
+    expect(router.url).toEqual('/foos');
+    await routerHarness.navigateByUrl('/foos/create');
+    expect(router.url).toEqual('/foos/create');
 
     const submitButton = screen.getByTestId('submit');
     expect(submitButton).toBeDisabled();
@@ -249,7 +257,7 @@ describe('FooCreateComponent with Testing Library', () => {
     expectFooCreated(http, foo, fooCreated);
     await routerHarness.fixture.whenStable();
 
-    expect(router.url).toEqual('/1/update');
+    expect(router.url).toEqual('/foos/1/update');
 
     http.verify();
   });
