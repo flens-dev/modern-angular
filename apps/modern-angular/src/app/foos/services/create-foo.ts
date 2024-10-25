@@ -11,10 +11,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { map } from 'rxjs';
 
 import {
-  Immutable,
   ServiceCall,
-  ServiceCallOptions,
-  ValueSource,
   disableFormOnBusy,
   formNotValid,
   injectServiceCall,
@@ -29,36 +26,20 @@ import {
   provideFooForm,
   validateCreateFoo,
 } from '../model';
-
-import { FOO_REPOSITORY } from './foo.repository';
-
-export type CreateFooServiceConfig = Immutable<{
-  onSuccess?: 'UPDATE' | 'BACK';
-}>;
-
-export type CreateFooSource = ValueSource<CreateFoo>;
-
-export type CreateFooOnSuccess = ServiceCallOptions<
-  CreateFoo,
-  FooCreated
->['onSuccess'];
+import {
+  CREATE_FOO_ON_SUCCESS,
+  CREATE_FOO_SERVICE_CONFIG,
+  CREATE_FOO_SOURCE,
+  CreateFooOnSuccess,
+  CreateFooSource,
+  FOO_REPOSITORY,
+} from '../public';
 
 export type CreateFooService = {
   readonly call: ServiceCall<CreateFoo, FooCreated>;
   readonly form: FooFormGroup;
   readonly submitDisabled: Signal<boolean>;
 };
-
-export const CREATE_FOO_SERVICE_CONFIG =
-  new InjectionToken<CreateFooServiceConfig>('CreateFooServiceConfig');
-
-export const CREATE_FOO_SOURCE = new InjectionToken<CreateFooSource>(
-  'CreateFooSource',
-);
-
-export const CREATE_FOO_ON_SUCCESS = new InjectionToken<CreateFooOnSuccess>(
-  'CreateFooOnSuccess',
-);
 
 export const CREATE_FOO_SERVICE = new InjectionToken<CreateFooService>(
   'CreateFooService',
@@ -127,15 +108,6 @@ export const injectCreateFooService = (): CreateFooService => {
     submitDisabled,
   };
 };
-
-export const provideCreateFooServiceConfig = (
-  config?: CreateFooServiceConfig,
-): Provider[] => [
-  {
-    provide: CREATE_FOO_SERVICE_CONFIG,
-    useValue: config,
-  },
-];
 
 export const provideCreateFoo = (): Provider[] => [
   provideFooForm(),

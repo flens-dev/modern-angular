@@ -15,7 +15,7 @@ import {
   validateUpdateFoo,
 } from '../model';
 
-import { FOO_REPOSITORY } from './foo.repository';
+import { FOO_REPOSITORY } from '../public';
 
 export const injectUpdateFoo = (options: {
   request: ValueSource<UpdateFoo>;

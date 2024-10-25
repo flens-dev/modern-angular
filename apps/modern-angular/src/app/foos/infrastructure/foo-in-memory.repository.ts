@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { Observable, map, timer } from 'rxjs';
 
-import {
+import type {
   CreateFoo,
   DeleteFoo,
   Foo,
@@ -16,7 +16,7 @@ import {
   ReadFooResponse,
   UpdateFoo,
 } from '../model';
-import { FooRepository, provideFooRepository } from '../services';
+import { FooRepository, provideFooRepository } from '../public';
 
 @Injectable({
   providedIn: 'root',

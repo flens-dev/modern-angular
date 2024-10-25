@@ -15,7 +15,7 @@ import {
   validateDeleteFoo,
 } from '../model';
 
-import { FOO_REPOSITORY } from './foo.repository';
+import { FOO_REPOSITORY } from '../public';
 
 export const injectDeleteFoo = (options: {
   request: ValueSource<DeleteFoo>;

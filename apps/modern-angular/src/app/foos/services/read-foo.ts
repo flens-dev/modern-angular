@@ -13,7 +13,7 @@ import {
   validateReadFoo,
 } from '../model';
 
-import { FOO_REPOSITORY } from './foo.repository';
+import { FOO_REPOSITORY } from '../public';
 
 export const injectReadFoo = (options: {
   request: ValueSource<ReadFooRequest>;

@@ -26,11 +26,12 @@ import { userEvent } from '@testing-library/user-event';
 
 import { provideFooHttpRepository } from '../infrastructure';
 import { Foo, FooCreated } from '../model';
+
 import {
   CreateFooServiceConfig,
+  FooRoutes,
   provideCreateFooServiceConfig,
-} from '../services';
-import { FooChildRoutes } from '../foos.routes';
+} from '../public';
 
 import { FooCreateComponent } from './foo-create.component';
 
@@ -42,7 +43,7 @@ import { FooCreateComponent } from './foo-create.component';
 })
 export class NoopComponent {}
 
-const testRoutes: FooChildRoutes = [
+const testRoutes: FooRoutes = [
   {
     path: 'create',
     component: FooCreateComponent,

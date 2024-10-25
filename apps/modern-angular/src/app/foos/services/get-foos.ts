@@ -8,7 +8,7 @@ import {
 
 import { GetFoosResponse, GetFoosRequest, validateGetFoos } from '../model';
 
-import { FOO_REPOSITORY } from './foo.repository';
+import { FOO_REPOSITORY } from '../public';
 
 export const injectGetFoos = (options: {
   request: ValueSource<GetFoosRequest>;
