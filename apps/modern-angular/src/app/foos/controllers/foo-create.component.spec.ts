@@ -5,12 +5,13 @@ import {
   provideHttpClientTesting,
 } from '@angular/common/http/testing';
 import { provideLocationMocks } from '@angular/common/testing';
-import { ChangeDetectionStrategy, Component, Provider } from '@angular/core';
 import {
-  ComponentFixture,
-  ComponentFixtureAutoDetect,
-  TestBed,
-} from '@angular/core/testing';
+  ChangeDetectionStrategy,
+  Component,
+  provideExperimentalZonelessChangeDetection,
+  Provider,
+} from '@angular/core';
+import { ComponentFixtureAutoDetect, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import {
   provideRouter,
@@ -69,6 +70,7 @@ const testRoutes: Routes = [
 const byTestId = (testid: string) => By.css(`[data-testid="${testid}"]`);
 
 const testProviders = () => [
+  provideExperimentalZonelessChangeDetection(),
   { provide: ComponentFixtureAutoDetect, useValue: true },
   provideRouter(testRoutes, withComponentInputBinding()),
   provideLocationMocks(),
@@ -86,35 +88,6 @@ const configureTestBed = (additionalProviders: Provider[] = []) => {
     imports: [FooCreateComponent, NoopComponent],
   }).compileComponents();
 };
-
-describe('FooCreateComponent', () => {
-  let fixture: ComponentFixture<FooCreateComponent>;
-
-  beforeEach(async () => {
-    await configureTestBed();
-    fixture = TestBed.createComponent(FooCreateComponent);
-  });
-
-  it('should create', () => {
-    expect(fixture.componentInstance).toBeDefined();
-  });
-
-  it('should have a disabled submit button', () => {
-    const btnSubmit = fixture.debugElement.query(byTestId('submit'));
-
-    expect(btnSubmit.nativeElement.disabled).toBeTruthy();
-  });
-
-  it('should have an enabled submit button when input is valid', () => {
-    const inputName = fixture.debugElement.query(byTestId('name-input'));
-    inputName.nativeElement.value = 'Test';
-    inputName.nativeElement.dispatchEvent(new Event('input'));
-
-    const btnSubmit = fixture.debugElement.query(byTestId('submit'));
-
-    expect(btnSubmit.nativeElement.disabled).toBeFalsy();
-  });
-});
 
 const enterFoo = async (foo: Foo) => {
   const nameInput = screen.getByTestId('name-input');
@@ -222,7 +195,30 @@ describe('FooCreateComponent with BACK', () => {
   });
 });
 
-describe('FooCreateComponent with Testing Library', () => {
+describe('FooCreateComponent', () => {
+  it('should have a disabled submit button', async () => {
+    await render(FooCreateComponent, {
+      providers: [testProviders()],
+    });
+
+    const submitButton = screen.getByTestId('submit');
+    expect(submitButton).toBeDisabled();
+  });
+
+  it('should have an enabled submit button when input is valid', async () => {
+    await render(FooCreateComponent, {
+      providers: [testProviders()],
+    });
+
+    const submitButton = screen.getByTestId('submit');
+
+    const nameInput = screen.getByTestId('name-input');
+    await userEvent.click(nameInput);
+    await userEvent.keyboard('Test');
+
+    expect(submitButton).toBeEnabled();
+  });
+
   it('should submit CreateFoo with given input and navigate to :fooId/update', async () => {
     const foo: Foo = {
       name: 'Test',

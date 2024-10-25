@@ -13,7 +13,7 @@
         "outputPath": "dist/apps/modern-angular",
         "index": "apps/modern-angular/src/index.html",
         "browser": "apps/modern-angular/src/main.ts",
-        "polyfills": ["zone.js"],
+        "polyfills": [],
         "tsConfig": "apps/modern-angular/tsconfig.app.json",
         "assets": [
           {
