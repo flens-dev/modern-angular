@@ -1,4 +1,3 @@
-import { Location } from '@angular/common';
 import { inject, Injectable, Provider } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -33,24 +32,6 @@ export const provideNavigateToUpdateOnFooCreated = (): Provider[] => [
   {
     provide: FOO_CREATED_HANDLER,
     useExisting: NavigateToUpdateOnFooCreatedService,
-    multi: true,
-  },
-];
-
-@Injectable()
-export class LocationBackOnFooCreatedService implements FooCreatedHandler {
-  readonly #location = inject(Location);
-
-  handle(fooCreated: FooCreated) {
-    this.#location.back();
-  }
-}
-
-export const provideLocationBackOnFooCreated = (): Provider[] => [
-  LocationBackOnFooCreatedService,
-  {
-    provide: FOO_CREATED_HANDLER,
-    useExisting: LocationBackOnFooCreatedService,
     multi: true,
   },
 ];
