@@ -22,7 +22,7 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-foos-search-form',
   templateUrl: './foos-search-form.component.html',
-  styleUrl: '../foos.css',
+  styleUrl: '../common.css',
   providers: [provideFoosSearchForm()],
   imports: [ReactiveFormsModule],
 })

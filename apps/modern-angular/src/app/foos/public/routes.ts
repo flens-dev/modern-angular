@@ -17,19 +17,19 @@ export const FOO_ROUTES: FooRoutes = [
     path: 'create',
     loadComponent: () =>
       import('../controllers').then(
-        ({ FooCreateComponent }) => FooCreateComponent,
+        ({ CreateFooComponent }) => CreateFooComponent,
       ),
   },
   {
     path: ':fooId/update',
     loadComponent: () =>
       import('../controllers').then(
-        ({ FooUpdateComponent }) => FooUpdateComponent,
+        ({ UpdateFooComponent }) => UpdateFooComponent,
       ),
   },
   {
     path: '',
     loadComponent: () =>
-      import('../controllers').then(({ FoosComponent }) => FoosComponent),
+      import('../controllers').then(({ GetFoosComponent }) => GetFoosComponent),
   },
 ];

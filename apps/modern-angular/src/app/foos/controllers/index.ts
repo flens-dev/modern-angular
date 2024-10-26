@@ -1,3 +1,3 @@
-export * from './foo-create.component';
-export * from './foo-update.component';
-export * from './foos.component';
+export * from './create-foo.component';
+export * from './update-foo.component';
+export * from './get-foos.component';

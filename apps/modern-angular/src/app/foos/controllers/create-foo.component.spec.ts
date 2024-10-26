@@ -35,7 +35,7 @@ import {
 } from '../infrastructure';
 import type { FooRoutes } from '../public';
 
-import { FooCreateComponent } from './foo-create.component';
+import { CreateFooComponent } from './create-foo.component';
 
 @Component({
   standalone: true,
@@ -48,7 +48,7 @@ export class NoopComponent {}
 const testFooRoutes: FooRoutes = [
   {
     path: 'create',
-    component: FooCreateComponent,
+    component: CreateFooComponent,
   },
   {
     path: ':fooId/update',
@@ -85,7 +85,7 @@ const configureTestBed = (additionalProviders: Provider[] = []) => {
       destroyAfterEach: true,
     },
     providers: [testProviders(), additionalProviders],
-    imports: [FooCreateComponent, NoopComponent],
+    imports: [CreateFooComponent, NoopComponent],
   }).compileComponents();
 };
 
@@ -197,7 +197,7 @@ describe('FooCreateComponent with BACK', () => {
 
 describe('FooCreateComponent', () => {
   it('should have a disabled submit button', async () => {
-    await render(FooCreateComponent, {
+    await render(CreateFooComponent, {
       providers: [testProviders()],
     });
 
@@ -206,7 +206,7 @@ describe('FooCreateComponent', () => {
   });
 
   it('should have an enabled submit button when input is valid', async () => {
-    await render(FooCreateComponent, {
+    await render(CreateFooComponent, {
       providers: [testProviders()],
     });
 

@@ -34,13 +34,13 @@ import { FooFormComponent } from '../views';
 @Component({
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'app-foo-update',
+  selector: 'app-update-foo',
   providers: [provideFooForm()],
   imports: [ReactiveFormsModule, ServiceCallStateComponent, FooFormComponent],
-  styleUrl: '../foos.css',
-  templateUrl: './foo-update.component.html',
+  styleUrl: '../common.css',
+  templateUrl: './update-foo.component.html',
 })
-export class FooUpdateComponent {
+export class UpdateFooComponent {
   readonly #location = inject(Location);
 
   protected readonly form = inject(FOO_FORM);

@@ -9,11 +9,11 @@ import { FooFormComponent } from '../views';
 @Component({
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'app-foo-create',
+  selector: 'app-create-foo',
   providers: [provideCreateFoo()],
   imports: [ReactiveFormsModule, ServiceCallStateComponent, FooFormComponent],
-  templateUrl: './foo-create.component.html',
+  templateUrl: './create-foo.component.html',
 })
-export class FooCreateComponent {
+export class CreateFooComponent {
   protected readonly createFoo = inject(CREATE_FOO_SERVICE);
 }

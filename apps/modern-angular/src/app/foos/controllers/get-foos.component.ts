@@ -33,9 +33,9 @@ import { FooListItemComponent, FoosSearchFormComponent } from '../views';
 @Component({
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'app-foos',
-  templateUrl: './foos.component.html',
-  styleUrl: '../foos.css',
+  selector: 'app-get-foos',
+  templateUrl: './get-foos.component.html',
+  styleUrl: '../common.css',
   imports: [
     ReactiveFormsModule,
     RouterLink,
@@ -45,7 +45,7 @@ import { FooListItemComponent, FoosSearchFormComponent } from '../views';
     FoosSearchFormComponent,
   ],
 })
-export class FoosComponent {
+export class GetFoosComponent {
   readonly #router = inject(Router);
 
   protected readonly isSuccessState: typeof isSuccessState<
