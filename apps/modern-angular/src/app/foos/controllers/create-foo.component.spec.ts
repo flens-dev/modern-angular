@@ -9,10 +9,8 @@ import {
   ChangeDetectionStrategy,
   Component,
   provideExperimentalZonelessChangeDetection,
-  Provider,
 } from '@angular/core';
 import { ComponentFixtureAutoDetect, TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
 import {
   provideRouter,
   Router,
@@ -67,8 +65,6 @@ const testRoutes: Routes = [
   },
 ];
 
-const byTestId = (testid: string) => By.css(`[data-testid="${testid}"]`);
-
 const testProviders = () => [
   provideExperimentalZonelessChangeDetection(),
   { provide: ComponentFixtureAutoDetect, useValue: true },
@@ -78,16 +74,6 @@ const testProviders = () => [
   provideHttpClientTesting(),
   provideFooHttpRepository(),
 ];
-
-const configureTestBed = (additionalProviders: Provider[] = []) => {
-  return TestBed.configureTestingModule({
-    teardown: {
-      destroyAfterEach: true,
-    },
-    providers: [testProviders(), additionalProviders],
-    imports: [CreateFooComponent, NoopComponent],
-  }).compileComponents();
-};
 
 const enterFoo = async (foo: Foo) => {
   const nameInput = screen.getByTestId('name-input');
@@ -116,87 +102,11 @@ const expectFooCreated = (
   createFooRequest.flush(fooCreated);
 };
 
-describe('FooCreateComponent with UPDATE', () => {
-  beforeEach(async () => {
-    await configureTestBed(provideNavigateToUpdateOnFooCreated());
-  });
-
-  it('should submit CreateFoo with given input and navigate to :fooId/update', async () => {
-    const routerHarness = await RouterTestingHarness.create('/foos/create');
-
-    const http = TestBed.inject(HttpTestingController);
-    const router = TestBed.inject(Router);
-
-    const foo: Foo = {
-      name: 'Test',
-      count: 4,
-    };
-    const fooCreated: FooCreated = {
-      fooId: '1',
-      foo,
-    };
-
-    await enterFoo(foo);
-
-    const btnSubmit = routerHarness.fixture.debugElement.query(
-      byTestId('submit'),
-    );
-
-    btnSubmit.nativeElement.click();
-
-    expectFooCreated(http, foo, fooCreated);
-
-    await routerHarness.fixture.whenStable();
-
-    expect(router.url).toEqual('/foos/1/update');
-
-    http.verify();
-  });
-});
-
-describe('FooCreateComponent with BACK', () => {
-  beforeEach(async () => {
-    await configureTestBed(provideLocationBackOnFooCreated());
-  });
-
-  it('should submit CreateFoo with given input and navigate back to first route', async () => {
-    const routerHarness = await RouterTestingHarness.create('/foos');
-    const http = TestBed.inject(HttpTestingController);
-    const location = TestBed.inject(Location);
-
-    expect(location.path()).toEqual('/foos');
-    await routerHarness.navigateByUrl('/foos/create');
-    expect(location.path()).toEqual('/foos/create');
-
-    const foo: Foo = {
-      name: 'Test',
-      count: 4,
-    };
-    const fooCreated: FooCreated = {
-      fooId: '1',
-      foo,
-    };
-
-    await enterFoo(foo);
-
-    const btnSubmit = routerHarness.fixture.debugElement.query(
-      byTestId('submit'),
-    );
-
-    btnSubmit.nativeElement.click();
-
-    expectFooCreated(http, foo, fooCreated);
-
-    await routerHarness.fixture.whenStable();
-
-    expect(location.path()).toEqual('/foos');
-
-    http.verify();
-  });
-});
-
 describe('FooCreateComponent', () => {
-  it('should have a disabled submit button', async () => {
+  it(`
+    GIVEN a 'create foo' component
+    WHEN not providing valid data
+    THEN the submit button should be disabled`, async () => {
     await render(CreateFooComponent, {
       providers: [testProviders()],
     });
@@ -205,7 +115,10 @@ describe('FooCreateComponent', () => {
     expect(submitButton).toBeDisabled();
   });
 
-  it('should have an enabled submit button when input is valid', async () => {
+  it(`
+    GIVEN a 'create foo' component
+    WHEN entering valid data
+    THEN the submit button should be enabled`, async () => {
     await render(CreateFooComponent, {
       providers: [testProviders()],
     });
@@ -219,7 +132,10 @@ describe('FooCreateComponent', () => {
     expect(submitButton).toBeEnabled();
   });
 
-  it('should submit CreateFoo with given input and navigate to :fooId/update', async () => {
+  it(`
+    GIVEN a 'navigate to update' configuration
+    WHEN creating a foo
+    THEN the app should navigate to the 'update foo' route with the id of the created foo`, async () => {
     const foo: Foo = {
       name: 'Test',
       count: 4,
@@ -254,6 +170,48 @@ describe('FooCreateComponent', () => {
     await routerHarness.fixture.whenStable();
 
     expect(router.url).toEqual('/foos/1/update');
+
+    http.verify();
+  });
+
+  it(`
+    GIVEN a 'navigate back' configuration
+    WHEN creating a foo
+    THEN the app should navigate to the previous route`, async () => {
+    const foo: Foo = {
+      name: 'Test',
+      count: 4,
+    };
+    const fooCreated: FooCreated = {
+      fooId: '1',
+      foo,
+    };
+
+    const renderResult = await render('<router-outlet />', {
+      providers: [testProviders(), provideLocationBackOnFooCreated()],
+      imports: [RouterOutlet],
+    });
+
+    const routerHarness = await RouterTestingHarness.create('/foos');
+    const http = renderResult.debugElement.injector.get(HttpTestingController);
+    const location = TestBed.inject(Location);
+
+    expect(location.path()).toEqual('/foos');
+    await routerHarness.navigateByUrl('/foos/create');
+    expect(location.path()).toEqual('/foos/create');
+
+    const submitButton = screen.getByTestId('submit');
+    expect(submitButton).toBeDisabled();
+
+    await enterFoo(foo);
+
+    expect(submitButton).toBeEnabled();
+    await userEvent.click(submitButton);
+
+    expectFooCreated(http, foo, fooCreated);
+    await routerHarness.fixture.whenStable();
+
+    expect(location.path()).toEqual('/foos');
 
     http.verify();
   });
