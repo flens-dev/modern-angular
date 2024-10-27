@@ -55,8 +55,12 @@ export const injectCreateFooService = (): CreateFooService => {
   const onSuccess =
     fooCreatedHandler == null
       ? undefined
-      : (createFoo: CreateFoo, fooCreated: FooCreated) => {
-          fooCreatedHandler.forEach((handler) => handler.handle(fooCreated));
+      : async (createFoo: CreateFoo, fooCreated: FooCreated) => {
+          await Promise.allSettled(
+            fooCreatedHandler.map((handler) =>
+              Promise.resolve(handler.handle(fooCreated)),
+            ),
+          );
         };
 
   const formIsNotValid = formNotValid(form);

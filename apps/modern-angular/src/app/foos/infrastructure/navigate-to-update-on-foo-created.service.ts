@@ -11,13 +11,13 @@ export class NavigateToUpdateOnFooCreatedService implements FooCreatedHandler {
   readonly #router = inject(Router);
   readonly #route = inject(ActivatedRoute);
 
-  handle(fooCreated: FooCreated) {
+  async handle(fooCreated: FooCreated) {
     let route = this.#route;
     while (route.firstChild != null) {
       route = route.firstChild;
     }
 
-    this.#router.navigate(
+    await this.#router.navigate(
       ['..', encodeURIComponent(fooCreated.fooId), 'update'],
       {
         replaceUrl: true,

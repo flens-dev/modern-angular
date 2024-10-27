@@ -6,6 +6,7 @@ import {
   Subject,
   catchError,
   concatMap,
+  filter,
   from,
   map,
   merge,
@@ -14,6 +15,7 @@ import {
   startWith,
   switchMap,
   takeUntil,
+  distinctUntilChanged,
 } from 'rxjs';
 import { sourceToObservable, ValueSource } from './value-source';
 
@@ -114,7 +116,10 @@ export type ServiceCallOptions<TRequest, TResponse> = {
   readonly resetOn?: Observable<unknown>;
   readonly autoResetOnSuccess?: boolean;
   readonly onBusyChange?: (busy: boolean) => void;
-  readonly onSuccess?: (request: TRequest, response: TResponse) => void;
+  readonly onSuccess?: (
+    request: TRequest,
+    response: TResponse,
+  ) => Promise<void> | void;
 };
 
 const defaultServiceCallOptions: ServiceCallOptions<unknown, unknown> = {
@@ -194,17 +199,22 @@ export const injectServiceCall = <TRequest, TResponse>(
 
   const state$ = setupServiceCall($request$, serviceFn, options);
 
-  if (options.onSuccess || options.onBusyChange) {
-    state$.pipe(takeUntilDestroyed(options.destroyRef)).subscribe({
-      next: (state) => {
-        if (options.onBusyChange) {
-          options.onBusyChange(state.type === 'BUSY');
-        }
+  const onBusyChange = options.onBusyChange;
+  if (onBusyChange != null) {
+    state$
+      .pipe(
+        map((state) => state.type === 'BUSY'),
+        distinctUntilChanged(),
+      )
+      .subscribe({
+        next: (busy) => onBusyChange(busy),
+      });
+  }
 
-        if (options.onSuccess && state.type === 'SUCCESS') {
-          options.onSuccess(state.request, state.response);
-        }
-      },
+  const onSuccess = options.onSuccess;
+  if (onSuccess != null) {
+    state$.pipe(filter((state) => state.type === 'SUCCESS')).subscribe({
+      next: (state) => onSuccess(state.request, state.response),
     });
   }
 
