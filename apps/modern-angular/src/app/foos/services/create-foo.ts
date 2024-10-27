@@ -47,7 +47,6 @@ export const injectCreateFooService = (): CreateFooService => {
   const form = inject(FOO_FORM);
   const source = inject(CREATE_FOO_SOURCE);
   const repository = inject(FOO_REPOSITORY);
-
   const fooCreatedHandler = injectMulti(FOO_CREATED_HANDLER, {
     optional: true,
   });
