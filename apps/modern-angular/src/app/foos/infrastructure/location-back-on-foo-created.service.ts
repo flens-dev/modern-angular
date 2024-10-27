@@ -2,8 +2,9 @@ import { inject, Injectable, Provider } from '@angular/core';
 import { Location } from '@angular/common';
 
 import type { FooCreated } from '../model';
+import type { FooCreatedHandler } from '../public';
 
-import { FOO_CREATED_HANDLER, FooCreatedHandler } from '../public';
+import { FOO_CREATED_HANDLER } from '../public';
 
 @Injectable()
 export class LocationBackOnFooCreatedService implements FooCreatedHandler {
