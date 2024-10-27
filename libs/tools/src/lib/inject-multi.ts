@@ -16,6 +16,5 @@ export function injectMulti<T>(
   options?: InjectOptions,
 ): T[] | null {
   const values = options == null ? inject(token) : inject(token, options);
-  console.log(values);
   return values == null ? null : Array.isArray(values) ? values : [values];
 }
