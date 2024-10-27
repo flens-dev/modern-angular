@@ -12,12 +12,13 @@ import {
   ServiceCall,
   disableFormOnBusy,
   formNotValid,
+  injectMulti,
   injectServiceCall,
   validFormSubmit,
 } from '@flens-dev/tools';
 
 import type { CreateFoo, FooCreated, FooFormGroup } from '../model';
-import type { CreateFooSource, FooCreatedHandler } from '../public';
+import type { CreateFooSource } from '../public';
 
 import { FOO_FORM, provideFooForm, validateCreateFoo } from '../model';
 import {
@@ -47,10 +48,9 @@ export const injectCreateFooService = (): CreateFooService => {
   const source = inject(CREATE_FOO_SOURCE);
   const repository = inject(FOO_REPOSITORY);
 
-  const handler = inject(FOO_CREATED_HANDLER, { optional: true });
-
-  const fooCreatedHandler: readonly FooCreatedHandler[] | null =
-    handler == null ? null : Array.isArray(handler) ? handler : [handler];
+  const fooCreatedHandler = injectMulti(FOO_CREATED_HANDLER, {
+    optional: true,
+  });
 
   const onSuccess =
     fooCreatedHandler == null
