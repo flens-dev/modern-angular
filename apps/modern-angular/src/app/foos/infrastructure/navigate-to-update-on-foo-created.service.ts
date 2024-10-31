@@ -11,7 +11,7 @@ export class NavigateToUpdateOnFooCreatedService implements FooCreatedHandler {
   readonly #router = inject(Router);
   readonly #route = inject(ActivatedRoute);
 
-  async handle(fooCreated: FooCreated) {
+  async handleFooCreated(fooCreated: FooCreated) {
     let route = this.#route;
     while (route.firstChild != null) {
       route = route.firstChild;

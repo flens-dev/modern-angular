@@ -57,7 +57,7 @@ export const injectCreateFooService = (): CreateFooService => {
       : async (createFoo: CreateFoo, fooCreated: FooCreated) => {
           await Promise.allSettled(
             fooCreatedHandler.map((handler) =>
-              Promise.resolve(handler.handle(fooCreated)),
+              Promise.resolve(handler.handleFooCreated(fooCreated)),
             ),
           );
         };

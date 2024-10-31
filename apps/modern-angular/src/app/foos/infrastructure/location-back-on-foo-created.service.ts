@@ -10,7 +10,7 @@ import { FOO_CREATED_HANDLER } from '../public';
 export class LocationBackOnFooCreatedService implements FooCreatedHandler {
   readonly #location = inject(Location);
 
-  handle(fooCreated: FooCreated) {
+  handleFooCreated(fooCreated: FooCreated) {
     this.#location.back();
   }
 }

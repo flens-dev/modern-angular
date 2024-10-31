@@ -7,7 +7,7 @@ import type { CreateFoo, FooCreated } from '../model';
 export type CreateFooSource = ValueSource<CreateFoo>;
 
 export type FooCreatedHandler = {
-  readonly handle: (fooCreated: FooCreated) => Promise<void> | void;
+  readonly handleFooCreated: (fooCreated: FooCreated) => Promise<void> | void;
 };
 
 export const CREATE_FOO_SOURCE = new InjectionToken<CreateFooSource>(
