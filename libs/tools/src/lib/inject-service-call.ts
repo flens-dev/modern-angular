@@ -172,11 +172,11 @@ const setupServiceCall = <TRequest, TResponse>(
  * Depending on the behavior specified in the options the preceding call may be cancelled.
  *
  * Starting at "IDLE" the state transitions to "BUSY" as soon as a request is emitted.
- * If the service call succeeds the state switches to "SUCCESS", if an error occures it will be "ERROR".
+ * If the service call succeeds the state switches to "SUCCESS", if an error occurs it will be "ERROR".
  *
  * With the returned `reset()` function or provided `resetOn` observable the service call can be cancelled and reset to "IDLE".
  * With `autoResetOnSuccess` enabled, every "SUCCESS" state is immediately followed by an "IDLE" state.
- * This may be usefull on service calls where the response is not needed, but just the execution of the call.
+ * This may be useful on service calls where the response is not needed, but just the execution of the call.
  *
  * `injectServiceCall` is intended to be called inside an injection context.
  */
