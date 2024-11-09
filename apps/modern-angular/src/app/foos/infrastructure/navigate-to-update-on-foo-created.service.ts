@@ -1,9 +1,7 @@
 import { inject, Injectable, Provider } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import type { FooCreated } from '../model';
-import type { FooCreatedHandler } from '../public';
-
+import type { FooCreated, FooCreatedHandler } from '../public';
 import { FOO_CREATED_HANDLER } from '../public';
 
 @Injectable()

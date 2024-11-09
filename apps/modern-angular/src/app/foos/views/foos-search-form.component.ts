@@ -11,11 +11,9 @@ import { ReactiveFormsModule } from '@angular/forms';
 
 import { formNotValid, validFormSubmit } from '@flens-dev/tools';
 
-import {
-  FOOS_SEARCH_FORM,
-  GetFoosRequest,
-  provideFoosSearchForm,
-} from '../model';
+import type { GetFoosRequest } from '../public';
+
+import { FOOS_SEARCH_FORM, provideFoosSearchForm } from '../model';
 
 @Component({
   standalone: true,

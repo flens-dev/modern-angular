@@ -17,15 +17,15 @@ import {
   validFormSubmit,
 } from '@flens-dev/tools';
 
-import type { CreateFoo, FooCreated, FooFormGroup } from '../model';
-import type { CreateFooSource } from '../public';
-
-import { FOO_FORM, provideFooForm, validateCreateFoo } from '../model';
+import type { CreateFoo, CreateFooSource, FooCreated } from '../public';
 import {
   CREATE_FOO_SOURCE,
   FOO_CREATED_HANDLER,
   FOO_REPOSITORY,
 } from '../public';
+
+import type { FooFormGroup } from '../model';
+import { FOO_FORM, provideFooForm, validateCreateFoo } from '../model';
 
 export type CreateFooService = {
   readonly call: ServiceCall<CreateFoo, FooCreated>;

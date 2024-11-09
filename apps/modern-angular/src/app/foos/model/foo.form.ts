@@ -1,7 +1,7 @@
+import { inject, InjectionToken, Provider } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder } from '@angular/forms';
 
-import { countValidator, initialFoo, nameValidator } from './foo.model';
-import { inject, InjectionToken, Provider } from '@angular/core';
+import { countValidator, initialFoo, nameValidator } from './foo.domain';
 
 export type FooFormGroup = FormGroup<{
   name: FormControl<string>;

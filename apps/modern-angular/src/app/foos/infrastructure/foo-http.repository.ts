@@ -8,15 +8,14 @@ import type {
   DeleteFoo,
   FooCreated,
   FooDeleted,
+  FooRepository,
   FooUpdated,
   GetFoosRequest,
   GetFoosResponse,
   ReadFooRequest,
   ReadFooResponse,
   UpdateFoo,
-} from '../model';
-import type { FooRepository } from '../public';
-
+} from '../public';
 import { provideFooRepository } from '../public';
 
 @Injectable({

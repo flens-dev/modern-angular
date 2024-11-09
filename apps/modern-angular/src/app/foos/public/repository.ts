@@ -3,9 +3,7 @@ import { Type, Provider, InjectionToken } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import type {
-  CreateFoo,
   DeleteFoo,
-  FooCreated,
   FooUpdated,
   FooDeleted,
   GetFoosRequest,
@@ -13,7 +11,8 @@ import type {
   ReadFooRequest,
   ReadFooResponse,
   UpdateFoo,
-} from '../model';
+} from './model';
+import type { CreateFoo, FooCreated } from './create-foo';
 
 export type FooRepository = {
   getFoos: (request: GetFoosRequest) => Observable<GetFoosResponse>;

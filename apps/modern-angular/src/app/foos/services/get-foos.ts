@@ -6,9 +6,10 @@ import {
   injectServiceCall,
 } from '@flens-dev/tools';
 
-import { GetFoosResponse, GetFoosRequest, validateGetFoos } from '../model';
-
+import type { GetFoosResponse, GetFoosRequest } from '../public';
 import { FOO_REPOSITORY } from '../public';
+
+import { validateGetFoos } from '../model';
 
 export const injectGetFoos = (options: {
   request: ValueSource<GetFoosRequest>;

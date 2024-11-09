@@ -1,7 +1,7 @@
 import { inject, InjectionToken, Provider } from '@angular/core';
 import { FormControl, FormGroup, NonNullableFormBuilder } from '@angular/forms';
 
-import { FooOrderBy } from './foo.model';
+import type { FooOrderBy } from '../public';
 
 export type FoosSearchFormGroup = FormGroup<{
   withNameLike: FormControl<string | undefined>;

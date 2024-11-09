@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { Foo } from '../model';
+
+import type { Foo } from '../public';
 
 @Component({
   standalone: true,

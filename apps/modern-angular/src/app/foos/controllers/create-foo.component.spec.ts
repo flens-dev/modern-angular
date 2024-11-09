@@ -24,7 +24,7 @@ import { render, screen } from '@testing-library/angular';
 import '@testing-library/jest-dom';
 import { userEvent } from '@testing-library/user-event';
 
-import type { Foo, FooCreated } from '../model';
+import type { Foo, FooCreated } from '../public';
 
 import {
   provideFooHttpRepository,

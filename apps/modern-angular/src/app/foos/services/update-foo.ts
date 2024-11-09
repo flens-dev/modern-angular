@@ -8,14 +8,10 @@ import {
   injectServiceCall,
 } from '@flens-dev/tools';
 
-import {
-  FooFormGroup,
-  FooUpdated,
-  UpdateFoo,
-  validateUpdateFoo,
-} from '../model';
-
+import type { FooUpdated, UpdateFoo } from '../public';
 import { FOO_REPOSITORY } from '../public';
+
+import { FooFormGroup, validateUpdateFoo } from '../model';
 
 export const injectUpdateFoo = (options: {
   request: ValueSource<UpdateFoo>;

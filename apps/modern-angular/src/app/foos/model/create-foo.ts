@@ -1,10 +1,4 @@
-import { Immutable } from '@flens-dev/tools';
-
-import { Foo, FooId } from './foo.model';
-
-export type CreateFoo = Immutable<{
-  foo: Foo;
-}>;
+import type { CreateFoo } from '../public';
 
 export const validateCreateFoo = (command: CreateFoo): CreateFoo => {
   if (command == null) {
@@ -13,8 +7,3 @@ export const validateCreateFoo = (command: CreateFoo): CreateFoo => {
 
   return command;
 };
-
-export type FooCreated = Immutable<{
-  fooId: FooId;
-  foo: Foo;
-}>;

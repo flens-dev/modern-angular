@@ -6,14 +6,10 @@ import {
   injectServiceCall,
 } from '@flens-dev/tools';
 
-import {
-  FooFormGroup,
-  ReadFooResponse,
-  ReadFooRequest,
-  validateReadFoo,
-} from '../model';
-
+import type { ReadFooResponse, ReadFooRequest } from '../public';
 import { FOO_REPOSITORY } from '../public';
+
+import { FooFormGroup, validateReadFoo } from '../model';
 
 export const injectReadFoo = (options: {
   request: ValueSource<ReadFooRequest>;

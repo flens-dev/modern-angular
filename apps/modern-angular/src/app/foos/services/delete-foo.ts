@@ -8,14 +8,10 @@ import {
   injectServiceCall,
 } from '@flens-dev/tools';
 
-import {
-  DeleteFoo,
-  FooDeleted,
-  FooFormGroup,
-  validateDeleteFoo,
-} from '../model';
-
+import type { DeleteFoo, FooDeleted } from '../public';
 import { FOO_REPOSITORY } from '../public';
+
+import { FooFormGroup, validateDeleteFoo } from '../model';
 
 export const injectDeleteFoo = (options: {
   request: ValueSource<DeleteFoo>;

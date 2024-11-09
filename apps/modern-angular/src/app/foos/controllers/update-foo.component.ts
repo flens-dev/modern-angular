@@ -20,14 +20,9 @@ import {
   validFormSubmit,
 } from '@flens-dev/tools';
 
-import {
-  DeleteFoo,
-  FOO_FORM,
-  FooId,
-  provideFooForm,
-  ReadFooRequest,
-  UpdateFoo,
-} from '../model';
+import type { DeleteFoo, FooId, ReadFooRequest, UpdateFoo } from '../public';
+
+import { FOO_FORM, provideFooForm } from '../model';
 import { injectDeleteFoo, injectReadFoo, injectUpdateFoo } from '../services';
 import { FooFormComponent } from '../views';
 

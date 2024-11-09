@@ -13,6 +13,6 @@ export const appRoutes: Route[] = [
       //provideLocationBackOnFooCreated(),
       provideNavigateToUpdateOnFooCreated(),
     ],
-    loadChildren: () => import('./foos/public').then((m) => m.FOO_ROUTES),
+    loadChildren: () => import('./foos').then((m) => m.FOO_ROUTES),
   },
 ];

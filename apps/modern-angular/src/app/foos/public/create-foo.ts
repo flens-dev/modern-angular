@@ -1,8 +1,17 @@
 import { InjectionToken } from '@angular/core';
 
-import type { ValueSource } from '@flens-dev/tools';
+import type { Immutable, ValueSource } from '@flens-dev/tools';
 
-import type { CreateFoo, FooCreated } from '../model';
+import type { Foo, FooId } from './model';
+
+export type CreateFoo = Immutable<{
+  foo: Foo;
+}>;
+
+export type FooCreated = Immutable<{
+  fooId: FooId;
+  foo: Foo;
+}>;
 
 export type CreateFooSource = ValueSource<CreateFoo>;
 

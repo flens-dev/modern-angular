@@ -19,9 +19,9 @@ import {
   ServiceCallStateComponent,
 } from '@flens-dev/tools';
 
+import type { GetFoosRequest, GetFoosResponse } from '../public';
+
 import {
-  GetFoosRequest,
-  GetFoosResponse,
   areGetFoosRequestsEqual,
   transformOrderBy,
   transformWithMaxCount,
