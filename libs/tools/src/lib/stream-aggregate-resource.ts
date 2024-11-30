@@ -138,7 +138,6 @@ class StreamAggregateResource<TResource, TRequest, TResponse = TResource>
     return true;
   }
 
-  /** will only reload when in error state */
   reload(): boolean {
     const status = untracked(this.status);
     if (status === ResourceStatus.Error) {
@@ -150,6 +149,12 @@ class StreamAggregateResource<TResource, TRequest, TResponse = TResource>
   }
 }
 
+/**
+ * Aggregates all responses from the loader into the value of the resource.
+ * A new request triggers a new call of the loader.
+ * If not called in an injection context a DestroyRef must be provided.
+ * The reload method will only work if the resource is in error state.
+ */
 export const streamAggregateResource = <
   TResource,
   TRequest,
