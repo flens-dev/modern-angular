@@ -9,5 +9,6 @@ export * from './lib/inject-service-call';
 export * from './lib/outputs-of';
 export * from './lib/service-call-error.component';
 export * from './lib/service-call-state.component';
+export * from './lib/stream-aggregate-resource';
 export * from './lib/take-until-aborted';
 export * from './lib/value-source';
