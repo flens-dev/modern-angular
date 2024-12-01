@@ -47,8 +47,8 @@ export type StreamAggregateResourceOptions<
   TResponse = TResource,
 > = {
   readonly initialValue: TResource;
-  readonly request: Observable<TRequest>;
-  readonly loader: (request: TRequest) => Observable<TResponse>;
+  readonly request: Observable<TRequest | undefined>;
+  readonly loader: (request: NoInfer<TRequest>) => Observable<TResponse>;
   readonly aggregate: (accumulator: TResource, current: TResponse) => TResource;
   readonly destroyRef?: DestroyRef;
 };
@@ -68,7 +68,7 @@ class StreamAggregateResource<TResource, TRequest, TResponse = TResource>
 
   constructor(
     initialValue: TResource,
-    request: Observable<TRequest>,
+    request: Observable<TRequest | undefined>,
     loader: (request: TRequest) => Observable<TResponse>,
     aggregate: (accumulator: TResource, current: TResponse) => TResource,
     destroyRef: DestroyRef,
@@ -86,25 +86,44 @@ class StreamAggregateResource<TResource, TRequest, TResponse = TResource>
         this.status() === ResourceStatus.Reloading,
     );
 
-    combineLatest([request, this.#reload])
+    let lastRetryIndex = 0;
+    combineLatest([request, this.#reload.pipe(map((_, index) => index))])
       .pipe(
-        switchMap(([request]) =>
-          loader(request).pipe(
-            map((response) => ({
-              status: ResourceStatus.Resolved as const,
-              response,
-            })),
-            catchError((error) =>
-              of({
-                status: ResourceStatus.Error as const,
-                error,
+        switchMap(([request, retryIndex]) => {
+          const isReload = lastRetryIndex !== retryIndex;
+          lastRetryIndex = retryIndex;
+
+          if (request === undefined) {
+            return of({
+              status: ResourceStatus.Idle as const,
+            });
+          }
+
+          try {
+            return loader(request).pipe(
+              map((response) => ({
+                status: ResourceStatus.Resolved as const,
+                response,
+              })),
+              catchError((error) =>
+                of({
+                  status: ResourceStatus.Error as const,
+                  error,
+                }),
+              ),
+              startWith({
+                status: isReload
+                  ? (ResourceStatus.Reloading as const)
+                  : (ResourceStatus.Loading as const),
               }),
-            ),
-            startWith({
-              status: ResourceStatus.Loading as const,
-            }),
-          ),
-        ),
+            );
+          } catch (error) {
+            return of({
+              status: ResourceStatus.Error as const,
+              error,
+            });
+          }
+        }),
         takeUntilDestroyed(destroyRef),
       )
       .subscribe({
@@ -112,7 +131,9 @@ class StreamAggregateResource<TResource, TRequest, TResponse = TResource>
           this.#status.set(state.status);
 
           switch (state.status) {
-            case ResourceStatus.Loading: {
+            case ResourceStatus.Idle:
+            case ResourceStatus.Loading:
+            case ResourceStatus.Reloading: {
               this.#error.set(undefined);
               break;
             }
