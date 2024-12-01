@@ -1,5 +1,6 @@
 export * from './lib/forms';
 
+export * from './lib/abort-on-destroy';
 export * from './lib/error.pipe';
 export * from './lib/from-event-to-observable';
 export * from './lib/from-output-to-observable';
