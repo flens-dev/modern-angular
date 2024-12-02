@@ -10,15 +10,15 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import {
-  BehaviorSubject,
+  Subject,
   Observable,
   catchError,
-  combineLatest,
   map,
   of,
   startWith,
   switchMap,
 } from 'rxjs';
+import { combineReload } from './combine-reload';
 
 // TODO Remove when ported to Angular 19
 export enum ResourceStatus {
@@ -59,7 +59,7 @@ class StreamAggregateResource<TResource, TRequest, TResponse = TResource>
   readonly #value: WritableSignal<TResource>;
   readonly #status: WritableSignal<ResourceStatus>;
   readonly #error: WritableSignal<unknown>;
-  readonly #reload = new BehaviorSubject<true>(true);
+  readonly #reload = new Subject<void>();
 
   readonly value: Signal<TResource | undefined>;
   readonly status: Signal<ResourceStatus>;
@@ -68,7 +68,7 @@ class StreamAggregateResource<TResource, TRequest, TResponse = TResource>
 
   constructor(
     initialValue: TResource,
-    request: Observable<TRequest | undefined>,
+    request$: Observable<TRequest | undefined>,
     loader: (request: TRequest) => Observable<TResponse>,
     aggregate: (accumulator: TResource, current: TResponse) => TResource,
     destroyRef: DestroyRef,
@@ -86,13 +86,9 @@ class StreamAggregateResource<TResource, TRequest, TResponse = TResource>
         this.status() === ResourceStatus.Reloading,
     );
 
-    let lastRetryIndex = 0;
-    combineLatest([request, this.#reload.pipe(map((_, index) => index))])
+    combineReload(request$, this.#reload)
       .pipe(
-        switchMap(([request, retryIndex]) => {
-          const isReload = lastRetryIndex !== retryIndex;
-          lastRetryIndex = retryIndex;
-
+        switchMap(({ value: request, isReload }) => {
           if (request === undefined) {
             return of({
               status: ResourceStatus.Idle as const,
@@ -162,7 +158,7 @@ class StreamAggregateResource<TResource, TRequest, TResponse = TResource>
   reload(): boolean {
     const status = untracked(this.status);
     if (status === ResourceStatus.Error) {
-      this.#reload.next(true);
+      this.#reload.next();
       return true;
     }
 
