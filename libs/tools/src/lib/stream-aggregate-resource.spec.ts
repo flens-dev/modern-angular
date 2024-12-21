@@ -1,12 +1,9 @@
-import { DestroyRef, untracked } from '@angular/core';
+import { DestroyRef, ResourceStatus, untracked } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 
 import { NEVER, Observable, Subject, from, of } from 'rxjs';
 
-import {
-  ResourceStatus,
-  streamAggregateResource,
-} from './stream-aggregate-resource';
+import { streamAggregateResource } from './stream-aggregate-resource';
 
 describe('streamAggreateResource', () => {
   it('should have the initialValue before the first request', () => {

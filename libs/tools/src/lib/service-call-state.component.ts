@@ -12,7 +12,6 @@ import { ServiceCallState } from './inject-service-call';
 import { ServiceCallErrorComponent } from './service-call-error.component';
 
 @Component({
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'fest-service-call-state',
   imports: [NgTemplateOutlet, ServiceCallErrorComponent],

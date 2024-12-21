@@ -4,7 +4,6 @@ import { ErrorPipe } from './error.pipe';
 import { ServiceCallStateError } from './inject-service-call';
 
 @Component({
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'fest-service-call-error',
   imports: [ErrorPipe],

@@ -4,7 +4,6 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { FooFormGroup } from '../model';
 
 @Component({
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-foo-form',
   imports: [ReactiveFormsModule],

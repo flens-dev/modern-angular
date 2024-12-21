@@ -27,7 +27,6 @@ import { injectDeleteFoo, injectReadFoo, injectUpdateFoo } from '../services';
 import { FooFormComponent } from '../views';
 
 @Component({
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-update-foo',
   providers: [provideFooForm()],

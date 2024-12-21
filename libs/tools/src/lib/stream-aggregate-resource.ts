@@ -1,5 +1,7 @@
 import {
   DestroyRef,
+  Resource,
+  ResourceStatus,
   Signal,
   WritableSignal,
   computed,
@@ -19,27 +21,6 @@ import {
   switchMap,
 } from 'rxjs';
 import { combineReload } from './combine-reload';
-
-// TODO Remove when ported to Angular 19
-export enum ResourceStatus {
-  Idle,
-  Error,
-  Loading,
-  Reloading,
-  Resolved,
-  Local,
-}
-
-// TODO Remove when ported to Angular 19
-export interface Resource<T> {
-  readonly value: Signal<T | undefined>;
-  readonly status: Signal<ResourceStatus>;
-  readonly error: Signal<unknown>;
-  readonly isLoading: Signal<boolean>;
-
-  hasValue(): boolean;
-  reload(): boolean;
-}
 
 export type StreamAggregateResourceOptions<
   TResource,

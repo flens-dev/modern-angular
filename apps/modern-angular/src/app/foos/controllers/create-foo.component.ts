@@ -7,7 +7,6 @@ import { CREATE_FOO_SERVICE, provideCreateFoo } from '../services';
 import { FooFormComponent } from '../views';
 
 @Component({
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-create-foo',
   providers: [provideCreateFoo()],

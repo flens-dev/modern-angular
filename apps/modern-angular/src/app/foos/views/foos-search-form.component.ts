@@ -16,7 +16,6 @@ import type { GetFoosRequest } from '../public';
 import { FOOS_SEARCH_FORM, provideFoosSearchForm } from '../model';
 
 @Component({
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-foos-search-form',
   templateUrl: './foos-search-form.component.html',

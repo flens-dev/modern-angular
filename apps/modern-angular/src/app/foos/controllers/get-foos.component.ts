@@ -13,7 +13,6 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
 import {
-  ErrorPipe,
   fromOutputToObservable,
   isSuccessState,
   ServiceCallStateComponent,
@@ -31,7 +30,6 @@ import { injectGetFoos } from '../services';
 import { FooListItemComponent, FoosSearchFormComponent } from '../views';
 
 @Component({
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-get-foos',
   templateUrl: './get-foos.component.html',
@@ -39,7 +37,6 @@ import { FooListItemComponent, FoosSearchFormComponent } from '../views';
   imports: [
     ReactiveFormsModule,
     RouterLink,
-    ErrorPipe,
     ServiceCallStateComponent,
     FooListItemComponent,
     FoosSearchFormComponent,
