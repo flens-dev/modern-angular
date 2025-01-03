@@ -3,9 +3,7 @@ import {
   Resource,
   ResourceStatus,
   Signal,
-  WritableSignal,
   computed,
-  inject,
   signal,
   untracked,
 } from '@angular/core';
@@ -20,6 +18,7 @@ import {
   startWith,
   switchMap,
 } from 'rxjs';
+
 import { combineReload } from './combine-reload';
 
 export type StreamAggregateResourceOptions<
@@ -34,118 +33,43 @@ export type StreamAggregateResourceOptions<
   readonly destroyRef?: DestroyRef;
 };
 
-class StreamAggregateResource<TResource, TRequest, TResponse = TResource>
-  implements Resource<TResource>
-{
-  readonly #value: WritableSignal<TResource>;
-  readonly #status: WritableSignal<ResourceStatus>;
-  readonly #error: WritableSignal<unknown>;
-  readonly #reload = new Subject<void>();
+type StreamValue<TResponse> = {
+  readonly status: ResourceStatus;
+  readonly value: TResponse | undefined;
+  readonly error: unknown;
+};
 
-  readonly value: Signal<TResource | undefined>;
-  readonly status: Signal<ResourceStatus>;
-  readonly error: Signal<unknown>;
-  readonly isLoading: Signal<boolean>;
+const idleValue: StreamValue<undefined> = {
+  status: ResourceStatus.Idle,
+  value: undefined,
+  error: undefined,
+};
 
-  constructor(
-    initialValue: TResource,
-    request$: Observable<TRequest | undefined>,
-    loader: (request: TRequest) => Observable<TResponse>,
-    aggregate: (accumulator: TResource, current: TResponse) => TResource,
-    destroyRef: DestroyRef,
-  ) {
-    this.#value = signal(initialValue);
-    this.#status = signal(ResourceStatus.Idle);
-    this.#error = signal(undefined);
+const resolvedValue = <TResponse>(
+  value: TResponse,
+): StreamValue<TResponse> => ({
+  status: ResourceStatus.Resolved,
+  value,
+  error: undefined,
+});
 
-    this.value = this.#value.asReadonly();
-    this.status = this.#status.asReadonly();
-    this.error = this.#error.asReadonly();
-    this.isLoading = computed(
-      () =>
-        this.status() === ResourceStatus.Loading ||
-        this.status() === ResourceStatus.Reloading,
-    );
+const errorValue = (error: unknown): StreamValue<undefined> => ({
+  status: ResourceStatus.Error,
+  value: undefined,
+  error,
+});
 
-    combineReload(request$, this.#reload)
-      .pipe(
-        switchMap(({ value: request, isReload }) => {
-          if (request === undefined) {
-            return of({
-              status: ResourceStatus.Idle as const,
-            });
-          }
+const loadingValue: StreamValue<undefined> = {
+  status: ResourceStatus.Loading,
+  value: undefined,
+  error: undefined,
+};
 
-          try {
-            return loader(request).pipe(
-              map((response) => ({
-                status: ResourceStatus.Resolved as const,
-                response,
-              })),
-              catchError((error) =>
-                of({
-                  status: ResourceStatus.Error as const,
-                  error,
-                }),
-              ),
-              startWith({
-                status: isReload
-                  ? (ResourceStatus.Reloading as const)
-                  : (ResourceStatus.Loading as const),
-              }),
-            );
-          } catch (error) {
-            return of({
-              status: ResourceStatus.Error as const,
-              error,
-            });
-          }
-        }),
-        takeUntilDestroyed(destroyRef),
-      )
-      .subscribe({
-        next: (state) => {
-          this.#status.set(state.status);
-
-          switch (state.status) {
-            case ResourceStatus.Idle:
-            case ResourceStatus.Loading:
-            case ResourceStatus.Reloading: {
-              this.#error.set(undefined);
-              break;
-            }
-            case ResourceStatus.Resolved: {
-              this.#error.set(undefined);
-              this.#value.update((value) => aggregate(value, state.response));
-              break;
-            }
-            case ResourceStatus.Error: {
-              this.#error.set(state.error);
-              break;
-            }
-          }
-        },
-        error: (error) => {
-          this.#status.set(ResourceStatus.Error);
-          this.#error.set(error);
-        },
-      });
-  }
-
-  hasValue(): this is Resource<TResource> & { value: Signal<TResource> } {
-    return true;
-  }
-
-  reload(): boolean {
-    const status = untracked(this.status);
-    if (status === ResourceStatus.Error) {
-      this.#reload.next();
-      return true;
-    }
-
-    return false;
-  }
-}
+const reloadingValue: StreamValue<undefined> = {
+  status: ResourceStatus.Reloading,
+  value: undefined,
+  error: undefined,
+};
 
 /**
  * Aggregates all responses from the loader into the value of the resource.
@@ -160,11 +84,85 @@ export const streamAggregateResource = <
 >(
   options: StreamAggregateResourceOptions<TResource, TRequest, TResponse>,
 ): Resource<TResource> => {
-  return new StreamAggregateResource(
-    options.initialValue,
-    options.request,
-    options.loader,
-    options.aggregate,
-    options.destroyRef ?? inject(DestroyRef),
+  const source = signal({
+    status: ResourceStatus.Idle,
+    value: options.initialValue,
+    error: undefined as unknown,
+  });
+
+  const status = computed(() => source().status);
+  const value = computed(() => source().value);
+  const error = computed(() => source().error);
+  const isLoading = computed(
+    () =>
+      status() === ResourceStatus.Loading ||
+      status() === ResourceStatus.Reloading,
   );
+  const hasValue = (): this is Resource<TResource> & {
+    value: Signal<TResource>;
+  } => true;
+
+  const reload$ = new Subject<void>();
+  const reload = () => {
+    if (untracked(status) === ResourceStatus.Error) {
+      reload$.next();
+      return true;
+    }
+    return false;
+  };
+
+  combineReload(options.request, reload$)
+    .pipe(
+      switchMap(({ value: request, isReload }) => {
+        if (request === undefined) {
+          return of(idleValue);
+        }
+
+        try {
+          return options.loader(request).pipe(
+            map((response) => resolvedValue(response)),
+            startWith(isReload ? reloadingValue : loadingValue),
+            catchError((error) => of(errorValue(error))),
+          );
+        } catch (error) {
+          return of(errorValue(error));
+        }
+      }),
+      takeUntilDestroyed(options.destroyRef),
+    )
+    .subscribe({
+      next: (nextState) =>
+        source.update((previous) => {
+          const nextValue =
+            nextState.value === undefined
+              ? previous.value
+              : options.aggregate(previous.value, nextState.value);
+
+          return {
+            status: nextState.status,
+            value: nextValue,
+            error: nextState.error,
+          };
+        }),
+      error: (error) =>
+        source.update((previous) => ({
+          ...previous,
+          status: ResourceStatus.Error,
+          error,
+        })),
+      complete: () =>
+        source.update((previous) => ({
+          ...previous,
+          status: ResourceStatus.Idle,
+        })),
+    });
+
+  return {
+    status,
+    value,
+    error,
+    isLoading,
+    hasValue,
+    reload,
+  };
 };
