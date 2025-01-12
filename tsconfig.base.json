@@ -15,7 +15,6 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@flens-dev/tools": ["libs/tools/src/index.ts"],
       "@flens-dev/tools/common": ["libs/tools/common/src/index.ts"],
       "@flens-dev/tools/forms": ["libs/tools/forms/src/index.ts"]
     }

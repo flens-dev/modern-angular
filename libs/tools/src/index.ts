@@ -1,2 +1,2 @@
-export * from '@flens-dev/tools/common';
-export * from '@flens-dev/tools/forms';
+// dummy content to satisfy ng-packagr
+export const FLENS_DEV_TOOLS = 'FLENS_DEV_TOOLS';
