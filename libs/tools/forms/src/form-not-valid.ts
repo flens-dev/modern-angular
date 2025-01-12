@@ -4,7 +4,7 @@ import { AbstractControl, FormControlStatus } from '@angular/forms';
 
 import { map, of, startWith, switchMap } from 'rxjs';
 
-import { sourceToObservable, ValueSource } from '../value-source';
+import { sourceToObservable, ValueSource } from '@flens-dev/tools';
 
 /**
  * Creates a signal which is true if the status of the control is "not valid".

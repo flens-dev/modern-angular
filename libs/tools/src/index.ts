@@ -1,5 +1,3 @@
-export * from './lib/forms';
-
 export * from './lib/abort-on-destroy';
 export * from './lib/combine-reload';
 export * from './lib/error.pipe';

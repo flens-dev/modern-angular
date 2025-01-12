@@ -4,9 +4,9 @@ import {
   ServiceCallFn,
   ServiceCallOptions,
   ValueSource,
-  disableFormOnBusy,
   injectServiceCall,
 } from '@flens-dev/tools';
+import { disableFormOnBusy } from '@flens-dev/tools/forms';
 
 import type { FooUpdated, UpdateFoo } from '../public';
 import { FOO_REPOSITORY } from '../public';

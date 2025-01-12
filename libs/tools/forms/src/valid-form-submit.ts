@@ -1,7 +1,7 @@
 import { AbstractControl, FormSubmittedEvent } from '@angular/forms';
 import { Observable, filter, map, share, switchMap } from 'rxjs';
 
-import { ValueSource, sourceToObservable } from '../value-source';
+import { ValueSource, sourceToObservable } from '@flens-dev/tools';
 
 import { FormValueOf } from './form-value-of';
 

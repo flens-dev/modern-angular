@@ -14,11 +14,10 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { map } from 'rxjs';
 
 import {
-  formNotValid,
   fromEventToObservable,
   ServiceCallStateComponent,
-  validFormSubmit,
 } from '@flens-dev/tools';
+import { formNotValid, validFormSubmit } from '@flens-dev/tools/forms';
 
 import type { DeleteFoo, FooId, ReadFooRequest, UpdateFoo } from '../public';
 

@@ -8,14 +8,12 @@ import {
 
 import { map } from 'rxjs';
 
+import { ServiceCall, injectMulti, injectServiceCall } from '@flens-dev/tools';
 import {
-  ServiceCall,
   disableFormOnBusy,
   formNotValid,
-  injectMulti,
-  injectServiceCall,
   validFormSubmit,
-} from '@flens-dev/tools';
+} from '@flens-dev/tools/forms';
 
 import type { CreateFoo, CreateFooSource, FooCreated } from '../public';
 import {

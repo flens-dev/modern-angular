@@ -9,7 +9,7 @@ import {
 import { outputFromObservable } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule } from '@angular/forms';
 
-import { formNotValid, validFormSubmit } from '@flens-dev/tools';
+import { formNotValid, validFormSubmit } from '@flens-dev/tools/forms';
 
 import type { GetFoosRequest } from '../public';
 
