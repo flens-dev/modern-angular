@@ -16,6 +16,9 @@
     "baseUrl": ".",
     "paths": {
       "@flens-dev/tools/common": ["libs/tools/common/src/index.ts"],
+      "@flens-dev/tools/dynamic-forms": [
+        "libs/tools/dynamic-forms/src/index.ts"
+      ],
       "@flens-dev/tools/forms": ["libs/tools/forms/src/index.ts"]
     }
   },
