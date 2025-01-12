@@ -4,7 +4,7 @@ import {
   ServiceCallFn,
   ValueSource,
   injectServiceCall,
-} from '@flens-dev/tools';
+} from '@flens-dev/tools/common';
 
 import type { ReadFooResponse, ReadFooRequest } from '../public';
 import { FOO_REPOSITORY } from '../public';

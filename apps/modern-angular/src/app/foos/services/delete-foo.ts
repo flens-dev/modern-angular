@@ -5,7 +5,7 @@ import {
   ServiceCallOptions,
   ValueSource,
   injectServiceCall,
-} from '@flens-dev/tools';
+} from '@flens-dev/tools/common';
 import { disableFormOnBusy } from '@flens-dev/tools/forms';
 
 import type { DeleteFoo, FooDeleted } from '../public';

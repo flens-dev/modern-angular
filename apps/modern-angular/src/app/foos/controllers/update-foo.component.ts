@@ -16,7 +16,7 @@ import { map } from 'rxjs';
 import {
   fromEventToObservable,
   ServiceCallStateComponent,
-} from '@flens-dev/tools';
+} from '@flens-dev/tools/common';
 import { formNotValid, validFormSubmit } from '@flens-dev/tools/forms';
 
 import type { DeleteFoo, FooId, ReadFooRequest, UpdateFoo } from '../public';

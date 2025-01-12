@@ -16,7 +16,7 @@ import {
   timer,
 } from 'rxjs';
 
-import { sourceToObservable, ValueSource } from '@flens-dev/tools';
+import { sourceToObservable, ValueSource } from '@flens-dev/tools/common';
 
 import { FormValueOf } from './form-value-of';
 import { getControlPathFromRoot } from './get-control-path-from-root';

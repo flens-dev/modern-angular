@@ -16,7 +16,7 @@ import {
   fromOutputToObservable,
   isSuccessState,
   ServiceCallStateComponent,
-} from '@flens-dev/tools';
+} from '@flens-dev/tools/common';
 
 import type { GetFoosRequest, GetFoosResponse } from '../public';
 

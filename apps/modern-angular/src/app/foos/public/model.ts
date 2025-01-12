@@ -1,4 +1,4 @@
-import type { Immutable } from '@flens-dev/tools';
+import type { Immutable } from '@flens-dev/tools/common';
 
 export type FooId = string;
 

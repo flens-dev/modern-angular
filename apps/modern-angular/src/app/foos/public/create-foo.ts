@@ -1,6 +1,6 @@
 import { InjectionToken } from '@angular/core';
 
-import type { Immutable, ValueSource } from '@flens-dev/tools';
+import type { Immutable, ValueSource } from '@flens-dev/tools/common';
 
 import type { Foo, FooId } from './model';
 

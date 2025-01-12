@@ -8,7 +8,11 @@ import {
 
 import { map } from 'rxjs';
 
-import { ServiceCall, injectMulti, injectServiceCall } from '@flens-dev/tools';
+import {
+  ServiceCall,
+  injectMulti,
+  injectServiceCall,
+} from '@flens-dev/tools/common';
 import {
   disableFormOnBusy,
   formNotValid,
