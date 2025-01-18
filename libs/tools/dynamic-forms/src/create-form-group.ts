@@ -132,6 +132,6 @@ const addChildren = (group: FormGroup, withChildren: WithChildren): void => {
   }
 };
 
-export const createDynamicForm = (dynamicForm: DynamicForm): FormGroup => {
+export const createFormGroup = (dynamicForm: DynamicForm): FormGroup => {
   return createGroupControl(dynamicForm);
 };
