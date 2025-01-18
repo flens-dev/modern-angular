@@ -1,5 +1,6 @@
 export * from './abort-on-destroy';
 export * from './combine-reload';
+export * from './discriminate-union';
 export * from './error.pipe';
 export * from './from-event-to-observable';
 export * from './from-output-to-observable';

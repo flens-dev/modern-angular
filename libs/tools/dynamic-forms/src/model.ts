@@ -1,44 +1,46 @@
 import type { Immutable } from '@flens-dev/tools/common';
 
-type WithType<T extends string> = Immutable<{
+export type WithType<T extends string> = Immutable<{
   type: T;
 }>;
 
-type WithKey = Immutable<{
+export type WithKey = Immutable<{
   key: string;
 }>;
 
-type WithLabel = Immutable<{
+export type WithLabel = Immutable<{
   label: string;
 }>;
 
-type WithReadOnly = Immutable<{
+export type WithReadOnly = Immutable<{
   readonly?: boolean;
 }>;
 
-type WithDisabled = Immutable<{
-  disabled?: boolean;
-}>;
-
-type WithBaseValidators = Immutable<
+export type WithBaseValidators = Immutable<
   Partial<{
     required: boolean;
   }>
 >;
 
-type WithValidators<T extends object = object> = Immutable<{
+export type WithValidators<T extends object = object> = Immutable<{
   validators?: WithBaseValidators & T;
 }>;
 
-type BaseField<
+export type WithChildren = Immutable<{
+  children: DynamicFormItem[];
+}>;
+
+export type BaseControl = WithType<string>;
+
+export type BaseField<
   TType extends string,
   TValidators extends object = object,
 > = Immutable<
-  WithType<TType> &
+  BaseControl &
+    WithType<TType> &
     WithKey &
     WithLabel &
     WithReadOnly &
-    WithDisabled &
     WithValidators<TValidators>
 >;
 
@@ -75,29 +77,57 @@ export type SelectField = Immutable<
 >;
 
 export type RowItem = Immutable<{
-  formItem: DynamicFormItem;
+  child: DynamicFormItem;
   width?: string;
 }>;
 
 export type Row = Immutable<
   WithType<'ROW'> & {
-    rowItems: RowItem[];
+    children: RowItem[];
     gap?: string;
   }
 >;
 
 export type Group = Immutable<
-  WithType<'GROUP'> &
-    WithKey & {
-      children: DynamicFormItem[];
-    }
+  BaseControl & WithType<'GROUP'> & WithKey & WithChildren
 >;
 
 export type Field = TextField | NumberField | SelectField;
 
-export type DynamicFormItem = Field | Group | Row;
+export type DynamicFormControl = Field | Group;
 
-export type DynamicForm = Immutable<{
-  title: string;
-  formItems: DynamicFormItem[];
-}>;
+export type DynamicFormLayout = Row;
+
+export type DynamicFormItem = DynamicFormControl | DynamicFormLayout;
+
+export type DynamicFormControlType = DynamicFormControl['type'];
+
+const dynamicFormControlTypesMap: Record<DynamicFormControlType, string> = {
+  GROUP: 'object',
+  NUMBER: 'number',
+  SELECT: 'unknown',
+  TEXT: 'string',
+};
+
+const dynamicFormControlTypes = Object.keys(dynamicFormControlTypesMap);
+
+export const isDynamicFormControl = (
+  item: unknown,
+): item is DynamicFormControl => {
+  return (
+    item != null &&
+    typeof item === 'object' &&
+    'type' in item &&
+    typeof item.type === 'string' &&
+    dynamicFormControlTypes.includes(item.type)
+  );
+};
+
+export type DynamicForm = Immutable<
+  WithType<'FORM'> &
+    WithChildren & {
+      title: string;
+    }
+>;
+
+export type DynamicFormValue = Record<string, unknown>;
