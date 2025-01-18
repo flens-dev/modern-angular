@@ -1,11 +1,22 @@
-import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  ValidatorFn,
+  Validators,
+} from '@angular/forms';
 
-import type { MapDiscriminatedUnion } from '@flens-dev/tools/common';
+import type {
+  MapDiscriminatedUnion,
+  Merge,
+  Unpartial,
+} from '@flens-dev/tools/common';
 
 import {
   BaseControl,
   DynamicForm,
   DynamicFormControl,
+  Field,
   Group,
   NumberField,
   SelectField,
@@ -29,6 +40,46 @@ type CreateControlFnMap = {
   >;
 };
 
+type FieldValidators = Merge<Unpartial<Field['validators']>>;
+
+type FieldValidatorFnMap = {
+  [V in keyof FieldValidators]-?: (
+    v: Exclude<FieldValidators[V], undefined>,
+  ) => ValidatorFn | undefined;
+};
+
+const createFieldValidatorMap: FieldValidatorFnMap = {
+  max: (val: number) => Validators.max(val),
+  maxLength: (val: number) => Validators.maxLength(val),
+  min: (val: number) => Validators.min(val),
+  minLength: (val: number) => Validators.minLength(val),
+  required: (val: boolean) => (val ? Validators.required : undefined),
+};
+
+type K = keyof FieldValidatorFnMap;
+
+const createFieldValidators = (field: Field): ValidatorFn[] => {
+  const validators: ValidatorFn[] = [];
+  const fieldValidators = field.validators as Record<string, unknown>;
+
+  if (fieldValidators) {
+    Object.keys(fieldValidators).forEach((valName) => {
+      const valConfig = fieldValidators[valName];
+      if (valConfig) {
+        const createValFn = createFieldValidatorMap[valName as K];
+        const valFn = (createValFn as (v: unknown) => ValidatorFn | undefined)(
+          valConfig,
+        );
+        if (valFn) {
+          validators.push(valFn);
+        }
+      }
+    });
+  }
+
+  return validators;
+};
+
 const createGroupControl = (group: Group | DynamicForm): FormGroup => {
   const formGroup = new FormGroup({});
   addChildren(formGroup, group);
@@ -38,19 +89,27 @@ const createGroupControl = (group: Group | DynamicForm): FormGroup => {
 const createNumberFieldControl = (
   numberField: NumberField,
 ): FormControl<number> => {
-  const control = new FormControl<number>(0, { nonNullable: true });
+  const control = new FormControl<number>(0, {
+    nonNullable: true,
+    validators: createFieldValidators(numberField),
+  });
   return control;
 };
 
 const createSelectFieldControl = (
   selectField: SelectField,
 ): FormControl<unknown> => {
-  const control = new FormControl<unknown>(null);
+  const control = new FormControl<unknown>(null, {
+    validators: createFieldValidators(selectField),
+  });
   return control;
 };
 
 const createTextFieldControl = (textField: TextField): FormControl<string> => {
-  const control = new FormControl<string>('', { nonNullable: true });
+  const control = new FormControl<string>('', {
+    nonNullable: true,
+    validators: createFieldValidators(textField),
+  });
   return control;
 };
 
