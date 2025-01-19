@@ -1,0 +1,71 @@
+import { Component, computed } from '@angular/core';
+
+import type { DynamicFormGroup } from '@flens-dev/tools/dynamic-forms';
+import { DynamicFormComponent } from '@flens-dev/tools/dynamic-forms';
+
+@Component({
+  selector: 'app-dyn-forms-example',
+  imports: [DynamicFormComponent],
+  template: `<h2>Example Dynamic Form</h2>
+    <fest-dynamic-form [form]="form()" />`,
+})
+export class ExampleComponent {
+  protected readonly form = computed(
+    (): DynamicFormGroup => ({
+      type: 'GROUP',
+      key: '',
+      children: [
+        {
+          type: 'TEXT',
+          key: 'firstName',
+          label: 'First name',
+        },
+        {
+          type: 'TEXT',
+          key: 'lastName',
+          label: 'Last name',
+        },
+        {
+          type: 'NUMBER',
+          key: 'yearOfBirth',
+          label: 'Year of birth',
+        },
+        {
+          type: 'GROUP',
+          key: 'address',
+          children: [
+            {
+              type: 'ROW',
+              children: [
+                {
+                  child: {
+                    type: 'TEXT',
+                    key: 'street',
+                    label: 'Street',
+                  },
+                },
+                {
+                  child: {
+                    type: 'TEXT',
+                    key: 'houseNumber',
+                    label: 'House number',
+                  },
+                },
+              ],
+            },
+            {
+              type: 'TEXT',
+              key: 'zipCode',
+              label: 'Zip code',
+            },
+            {
+              type: 'TEXT',
+              key: 'city',
+              label: 'City',
+            },
+          ],
+        },
+      ],
+    }),
+  );
+}
