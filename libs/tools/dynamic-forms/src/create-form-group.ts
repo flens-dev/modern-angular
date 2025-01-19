@@ -7,8 +7,8 @@ import {
 } from '@angular/forms';
 
 import type {
-  MapDiscriminatedUnion,
-  Merge,
+  MapDiscriminatorToType,
+  MergeIntersections,
   Unpartial,
 } from '@flens-dev/tools/common';
 
@@ -24,12 +24,12 @@ import {
   isDynamicFormControl,
 } from './model';
 
-type DynamicFormControlTypeNameToControl = MapDiscriminatedUnion<
+type DynamicFormControlTypeNameToControl = MapDiscriminatorToType<
   DynamicFormControl,
   'type'
 >;
 
-type CreateControlFn<TControl extends BaseControl> = (
+type CreateControlFn<TControl extends BaseControl<string>> = (
   control: TControl,
 ) => AbstractControl;
 
@@ -39,7 +39,7 @@ type CreateControlFnMap = {
   >;
 };
 
-type FieldValidators = Merge<Unpartial<Field['validators']>>;
+type FieldValidators = MergeIntersections<Unpartial<Field['validators']>>;
 
 type FieldValidatorFnMap = {
   [V in keyof FieldValidators]-?: (

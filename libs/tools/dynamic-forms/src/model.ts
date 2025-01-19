@@ -30,18 +30,13 @@ export type WithChildren = Immutable<{
   children: DynamicFormItem[];
 }>;
 
-export type BaseControl = WithType<string>;
+export type BaseControl<TType extends string> = WithType<TType> & WithKey;
 
 export type BaseField<
   TType extends string,
   TValidators extends object = object,
 > = Immutable<
-  BaseControl &
-    WithType<TType> &
-    WithKey &
-    WithLabel &
-    WithReadOnly &
-    WithValidators<TValidators>
+  BaseControl<TType> & WithLabel & WithReadOnly & WithValidators<TValidators>
 >;
 
 export type TextField = Immutable<
@@ -88,9 +83,7 @@ export type Row = Immutable<
   }
 >;
 
-export type DynamicFormGroup = Immutable<
-  BaseControl & WithType<'GROUP'> & WithKey & WithChildren
->;
+export type DynamicFormGroup = Immutable<BaseControl<'GROUP'> & WithChildren>;
 
 export type Field = TextField | NumberField | SelectField;
 

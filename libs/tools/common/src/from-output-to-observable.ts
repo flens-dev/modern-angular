@@ -3,8 +3,8 @@ import { outputToObservable } from '@angular/core/rxjs-interop';
 
 import { NEVER, Observable, switchMap } from 'rxjs';
 
+import type { OutputsOf, OutputValueOf } from './utility-types';
 import { ValueSource, sourceToObservable } from './value-source';
-import { OutputsOf, OutputValueOf } from './outputs-of';
 
 /**
  * Returns an observable which emits the events of the selected output of the component.
