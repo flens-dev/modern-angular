@@ -9,7 +9,9 @@ import { DynamicFormComponent } from '@flens-dev/tools/dynamic-forms';
   selector: 'app-dyn-forms-example',
   imports: [DynamicFormComponent],
   template: `<h2>Example Dynamic Form</h2>
-    <fest-dynamic-form [form]="form()" />`,
+    <fest-dynamic-form [form]="form()">
+      <button type="submit">submit</button>
+    </fest-dynamic-form>`,
 })
 export class ExampleComponent {
   protected readonly form = computed(
