@@ -14,10 +14,9 @@ import type {
 
 import {
   BaseControl,
-  DynamicForm,
   DynamicFormControl,
+  DynamicFormGroup,
   Field,
-  Group,
   NumberField,
   SelectField,
   TextField,
@@ -80,7 +79,7 @@ const createFieldValidators = (field: Field): ValidatorFn[] => {
   return validators;
 };
 
-const createGroupControl = (group: Group | DynamicForm): FormGroup => {
+const createGroupControl = (group: DynamicFormGroup): FormGroup => {
   const formGroup = new FormGroup({});
   addChildren(formGroup, group);
   return formGroup;
@@ -132,6 +131,6 @@ const addChildren = (group: FormGroup, withChildren: WithChildren): void => {
   }
 };
 
-export const createFormGroup = (dynamicForm: DynamicForm): FormGroup => {
-  return createGroupControl(dynamicForm);
+export const createFormGroup = (form: DynamicFormGroup): FormGroup => {
+  return createGroupControl(form);
 };

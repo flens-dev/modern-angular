@@ -88,13 +88,13 @@ export type Row = Immutable<
   }
 >;
 
-export type Group = Immutable<
+export type DynamicFormGroup = Immutable<
   BaseControl & WithType<'GROUP'> & WithKey & WithChildren
 >;
 
 export type Field = TextField | NumberField | SelectField;
 
-export type DynamicFormControl = Field | Group;
+export type DynamicFormControl = Field | DynamicFormGroup;
 
 export type DynamicFormLayout = Row;
 
@@ -122,12 +122,3 @@ export const isDynamicFormControl = (
     dynamicFormControlTypes.includes(item.type)
   );
 };
-
-export type DynamicForm = Immutable<
-  WithType<'FORM'> &
-    WithChildren & {
-      title: string;
-    }
->;
-
-export type DynamicFormValue = Record<string, unknown>;
