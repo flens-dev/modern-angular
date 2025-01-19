@@ -1,5 +1,7 @@
-import { Component, computed } from '@angular/core';
+import { Component, computed, viewChild } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
+import { fromOutputToObservable } from '@flens-dev/tools/common';
 import type { DynamicFormGroup } from '@flens-dev/tools/dynamic-forms';
 import { DynamicFormComponent } from '@flens-dev/tools/dynamic-forms';
 
@@ -68,4 +70,19 @@ export class ExampleComponent {
       ],
     }),
   );
+
+  protected readonly dynamicForm = viewChild.required(DynamicFormComponent);
+
+  readonly #formEvents = fromOutputToObservable(
+    this.dynamicForm,
+    (c) => c.formEvents,
+  );
+
+  constructor() {
+    this.#formEvents.pipe(takeUntilDestroyed()).subscribe({
+      next: (formEvent) => {
+        console.log(formEvent);
+      },
+    });
+  }
 }
