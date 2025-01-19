@@ -15,8 +15,8 @@ import type {
 import {
   BaseControl,
   DynamicFormControl,
+  DynamicFormField,
   DynamicFormGroup,
-  Field,
   NumberField,
   SelectField,
   TextField,
@@ -39,7 +39,9 @@ type CreateControlFnMap = {
   >;
 };
 
-type FieldValidators = MergeIntersections<Unpartial<Field['validators']>>;
+type FieldValidators = MergeIntersections<
+  Unpartial<DynamicFormField['validators']>
+>;
 
 type FieldValidatorFnMap = {
   [V in keyof FieldValidators]-?: (
@@ -57,7 +59,7 @@ const createFieldValidatorMap: FieldValidatorFnMap = {
 
 type K = keyof FieldValidatorFnMap;
 
-const createFieldValidators = (field: Field): ValidatorFn[] => {
+const createFieldValidators = (field: DynamicFormField): ValidatorFn[] => {
   const validators: ValidatorFn[] = [];
   const fieldValidators = field.validators as Record<string, unknown>;
 

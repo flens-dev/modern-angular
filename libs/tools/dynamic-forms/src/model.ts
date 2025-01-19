@@ -85,9 +85,9 @@ export type Row = Immutable<
 
 export type DynamicFormGroup = Immutable<BaseControl<'GROUP'> & WithChildren>;
 
-export type Field = TextField | NumberField | SelectField;
+export type DynamicFormField = TextField | NumberField | SelectField;
 
-export type DynamicFormControl = Field | DynamicFormGroup;
+export type DynamicFormControl = DynamicFormField | DynamicFormGroup;
 
 export type DynamicFormLayout = Row;
 
