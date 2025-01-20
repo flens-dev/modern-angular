@@ -95,11 +95,14 @@ export type DynamicFormItem = DynamicFormControl | DynamicFormLayout;
 
 type DynamicFormFieldType = DynamicFormField['type'];
 
-const isOfType = <T>(item: unknown, types: readonly string[]): item is T => {
+const isOfType = <T extends WithType<string>>(
+  item: unknown,
+  types: readonly string[],
+): item is T => {
   return (
     item != null &&
     typeof item === 'object' &&
-    'type' in item &&
+    ('type' satisfies keyof WithType<string>) in item &&
     typeof item.type === 'string' &&
     types.includes(item.type)
   );
@@ -115,7 +118,9 @@ const dynamicFormFieldTypes: readonly string[] = Object.keys(
   dynamicFormFieldTypesMap,
 );
 
-export const isDynamicFormField = (item: unknown): item is DynamicFormField => {
+export const isDynamicFormField = (
+  item: DynamicFormItem,
+): item is DynamicFormField => {
   return isOfType<DynamicFormField>(item, dynamicFormFieldTypes);
 };
 
@@ -131,7 +136,7 @@ const dynamicFormControlTypes: readonly string[] = Object.keys(
 );
 
 export const isDynamicFormControl = (
-  item: unknown,
+  item: DynamicFormItem,
 ): item is DynamicFormControl => {
   return isOfType<DynamicFormControl>(item, dynamicFormControlTypes);
 };

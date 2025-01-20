@@ -47,32 +47,29 @@ export class DynamicFormGroupComponent {
         .map((dynamicControl) => {
           const reactiveControl = group.reactiveControl.get(dynamicControl.key);
 
-          let control:
-            | DynamicFormGroupComponentInput
-            | DynamicFormControlComponentInput
-            | null = null;
-
           if (reactiveControl != null) {
             if (
               dynamicControl.type === 'GROUP' &&
               reactiveControl instanceof FormGroup
             ) {
-              control = {
+              return {
                 dynamicControl,
                 reactiveControl,
-              };
-            } else if (
+              } satisfies DynamicFormGroupComponentInput;
+            }
+
+            if (
               dynamicControl.type !== 'GROUP' &&
               reactiveControl instanceof FormControl
             ) {
-              control = {
+              return {
                 dynamicControl,
                 reactiveControl,
-              };
+              } satisfies DynamicFormControlComponentInput;
             }
           }
 
-          return control;
+          return null;
         })
         .filter((control) => control != null);
     },
