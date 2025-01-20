@@ -52,7 +52,7 @@ export type BaseField<
   BaseControl<TType> & WithLabel & WithReadOnly & WithValidators<TValidators>
 >;
 
-export type TextField = Immutable<
+export type DynamicFormTextField = Immutable<
   BaseField<
     'TEXT',
     Partial<{
@@ -62,7 +62,7 @@ export type TextField = Immutable<
   >
 >;
 
-export type NumberField = Immutable<
+export type DynamicFormNumberField = Immutable<
   BaseField<
     'NUMBER',
     Partial<{
@@ -72,44 +72,57 @@ export type NumberField = Immutable<
   >
 >;
 
-export type SelectFieldOption = Immutable<{
+export type DynamicFormSelectFieldOption = Immutable<{
   label: string;
   value: unknown;
   disabled?: boolean;
 }>;
 
-export type SelectField = Immutable<
+export type DynamicFormSelectField = Immutable<
   BaseField<'SELECT'> & {
-    options: SelectFieldOption[];
+    options: DynamicFormSelectFieldOption[];
   }
 >;
 
-export type RowItem = Immutable<{
+export type DynamicFormRowItem = Immutable<{
   child: DynamicFormItem;
   width?: string;
 }>;
 
-export type Row = Immutable<
+export type DynamicFormRow = Immutable<
   WithType<'ROW'> & {
-    children: RowItem[];
+    children: DynamicFormRowItem[];
     gap?: string;
   }
 >;
 
 export type DynamicFormGroup = Immutable<BaseControl<'GROUP'> & WithChildren>;
 
-export type DynamicFormField = TextField | NumberField | SelectField;
+export type DynamicFormField =
+  | DynamicFormTextField
+  | DynamicFormNumberField
+  | DynamicFormSelectField;
 
 export type DynamicFormControl = DynamicFormField | DynamicFormGroup;
 
-export type DynamicFormLayout = Row;
+export type DynamicFormLayout = DynamicFormRow;
 
 export type DynamicFormItem = DynamicFormControl | DynamicFormLayout;
 
 export const isDynamicFormGroup = (
   item: DynamicFormItem,
 ): item is DynamicFormGroup => {
-  return isOfType<DynamicFormGroup>(item, ['GROUP']);
+  return isOfType<DynamicFormGroup>(item, [
+    'GROUP' satisfies DynamicFormGroup['type'],
+  ]);
+};
+
+export const isDynamicFormRow = (
+  item: DynamicFormItem,
+): item is DynamicFormRow => {
+  return isOfType<DynamicFormRow>(item, [
+    'ROW' satisfies DynamicFormRow['type'],
+  ]);
 };
 
 type DynamicFormFieldType = DynamicFormField['type'];

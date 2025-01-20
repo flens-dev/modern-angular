@@ -17,9 +17,9 @@ import {
   DynamicFormControl,
   DynamicFormField,
   DynamicFormGroup,
-  NumberField,
-  SelectField,
-  TextField,
+  DynamicFormNumberField,
+  DynamicFormSelectField,
+  DynamicFormTextField,
   WithChildren,
   isDynamicFormControl,
 } from './model';
@@ -88,7 +88,7 @@ const createGroupControl = (group: DynamicFormGroup): FormGroup => {
 };
 
 const createNumberFieldControl = (
-  numberField: NumberField,
+  numberField: DynamicFormNumberField,
 ): FormControl<number> => {
   const control = new FormControl<number>(0, {
     nonNullable: true,
@@ -98,7 +98,7 @@ const createNumberFieldControl = (
 };
 
 const createSelectFieldControl = (
-  selectField: SelectField,
+  selectField: DynamicFormSelectField,
 ): FormControl<unknown> => {
   const control = new FormControl<unknown>(null, {
     validators: createFieldValidators(selectField),
@@ -106,7 +106,7 @@ const createSelectFieldControl = (
   return control;
 };
 
-const createTextFieldControl = (textField: TextField): FormControl<string> => {
+const createTextFieldControl = (textField: DynamicFormTextField): FormControl<string> => {
   const control = new FormControl<string>('', {
     nonNullable: true,
     validators: createFieldValidators(textField),
