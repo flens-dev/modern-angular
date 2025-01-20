@@ -1,11 +1,14 @@
 import { Component, computed, input } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
-import { DynamicFormGroup, isDynamicFormControl } from './model';
 import {
-  DynamicFormControlComponent,
-  DynamicFormControlComponentInput,
-} from './dynamic-form-control';
+  DynamicFormGroup,
+  isDynamicFormControl,
+  isDynamicFormField,
+  isDynamicFormGroup,
+} from './model';
+import { DynamicFormItemComponent } from './dynamic-form-item';
+import { DynamicFormFieldComponentInput } from './dynamic-form-field';
 
 export type DynamicFormGroupComponentInput = Readonly<{
   dynamicControl: DynamicFormGroup;
@@ -14,14 +17,10 @@ export type DynamicFormGroupComponentInput = Readonly<{
 
 @Component({
   selector: 'fest-dynamic-form-group',
-  imports: [ReactiveFormsModule, DynamicFormControlComponent],
+  imports: [ReactiveFormsModule, DynamicFormItemComponent],
   template: `<div [formGroup]="reactiveFormGroup()">
-    @for (control of controls(); track control.dynamicControl.key) {
-      @if (isGroup(control)) {
-        <fest-dynamic-form-group [group]="control" />
-      } @else {
-        <fest-dynamic-form-control [control]="control" />
-      }
+    @for (item of items(); track item.dynamicControl.key) {
+      <fest-dynamic-form-item [item]="item" />
     }
   </div>`,
 })
@@ -35,49 +34,38 @@ export class DynamicFormGroupComponent {
   protected readonly dynamicFormGroup = computed(
     () => this.group().dynamicControl,
   );
-  protected readonly controls = computed(
-    (): (
-      | DynamicFormGroupComponentInput
-      | DynamicFormControlComponentInput
-    )[] => {
-      const group = this.group();
+  protected readonly items = computed(() => {
+    const group = this.group();
 
-      return group.dynamicControl.children
-        .filter(isDynamicFormControl)
-        .map((dynamicControl) => {
-          const reactiveControl = group.reactiveControl.get(dynamicControl.key);
+    return group.dynamicControl.children
+      .filter(isDynamicFormControl)
+      .map((dynamicControl) => {
+        const reactiveControl = group.reactiveControl.get(dynamicControl.key);
 
-          if (reactiveControl != null) {
-            if (
-              dynamicControl.type === 'GROUP' &&
-              reactiveControl instanceof FormGroup
-            ) {
-              return {
-                dynamicControl,
-                reactiveControl,
-              } satisfies DynamicFormGroupComponentInput;
-            }
-
-            if (
-              dynamicControl.type !== 'GROUP' &&
-              reactiveControl instanceof FormControl
-            ) {
-              return {
-                dynamicControl,
-                reactiveControl,
-              } satisfies DynamicFormControlComponentInput;
-            }
+        if (reactiveControl != null) {
+          if (
+            isDynamicFormGroup(dynamicControl) &&
+            reactiveControl instanceof FormGroup
+          ) {
+            return {
+              dynamicControl,
+              reactiveControl,
+            } satisfies DynamicFormGroupComponentInput;
           }
 
-          return null;
-        })
-        .filter((control) => control != null);
-    },
-  );
+          if (
+            isDynamicFormField(dynamicControl) &&
+            reactiveControl instanceof FormControl
+          ) {
+            return {
+              dynamicControl,
+              reactiveControl,
+            } satisfies DynamicFormFieldComponentInput;
+          }
+        }
 
-  protected isGroup(
-    control: DynamicFormControlComponentInput | DynamicFormGroupComponentInput,
-  ): control is DynamicFormGroupComponentInput {
-    return control.dynamicControl.type === 'GROUP';
-  }
+        return null;
+      })
+      .filter((control) => control != null);
+  });
 }

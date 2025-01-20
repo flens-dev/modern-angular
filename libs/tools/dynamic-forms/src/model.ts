@@ -4,6 +4,19 @@ export type WithType<T extends string> = Immutable<{
   type: T;
 }>;
 
+const isOfType = <T extends WithType<string>>(
+  item: unknown,
+  types: readonly string[],
+): item is T => {
+  return (
+    item != null &&
+    typeof item === 'object' &&
+    ('type' satisfies keyof WithType<string>) in item &&
+    typeof item.type === 'string' &&
+    types.includes(item.type)
+  );
+};
+
 export type WithKey = Immutable<{
   key: string;
 }>;
@@ -93,20 +106,13 @@ export type DynamicFormLayout = Row;
 
 export type DynamicFormItem = DynamicFormControl | DynamicFormLayout;
 
-type DynamicFormFieldType = DynamicFormField['type'];
-
-const isOfType = <T extends WithType<string>>(
-  item: unknown,
-  types: readonly string[],
-): item is T => {
-  return (
-    item != null &&
-    typeof item === 'object' &&
-    ('type' satisfies keyof WithType<string>) in item &&
-    typeof item.type === 'string' &&
-    types.includes(item.type)
-  );
+export const isDynamicFormGroup = (
+  item: DynamicFormItem,
+): item is DynamicFormGroup => {
+  return isOfType<DynamicFormGroup>(item, ['GROUP']);
 };
+
+type DynamicFormFieldType = DynamicFormField['type'];
 
 const dynamicFormFieldTypesMap: Record<DynamicFormFieldType, string> = {
   NUMBER: 'number',
