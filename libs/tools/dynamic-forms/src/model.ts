@@ -93,25 +93,45 @@ export type DynamicFormLayout = Row;
 
 export type DynamicFormItem = DynamicFormControl | DynamicFormLayout;
 
-export type DynamicFormControlType = DynamicFormControl['type'];
+type DynamicFormFieldType = DynamicFormField['type'];
 
-const dynamicFormControlTypesMap: Record<DynamicFormControlType, string> = {
-  GROUP: 'object',
-  NUMBER: 'number',
-  SELECT: 'unknown',
-  TEXT: 'string',
-};
-
-const dynamicFormControlTypes = Object.keys(dynamicFormControlTypesMap);
-
-export const isDynamicFormControl = (
-  item: unknown,
-): item is DynamicFormControl => {
+const isOfType = <T>(item: unknown, types: readonly string[]): item is T => {
   return (
     item != null &&
     typeof item === 'object' &&
     'type' in item &&
     typeof item.type === 'string' &&
-    dynamicFormControlTypes.includes(item.type)
+    types.includes(item.type)
   );
+};
+
+const dynamicFormFieldTypesMap: Record<DynamicFormFieldType, string> = {
+  NUMBER: 'number',
+  SELECT: 'unknown',
+  TEXT: 'string',
+};
+
+const dynamicFormFieldTypes: readonly string[] = Object.keys(
+  dynamicFormFieldTypesMap,
+);
+
+export const isDynamicFormField = (item: unknown): item is DynamicFormField => {
+  return isOfType<DynamicFormField>(item, dynamicFormFieldTypes);
+};
+
+type DynamicFormControlType = DynamicFormControl['type'];
+
+const dynamicFormControlTypesMap: Record<DynamicFormControlType, string> = {
+  ...dynamicFormFieldTypesMap,
+  GROUP: 'object',
+};
+
+const dynamicFormControlTypes: readonly string[] = Object.keys(
+  dynamicFormControlTypesMap,
+);
+
+export const isDynamicFormControl = (
+  item: unknown,
+): item is DynamicFormControl => {
+  return isOfType<DynamicFormControl>(item, dynamicFormControlTypes);
 };
