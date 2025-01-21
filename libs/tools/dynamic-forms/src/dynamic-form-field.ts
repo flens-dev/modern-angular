@@ -1,21 +1,26 @@
-import { Component, input } from '@angular/core';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { Component, inject, input } from '@angular/core';
+import {
+  ControlContainer,
+  FormGroup,
+  ReactiveFormsModule,
+} from '@angular/forms';
 
 import { DynamicFormField } from './model';
-
-export type DynamicFormFieldComponentInput = Readonly<{
-  dynamicControl: DynamicFormField;
-  reactiveControl: FormControl;
-}>;
 
 @Component({
   selector: 'fest-dynamic-form-field',
   imports: [ReactiveFormsModule],
-  template: `<div>
-    @let dynCtrl = field().dynamicControl;
-    {{ dynCtrl.key }} ({{ dynCtrl.type }}): {{ dynCtrl.label }}
-  </div>`,
+  template: `@let fld = field();
+    <div [formGroup]="parentFormGroup">
+      <label>{{ fld.label }}</label>
+      <input [formControlName]="fld.key" />
+    </div>`,
 })
 export class DynamicFormFieldComponent {
-  readonly field = input.required<DynamicFormFieldComponentInput>();
+  protected readonly parentControl = inject(ControlContainer, {
+    skipSelf: true,
+  });
+  protected readonly parentFormGroup = this.parentControl.control as FormGroup;
+
+  readonly field = input.required<DynamicFormField>();
 }
