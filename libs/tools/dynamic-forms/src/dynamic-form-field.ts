@@ -1,4 +1,4 @@
-import { Component, inject, input } from '@angular/core';
+import { Component, effect, inject, input } from '@angular/core';
 import {
   ControlContainer,
   FormGroup,
@@ -23,4 +23,11 @@ export class DynamicFormFieldComponent {
   protected readonly parentFormGroup = this.parentControl.control as FormGroup;
 
   readonly field = input.required<DynamicFormField>();
+
+  constructor() {
+    effect(() => {
+      const field = this.field();
+      console.log(field, this.parentControl);
+    });
+  }
 }
