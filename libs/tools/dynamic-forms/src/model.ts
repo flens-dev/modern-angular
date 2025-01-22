@@ -39,7 +39,7 @@ export type WithValidators<T extends object = object> = Immutable<{
   validators?: WithBaseValidators & T;
 }>;
 
-export type WithChildren = Immutable<{
+export type DynamicFormItemContainer = Immutable<{
   children: DynamicFormItem[];
 }>;
 
@@ -96,7 +96,9 @@ export type DynamicFormRow = Immutable<
   }
 >;
 
-export type DynamicFormGroup = Immutable<BaseControl<'GROUP'> & WithChildren>;
+export type DynamicFormGroup = Immutable<
+  BaseControl<'GROUP'> & DynamicFormItemContainer
+>;
 
 export type DynamicFormField =
   | DynamicFormTextField

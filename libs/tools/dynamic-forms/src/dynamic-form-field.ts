@@ -5,7 +5,7 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 
-import { DynamicFormField } from './model';
+import type { DynamicFormField } from './model';
 
 @Component({
   selector: 'fest-dynamic-form-field',

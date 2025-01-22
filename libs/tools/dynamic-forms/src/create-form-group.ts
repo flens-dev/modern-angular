@@ -17,10 +17,10 @@ import {
   DynamicFormControl,
   DynamicFormField,
   DynamicFormGroup,
+  DynamicFormItemContainer,
   DynamicFormNumberField,
   DynamicFormSelectField,
   DynamicFormTextField,
-  WithChildren,
   isDynamicFormControl,
 } from './model';
 
@@ -106,7 +106,9 @@ const createSelectFieldControl = (
   return control;
 };
 
-const createTextFieldControl = (textField: DynamicFormTextField): FormControl<string> => {
+const createTextFieldControl = (
+  textField: DynamicFormTextField,
+): FormControl<string> => {
   const control = new FormControl<string>('', {
     nonNullable: true,
     validators: createFieldValidators(textField),
@@ -121,7 +123,10 @@ const createControlMap: CreateControlFnMap = {
   TEXT: createTextFieldControl,
 };
 
-const addChildren = (group: FormGroup, withChildren: WithChildren): void => {
+const addChildren = (
+  group: FormGroup,
+  withChildren: DynamicFormItemContainer,
+): void => {
   for (const child of withChildren.children) {
     if (isDynamicFormControl(child)) {
       const createControlFn = createControlMap[
