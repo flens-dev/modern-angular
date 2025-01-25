@@ -23,6 +23,9 @@ export class ExampleComponent {
           type: 'TEXT',
           key: 'firstName',
           label: 'First name',
+          validators: {
+            required: true,
+          },
         },
         {
           type: 'TEXT',
