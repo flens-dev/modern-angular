@@ -4,8 +4,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 
 import { switchMap } from 'rxjs';
 
-import type { DynamicFormGroup } from './model';
-import { createFormGroup } from './create-form-group';
+import type { DynamicFormGroup } from '../domain/model';
+import { createFormGroup } from '../domain/create-form-group';
 import { DynamicFormItemContainerComponent } from './dynamic-form-item-container';
 
 @Component({

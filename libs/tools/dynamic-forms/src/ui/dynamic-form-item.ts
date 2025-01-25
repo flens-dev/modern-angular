@@ -5,12 +5,12 @@ import type {
   DynamicFormGroup,
   DynamicFormItem,
   DynamicFormRow,
-} from './model';
+} from '../domain/model';
 import {
   isDynamicFormField,
   isDynamicFormGroup,
   isDynamicFormRow,
-} from './model';
+} from '../domain/model';
 import { DynamicFormFieldComponent } from './dynamic-form-field';
 import { DynamicFormGroupComponent } from './dynamic-form-group';
 import { DynamicFormRowComponent } from './dynamic-form-row';

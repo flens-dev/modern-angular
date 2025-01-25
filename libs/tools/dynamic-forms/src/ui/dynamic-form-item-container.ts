@@ -1,6 +1,6 @@
 import { Component, input } from '@angular/core';
 
-import type { DynamicFormItemContainer } from './model';
+import type { DynamicFormItemContainer } from '../domain/model';
 import { DynamicFormItemComponent } from './dynamic-form-item';
 
 @Component({

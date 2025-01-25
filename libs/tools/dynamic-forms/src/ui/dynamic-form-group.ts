@@ -5,7 +5,7 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 
-import type { DynamicFormGroup } from './model';
+import type { DynamicFormGroup } from '../domain/model';
 import { DynamicFormItemContainerComponent } from './dynamic-form-item-container';
 
 @Component({
