@@ -83,7 +83,7 @@ const createFieldValidators = (field: DynamicFormField): ValidatorFn[] => {
 
 const createGroupControl = (group: DynamicFormGroup): FormGroup => {
   const formGroup = new FormGroup({});
-  addChildren(formGroup, group);
+  addItems(formGroup, group);
   return formGroup;
 };
 
@@ -123,17 +123,17 @@ const createControlMap: CreateControlFnMap = {
   TEXT: createTextFieldControl,
 };
 
-const addChildren = (
+const addItems = (
   group: FormGroup,
-  withChildren: DynamicFormItemContainer,
+  itemContainer: DynamicFormItemContainer,
 ): void => {
-  for (const child of withChildren.children) {
-    if (isDynamicFormControl(child)) {
+  for (const item of itemContainer.items) {
+    if (isDynamicFormControl(item)) {
       const createControlFn = createControlMap[
-        child.type
+        item.type
       ] as CreateControlFn<DynamicFormControl>;
-      const control = createControlFn(child);
-      group.addControl(child.key, control);
+      const control = createControlFn(item);
+      group.addControl(item.key, control);
     }
   }
 };

@@ -40,7 +40,7 @@ export type WithValidators<T extends object = object> = Immutable<{
 }>;
 
 export type DynamicFormItemContainer = Immutable<{
-  children: DynamicFormItem[];
+  items: DynamicFormItem[];
 }>;
 
 export type BaseControl<TType extends string> = WithType<TType> & WithKey;
@@ -85,13 +85,13 @@ export type DynamicFormSelectField = Immutable<
 >;
 
 export type DynamicFormRowItem = Immutable<{
-  child: DynamicFormItem;
+  item: DynamicFormItem;
   width?: string;
 }>;
 
 export type DynamicFormRow = Immutable<
   WithType<'ROW'> & {
-    children: DynamicFormRowItem[];
+    items: DynamicFormRowItem[];
     gap?: string;
   }
 >;

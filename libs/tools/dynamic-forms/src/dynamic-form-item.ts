@@ -24,8 +24,8 @@ import { DynamicFormGroupComponent } from './dynamic-form-group';
       <fest-dynamic-form-field [field]="itm" />
     } @else if (isRow(itm)) {
       TODO: ROW
-      @for (rowItem of itm.children; track $index) {
-        <fest-dynamic-form-item [item]="rowItem.child" />
+      @for (rowItem of itm.items; track $index) {
+        <fest-dynamic-form-item [item]="rowItem.item" />
       }
     } @else {
       {{ assertNever(itm) }}

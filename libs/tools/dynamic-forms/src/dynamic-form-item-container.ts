@@ -6,7 +6,7 @@ import { DynamicFormItemComponent } from './dynamic-form-item';
 @Component({
   selector: 'fest-dynamic-form-item-container',
   imports: [DynamicFormItemComponent],
-  template: `@for (item of itemContainer().children; track $index) {
+  template: `@for (item of itemContainer().items; track $index) {
     <fest-dynamic-form-item [item]="item" />
   }`,
 })

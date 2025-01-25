@@ -18,7 +18,7 @@ export class ExampleComponent {
     (): DynamicFormGroup => ({
       type: 'GROUP',
       key: '',
-      children: [
+      items: [
         {
           type: 'TEXT',
           key: 'firstName',
@@ -37,19 +37,19 @@ export class ExampleComponent {
         {
           type: 'GROUP',
           key: 'address',
-          children: [
+          items: [
             {
               type: 'ROW',
-              children: [
+              items: [
                 {
-                  child: {
+                  item: {
                     type: 'TEXT',
                     key: 'street',
                     label: 'Street',
                   },
                 },
                 {
-                  child: {
+                  item: {
                     type: 'TEXT',
                     key: 'houseNumber',
                     label: 'House number',
