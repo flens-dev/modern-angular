@@ -40,6 +40,7 @@ export class ExampleComponent {
           items: [
             {
               type: 'ROW',
+              gap: '1em',
               items: [
                 {
                   item: {
@@ -47,6 +48,7 @@ export class ExampleComponent {
                     key: 'street',
                     label: 'Street',
                   },
+                  flex: '1 1 auto',
                 },
                 {
                   item: {
@@ -54,6 +56,7 @@ export class ExampleComponent {
                     key: 'houseNumber',
                     label: 'House number',
                   },
+                  flex: '0 1 auto',
                 },
               ],
             },

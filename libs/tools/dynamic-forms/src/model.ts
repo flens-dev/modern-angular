@@ -86,7 +86,7 @@ export type DynamicFormSelectField = Immutable<
 
 export type DynamicFormRowItem = Immutable<{
   item: DynamicFormItem;
-  width?: string;
+  flex?: string;
 }>;
 
 export type DynamicFormRow = Immutable<

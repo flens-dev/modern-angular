@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, forwardRef, input } from '@angular/core';
 
 import type {
   DynamicFormField,
@@ -13,20 +13,22 @@ import {
 } from './model';
 import { DynamicFormFieldComponent } from './dynamic-form-field';
 import { DynamicFormGroupComponent } from './dynamic-form-group';
+import { DynamicFormRowComponent } from './dynamic-form-row';
 
 @Component({
   selector: 'fest-dynamic-form-item',
-  imports: [DynamicFormFieldComponent, DynamicFormGroupComponent],
+  imports: [
+    DynamicFormFieldComponent,
+    forwardRef(() => DynamicFormGroupComponent),
+    DynamicFormRowComponent,
+  ],
   template: `@let itm = item();
     @if (isGroup(itm)) {
       <fest-dynamic-form-group [group]="itm" />
     } @else if (isField(itm)) {
       <fest-dynamic-form-field [field]="itm" />
     } @else if (isRow(itm)) {
-      TODO: ROW
-      @for (rowItem of itm.items; track $index) {
-        <fest-dynamic-form-item [item]="rowItem.item" />
-      }
+      <fest-dynamic-form-row [row]="itm" />
     } @else {
       {{ assertNever(itm) }}
     } `,

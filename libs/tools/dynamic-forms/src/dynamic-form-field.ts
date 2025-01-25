@@ -11,9 +11,9 @@ import type { DynamicFormField } from './model';
   selector: 'fest-dynamic-form-field',
   imports: [ReactiveFormsModule],
   template: `@let fld = field();
-    <div [formGroup]="parentFormGroup">
-      <label>{{ fld.label }}</label>
-      <input [formControlName]="fld.key" />
+    <div [formGroup]="parentFormGroup" style="display: flex; direction: row">
+      <label style="flex: 0 0 auto">{{ fld.label }}</label>
+      <input style="flex: 1 1 auto" [formControlName]="fld.key" />
     </div>`,
 })
 export class DynamicFormFieldComponent {

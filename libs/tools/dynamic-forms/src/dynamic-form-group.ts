@@ -17,7 +17,6 @@ import { DynamicFormItemContainerComponent } from './dynamic-form-item-container
   template: `@let grp = group();
     <div [formGroup]="parentFormGroup">
       <div [formGroupName]="grp.key">
-        GROUP {{ grp.key }}
         <fest-dynamic-form-item-container [itemContainer]="grp" />
       </div>
     </div>`,
