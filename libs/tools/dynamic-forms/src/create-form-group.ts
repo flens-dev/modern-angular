@@ -1,43 +1,23 @@
 import {
-  AbstractControl,
   FormControl,
   FormGroup,
   ValidatorFn,
   Validators,
 } from '@angular/forms';
 
-import type {
-  MapDiscriminatorToType,
-  MergeIntersections,
-  Unpartial,
-} from '@flens-dev/tools/common';
+import type { MergeIntersections, Unpartial } from '@flens-dev/tools/common';
 
 import {
-  BaseControl,
-  DynamicFormControl,
   DynamicFormField,
   DynamicFormGroup,
+  DynamicFormItem,
   DynamicFormItemContainer,
   DynamicFormNumberField,
+  DynamicFormRow,
   DynamicFormSelectField,
   DynamicFormTextField,
-  isDynamicFormControl,
+  WithType,
 } from './model';
-
-type DynamicFormControlTypeNameToControl = MapDiscriminatorToType<
-  DynamicFormControl,
-  'type'
->;
-
-type CreateControlFn<TControl extends BaseControl<string>> = (
-  control: TControl,
-) => AbstractControl;
-
-type CreateControlFnMap = {
-  [TType in keyof DynamicFormControlTypeNameToControl]: CreateControlFn<
-    DynamicFormControlTypeNameToControl[TType]
-  >;
-};
 
 type FieldValidators = MergeIntersections<
   Unpartial<DynamicFormField['validators']>
@@ -81,63 +61,83 @@ const createFieldValidators = (field: DynamicFormField): ValidatorFn[] => {
   return validators;
 };
 
-const createGroupControl = (group: DynamicFormGroup): FormGroup => {
+const addGroup = (parentGroup: FormGroup, group: DynamicFormGroup): void => {
   const formGroup = new FormGroup({});
   addItems(formGroup, group);
-  return formGroup;
+  parentGroup.addControl(group.key, formGroup);
 };
 
-const createNumberFieldControl = (
+const addNumberField = (
+  parentGroup: FormGroup,
   numberField: DynamicFormNumberField,
-): FormControl<number> => {
+): void => {
   const control = new FormControl<number>(0, {
     nonNullable: true,
     validators: createFieldValidators(numberField),
   });
-  return control;
+  parentGroup.addControl(numberField.key, control);
 };
 
-const createSelectFieldControl = (
+const addSelectField = (
+  parentGroup: FormGroup,
   selectField: DynamicFormSelectField,
-): FormControl<unknown> => {
+): void => {
   const control = new FormControl<unknown>(null, {
     validators: createFieldValidators(selectField),
   });
-  return control;
+  parentGroup.addControl(selectField.key, control);
 };
 
-const createTextFieldControl = (
+const addTextField = (
+  parentGroup: FormGroup,
   textField: DynamicFormTextField,
-): FormControl<string> => {
+): void => {
   const control = new FormControl<string>('', {
     nonNullable: true,
     validators: createFieldValidators(textField),
   });
-  return control;
+  parentGroup.addControl(textField.key, control);
 };
 
-const createControlMap: CreateControlFnMap = {
-  GROUP: createGroupControl,
-  NUMBER: createNumberFieldControl,
-  SELECT: createSelectFieldControl,
-  TEXT: createTextFieldControl,
+const addRow = (parentGroup: FormGroup, row: DynamicFormRow): void => {
+  for (const rowItem of row.items) {
+    addItem(parentGroup, rowItem.item);
+  }
+};
+
+type AddControlFn<TItem> = (parentGroup: FormGroup, item: TItem) => void;
+
+const addControlFnMap: {
+  [TType in DynamicFormItem['type']]: AddControlFn<
+    Extract<DynamicFormItem, WithType<TType>>
+  >;
+} = {
+  GROUP: addGroup,
+  NUMBER: addNumberField,
+  ROW: addRow,
+  SELECT: addSelectField,
+  TEXT: addTextField,
+};
+
+const addItem: AddControlFn<DynamicFormItem> = (
+  parentGroup: FormGroup,
+  item: DynamicFormItem,
+): void => {
+  const addItemFn = addControlFnMap[item.type] as AddControlFn<DynamicFormItem>;
+  addItemFn(parentGroup, item);
 };
 
 const addItems = (
-  group: FormGroup,
+  parentGroup: FormGroup,
   itemContainer: DynamicFormItemContainer,
 ): void => {
   for (const item of itemContainer.items) {
-    if (isDynamicFormControl(item)) {
-      const createControlFn = createControlMap[
-        item.type
-      ] as CreateControlFn<DynamicFormControl>;
-      const control = createControlFn(item);
-      group.addControl(item.key, control);
-    }
+    addItem(parentGroup, item);
   }
 };
 
 export const createFormGroup = (form: DynamicFormGroup): FormGroup => {
-  return createGroupControl(form);
+  const rootFormGroup = new FormGroup({});
+  addItems(rootFormGroup, form);
+  return rootFormGroup;
 };

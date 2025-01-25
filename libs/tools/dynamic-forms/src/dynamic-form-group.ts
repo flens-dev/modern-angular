@@ -1,4 +1,4 @@
-import { Component, effect, forwardRef, inject, input } from '@angular/core';
+import { Component, forwardRef, inject, input } from '@angular/core';
 import {
   ControlContainer,
   FormGroup,
@@ -29,11 +29,4 @@ export class DynamicFormGroupComponent {
   protected readonly parentFormGroup = this.parentControl.control as FormGroup;
 
   readonly group = input.required<DynamicFormGroup>();
-
-  constructor() {
-    effect(() => {
-      const group = this.group();
-      console.log(group, this.parentControl);
-    });
-  }
 }
