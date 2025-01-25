@@ -2,84 +2,35 @@ import { Component, computed, viewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { fromOutputToObservable } from '@flens-dev/tools/common';
-import type { DynamicFormGroup } from '@flens-dev/tools/dynamic-forms';
+import { formNotValid } from '@flens-dev/tools/forms';
 import { DynamicFormComponent } from '@flens-dev/tools/dynamic-forms';
+
+import { exampleForm } from './example-form';
 
 @Component({
   selector: 'app-dyn-forms-example',
   imports: [DynamicFormComponent],
   template: `<h2>Example Dynamic Form</h2>
-    <fest-dynamic-form [form]="form()">
-      <button type="submit">submit</button>
+    <fest-dynamic-form [form]="form">
+      <button type="submit" [disabled]="submitDisabled()">submit</button>
     </fest-dynamic-form>`,
 })
 export class ExampleComponent {
-  protected readonly form = computed(
-    (): DynamicFormGroup => ({
-      type: 'GROUP',
-      key: '',
-      items: [
-        {
-          type: 'TEXT',
-          key: 'firstName',
-          label: 'First name',
-          validators: {
-            required: true,
-          },
-        },
-        {
-          type: 'TEXT',
-          key: 'lastName',
-          label: 'Last name',
-        },
-        {
-          type: 'NUMBER',
-          key: 'yearOfBirth',
-          label: 'Year of birth',
-        },
-        {
-          type: 'GROUP',
-          key: 'address',
-          items: [
-            {
-              type: 'ROW',
-              gap: '1em',
-              items: [
-                {
-                  item: {
-                    type: 'TEXT',
-                    key: 'street',
-                    label: 'Street',
-                  },
-                  flex: '1 1 auto',
-                },
-                {
-                  item: {
-                    type: 'TEXT',
-                    key: 'houseNumber',
-                    label: 'House number',
-                  },
-                  flex: '0 1 auto',
-                },
-              ],
-            },
-            {
-              type: 'TEXT',
-              key: 'zipCode',
-              label: 'Zip code',
-            },
-            {
-              type: 'TEXT',
-              key: 'city',
-              label: 'City',
-            },
-          ],
-        },
-      ],
-    }),
-  );
+  protected readonly form = exampleForm;
 
   protected readonly dynamicForm = viewChild.required(DynamicFormComponent);
+
+  readonly #formGroup = fromOutputToObservable(
+    this.dynamicForm,
+    (c) => c.formGroup,
+  );
+  readonly #formNotValid = formNotValid(this.#formGroup);
+
+  protected readonly submitDisabled = computed(() => {
+    const notValid = this.#formNotValid();
+    const submitting = false; // TODO
+    return notValid || submitting;
+  });
 
   readonly #formEvents = fromOutputToObservable(
     this.dynamicForm,
