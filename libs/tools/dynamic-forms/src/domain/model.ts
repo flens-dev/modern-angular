@@ -84,18 +84,6 @@ export type DynamicFormSelectField = Immutable<
   }
 >;
 
-export type DynamicFormRowItem = Immutable<{
-  item: DynamicFormItem;
-  flex?: string;
-}>;
-
-export type DynamicFormRow = Immutable<
-  WithType<'ROW'> & {
-    items: DynamicFormRowItem[];
-    gap?: string;
-  }
->;
-
 export type DynamicFormGroup = Immutable<
   BaseControl<'GROUP'> & DynamicFormItemContainer
 >;
@@ -105,25 +93,13 @@ export type DynamicFormField =
   | DynamicFormNumberField
   | DynamicFormSelectField;
 
-export type DynamicFormControl = DynamicFormField | DynamicFormGroup;
-
-export type DynamicFormLayout = DynamicFormRow;
-
-export type DynamicFormItem = DynamicFormControl | DynamicFormLayout;
+export type DynamicFormItem = DynamicFormField | DynamicFormGroup;
 
 export const isDynamicFormGroup = (
   item: DynamicFormItem,
 ): item is DynamicFormGroup => {
   return isOfType<DynamicFormGroup>(item, [
     'GROUP' satisfies DynamicFormGroup['type'],
-  ]);
-};
-
-export const isDynamicFormRow = (
-  item: DynamicFormItem,
-): item is DynamicFormRow => {
-  return isOfType<DynamicFormRow>(item, [
-    'ROW' satisfies DynamicFormRow['type'],
   ]);
 };
 
@@ -143,21 +119,4 @@ export const isDynamicFormField = (
   item: DynamicFormItem,
 ): item is DynamicFormField => {
   return isOfType<DynamicFormField>(item, dynamicFormFieldTypes);
-};
-
-type DynamicFormControlType = DynamicFormControl['type'];
-
-const dynamicFormControlTypesMap: Record<DynamicFormControlType, string> = {
-  ...dynamicFormFieldTypesMap,
-  GROUP: 'object',
-};
-
-const dynamicFormControlTypes: readonly string[] = Object.keys(
-  dynamicFormControlTypesMap,
-);
-
-export const isDynamicFormControl = (
-  item: DynamicFormItem,
-): item is DynamicFormControl => {
-  return isOfType<DynamicFormControl>(item, dynamicFormControlTypes);
 };

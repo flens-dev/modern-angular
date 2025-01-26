@@ -27,26 +27,14 @@ export const exampleForm: DynamicFormGroup = {
       key: 'address',
       items: [
         {
-          type: 'ROW',
-          gap: '1em',
-          items: [
-            {
-              item: {
-                type: 'TEXT',
-                key: 'street',
-                label: 'Street',
-              },
-              flex: '1 1 auto',
-            },
-            {
-              item: {
-                type: 'TEXT',
-                key: 'houseNumber',
-                label: 'House number',
-              },
-              flex: '0 1 auto',
-            },
-          ],
+          type: 'TEXT',
+          key: 'street',
+          label: 'Street',
+        },
+        {
+          type: 'TEXT',
+          key: 'houseNumber',
+          label: 'House number',
         },
         {
           type: 'TEXT',

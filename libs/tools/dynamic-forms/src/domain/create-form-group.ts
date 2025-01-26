@@ -13,7 +13,6 @@ import {
   DynamicFormItem,
   DynamicFormItemContainer,
   DynamicFormNumberField,
-  DynamicFormRow,
   DynamicFormSelectField,
   DynamicFormTextField,
   WithType,
@@ -99,12 +98,6 @@ const addTextField = (
   parentGroup.addControl(textField.key, control);
 };
 
-const addRow = (parentGroup: FormGroup, row: DynamicFormRow): void => {
-  for (const rowItem of row.items) {
-    addItem(parentGroup, rowItem.item);
-  }
-};
-
 type AddControlFn<TItem> = (parentGroup: FormGroup, item: TItem) => void;
 
 const addControlFnMap: {
@@ -114,7 +107,6 @@ const addControlFnMap: {
 } = {
   GROUP: addGroup,
   NUMBER: addNumberField,
-  ROW: addRow,
   SELECT: addSelectField,
   TEXT: addTextField,
 };
