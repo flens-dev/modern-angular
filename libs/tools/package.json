@@ -2,9 +2,9 @@
   "name": "@flens-dev/tools",
   "version": "0.0.1",
   "peerDependencies": {
-    "@angular/core": "19.0.5",
-    "@angular/common": "19.0.5",
-    "@angular/forms": "19.0.5",
+    "@angular/core": "19.1.5",
+    "@angular/common": "19.1.5",
+    "@angular/forms": "19.1.5",
     "rxjs": "~7.8.0"
   },
   "sideEffects": false

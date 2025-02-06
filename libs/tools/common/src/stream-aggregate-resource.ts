@@ -2,7 +2,6 @@ import {
   DestroyRef,
   Resource,
   ResourceStatus,
-  Signal,
   computed,
   signal,
   untracked,
@@ -98,9 +97,7 @@ export const streamAggregateResource = <
       status() === ResourceStatus.Loading ||
       status() === ResourceStatus.Reloading,
   );
-  const hasValue = (): this is Resource<TResource> & {
-    value: Signal<TResource>;
-  } => true;
+  const hasValue = (): this is Resource<Exclude<TResource, undefined>> => true;
 
   const reload$ = new Subject<void>();
   const reload = () => {
