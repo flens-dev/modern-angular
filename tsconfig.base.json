@@ -15,6 +15,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@flens-dev/tools/auth": ["libs/tools/auth/src/index.ts"],
       "@flens-dev/tools/common": ["libs/tools/common/src/index.ts"],
       "@flens-dev/tools/dynamic-forms": [
         "libs/tools/dynamic-forms/src/index.ts"
