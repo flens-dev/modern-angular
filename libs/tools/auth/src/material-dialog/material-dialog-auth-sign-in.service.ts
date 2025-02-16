@@ -30,6 +30,8 @@ export class MaterialDialogAuthSignInService extends AuthSignInService {
       return;
     }
 
+    this.#state.set('SIGNING_IN');
+
     const dialogRef = this.#dialog.open<
       MaterialAuthSignInDialogComponent,
       MaterialAuthSignInDialogData,
