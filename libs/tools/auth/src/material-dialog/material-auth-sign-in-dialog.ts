@@ -31,8 +31,8 @@ export type MaterialAuthSignInDialogResult = boolean | null;
   ],
   template: `<h2 matDialogTitle>Sign in</h2>
 
-    <mat-dialog-content>
-      <form [formGroup]="signInForm">
+    <form [formGroup]="signInForm">
+      <mat-dialog-content>
         <mat-form-field>
           <mat-label>Username</mat-label>
           <input matInput formControlName="username" />
@@ -41,19 +41,19 @@ export type MaterialAuthSignInDialogResult = boolean | null;
           <mat-label>Password</mat-label>
           <input matInput formControlName="password" />
         </mat-form-field>
-      </form>
-    </mat-dialog-content>
+      </mat-dialog-content>
 
-    <mat-dialog-actions>
-      <button
-        type="submit"
-        mat-flat-button
-        color="primary"
-        [disabled]="submitDisabled()"
-      >
-        Sign in
-      </button>
-    </mat-dialog-actions>`,
+      <mat-dialog-actions>
+        <button
+          type="submit"
+          mat-flat-button
+          color="primary"
+          [disabled]="submitDisabled()"
+        >
+          Sign in
+        </button>
+      </mat-dialog-actions>
+    </form>`,
 })
 export class MaterialAuthSignInDialogComponent {
   readonly #config = inject(MaterialDialogAuthSignInConfig);
