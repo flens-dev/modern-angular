@@ -25,7 +25,7 @@ export class MaterialDialogAuthSignInService extends AuthSignInService {
   override readonly state = this.#state.asReadonly();
 
   override triggerSignIn(): void {
-    // Sanitiy check, we only want to open one dialog,
+    // Sanity check, we only want to open one dialog,
     // even if multiple requests are in flight.
     if (this.#dialogRef != null) {
       return;
@@ -33,7 +33,7 @@ export class MaterialDialogAuthSignInService extends AuthSignInService {
 
     this.#state.set('SIGNING_IN');
 
-    const dialogRef = this.#dialog.open<
+    this.#dialogRef = this.#dialog.open<
       MaterialAuthSignInDialogComponent,
       MaterialAuthSignInDialogData,
       MaterialAuthSignInDialogResult
@@ -41,7 +41,8 @@ export class MaterialDialogAuthSignInService extends AuthSignInService {
       closeOnNavigation: false,
       disableClose: true,
     });
-    dialogRef
+
+    this.#dialogRef
       .afterClosed()
       .pipe(
         finalize(() => {
@@ -50,13 +51,9 @@ export class MaterialDialogAuthSignInService extends AuthSignInService {
         takeUntilDestroyed(this.#destroyRef),
       )
       .subscribe({
-        next: (result) => {
-          if (result) {
-            this.#state.set('SIGNED_IN');
-          }
+        next: () => {
+          this.#state.set('SIGNED_IN');
         },
       });
-
-    this.#dialogRef = dialogRef;
   }
 }

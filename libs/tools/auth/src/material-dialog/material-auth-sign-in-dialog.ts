@@ -1,5 +1,4 @@
 import { Component, computed, inject } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   NonNullableFormBuilder,
   ReactiveFormsModule,
@@ -10,9 +9,16 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
-import { catchError, Observable, of, switchMap } from 'rxjs';
+import { Observable } from 'rxjs';
 
+import {
+  errorToString,
+  injectServiceCall,
+  isBusyState,
+  isErrorState,
+} from '@flens-dev/tools/common';
 import { formNotValid, validFormSubmit } from '@flens-dev/tools/forms';
 
 export abstract class MaterialAuthSignInDialogConfig {
@@ -20,7 +26,7 @@ export abstract class MaterialAuthSignInDialogConfig {
 }
 
 export type MaterialAuthSignInDialogData = void;
-export type MaterialAuthSignInDialogResult = boolean | null;
+export type MaterialAuthSignInDialogResult = true;
 
 @Component({
   imports: [
@@ -29,32 +35,9 @@ export type MaterialAuthSignInDialogResult = boolean | null;
     MatDialogModule,
     MatFormFieldModule,
     MatInputModule,
+    MatProgressBarModule,
   ],
-  template: `<h2 matDialogTitle>Sign in</h2>
-
-    <form [formGroup]="signInForm">
-      <mat-dialog-content>
-        <mat-form-field>
-          <mat-label>Username</mat-label>
-          <input matInput formControlName="username" />
-        </mat-form-field>
-        <mat-form-field>
-          <mat-label>Password</mat-label>
-          <input matInput formControlName="password" />
-        </mat-form-field>
-      </mat-dialog-content>
-
-      <mat-dialog-actions>
-        <button
-          type="submit"
-          mat-flat-button
-          color="primary"
-          [disabled]="submitDisabled()"
-        >
-          Sign in
-        </button>
-      </mat-dialog-actions>
-    </form>`,
+  templateUrl: './material-auth-sign-in-dialog.html',
 })
 export class MaterialAuthSignInDialogComponent {
   readonly #config = inject(MaterialAuthSignInDialogConfig);
@@ -63,38 +46,41 @@ export class MaterialAuthSignInDialogComponent {
       MatDialogRef<MaterialAuthSignInDialogData, MaterialAuthSignInDialogResult>
     >(MatDialogRef);
 
-  readonly #formBuilder = inject(NonNullableFormBuilder);
-  protected readonly signInForm = this.#formBuilder.group({
+  protected readonly signInForm = inject(NonNullableFormBuilder).group({
     username: ['', [Validators.required]],
     password: ['', [Validators.required]],
   });
 
-  readonly #signInNotValid = formNotValid(this.signInForm);
+  readonly #signInFormNotValid = formNotValid(this.signInForm);
 
-  protected readonly submitDisabled = computed(() => {
-    const signInNotValid = this.#signInNotValid();
-    // TODO disable button while submitting
-    return signInNotValid;
+  readonly #signInRequest = validFormSubmit(this.signInForm);
+
+  readonly #signInState = injectServiceCall(
+    this.#signInRequest,
+    ({ username, password }) => this.#config.signIn(username, password),
+    {
+      behavior: 'CONCAT',
+      onBusyChange: (busy) =>
+        busy
+          ? this.signInForm.disable({ emitEvent: false })
+          : this.signInForm.enable({ emitEvent: false }),
+      onSuccess: () => this.#dialogRef.close(true),
+    },
+  );
+
+  protected readonly error = computed(() => {
+    const state = this.#signInState.state();
+    return isErrorState(state) ? errorToString(state.error) : null;
   });
 
-  constructor() {
-    // TODO make resource
-    validFormSubmit(this.signInForm)
-      .pipe(
-        switchMap(({ username, password }) =>
-          this.#config
-            .signIn(username, password)
-            // TODO add proper error handling
-            .pipe(catchError((error) => of(false))),
-        ),
-        takeUntilDestroyed(),
-      )
-      .subscribe({
-        next: (success) => {
-          if (success) {
-            this.#dialogRef.close(true);
-          }
-        },
-      });
-  }
+  protected readonly busy = computed(() => {
+    const state = this.#signInState.state();
+    return isBusyState(state);
+  });
+
+  protected readonly submitDisabled = computed(() => {
+    const signInFormNotValid = this.#signInFormNotValid();
+    const busy = this.busy();
+    return signInFormNotValid || busy;
+  });
 }
