@@ -1,17 +1,17 @@
 import { Provider } from '@angular/core';
 
-import { AuthSignInService } from '../auth-sign-in-service';
+import { AuthSignInService } from '../auth-sign-in.service';
 
-import { MaterialDialogAuthSignInConfig } from './material-auth-sign-in-dialog';
+import { MaterialAuthSignInDialogConfig } from './material-auth-sign-in-dialog';
 import { MaterialDialogAuthSignInService } from './material-dialog-auth-sign-in.service';
 
 export const provideMaterialDialogAuthSignIn = <
-  TConfig extends MaterialDialogAuthSignInConfig,
+  TConfig extends MaterialAuthSignInDialogConfig,
 >(
   config: TConfig,
 ): Provider[] => [
   {
-    provide: MaterialDialogAuthSignInConfig,
+    provide: MaterialAuthSignInDialogConfig,
     useValue: config,
   },
   MaterialDialogAuthSignInService,

@@ -1,26 +1,10 @@
-import { inject, Injectable, Injector, Signal, untracked } from '@angular/core';
+import { inject, Injector, untracked } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
-import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
+import { HttpInterceptorFn } from '@angular/common/http';
 
 import { catchError, filter, first, mergeMap } from 'rxjs';
 
-export type AuthState =
-  | 'UNKNOWN'
-  | 'SIGNING_IN'
-  | 'SIGNED_IN'
-  | 'SIGNING_OUT'
-  | 'SIGNED_OUT';
-
-@Injectable()
-export abstract class AuthSignInService {
-  abstract readonly state: Signal<AuthState>;
-
-  abstract triggerSignIn(): void;
-
-  needsSignIn(error: unknown): boolean {
-    return error instanceof HttpErrorResponse && error.status === 401;
-  }
-}
+import { AuthSignInService } from './auth-sign-in.service';
 
 export const authSignInInterceptor: HttpInterceptorFn = (req, next) => {
   const injector = inject(Injector);

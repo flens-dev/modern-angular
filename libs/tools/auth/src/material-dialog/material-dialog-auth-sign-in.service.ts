@@ -1,11 +1,12 @@
 import { DestroyRef, inject, Injectable, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 
 import { finalize } from 'rxjs';
 
-import type { AuthState } from '../auth-sign-in-service';
-import { AuthSignInService } from '../auth-sign-in-service';
+import type { AuthState } from '../auth-state';
+import { AuthSignInService } from '../auth-sign-in.service';
 
 import type {
   MaterialAuthSignInDialogData,

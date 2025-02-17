@@ -10,12 +10,13 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { formNotValid, validFormSubmit } from '@flens-dev/tools/forms';
 
 import { catchError, Observable, of, switchMap } from 'rxjs';
 
-export abstract class MaterialDialogAuthSignInConfig {
-  abstract submitSignIn(username: string, password: string): Observable<true>;
+import { formNotValid, validFormSubmit } from '@flens-dev/tools/forms';
+
+export abstract class MaterialAuthSignInDialogConfig {
+  abstract signIn(username: string, password: string): Observable<true>;
 }
 
 export type MaterialAuthSignInDialogData = void;
@@ -56,7 +57,7 @@ export type MaterialAuthSignInDialogResult = boolean | null;
     </form>`,
 })
 export class MaterialAuthSignInDialogComponent {
-  readonly #config = inject(MaterialDialogAuthSignInConfig);
+  readonly #config = inject(MaterialAuthSignInDialogConfig);
   readonly #dialogRef =
     inject<
       MatDialogRef<MaterialAuthSignInDialogData, MaterialAuthSignInDialogResult>
@@ -82,7 +83,7 @@ export class MaterialAuthSignInDialogComponent {
       .pipe(
         switchMap(({ username, password }) =>
           this.#config
-            .submitSignIn(username, password)
+            .signIn(username, password)
             // TODO add proper error handling
             .pipe(catchError((error) => of(false))),
         ),
