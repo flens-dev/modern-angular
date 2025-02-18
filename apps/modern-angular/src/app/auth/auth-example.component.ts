@@ -9,15 +9,23 @@ import { MatButtonModule } from '@angular/material/button';
 @Component({
   selector: 'app-auth-example',
   imports: [JsonPipe, MatButtonModule],
-  template: `<h1>Auth Example</h1>
+  template: `<h2>Auth Example</h2>
 
-    <h2>User</h2>
+    <h3>User</h3>
     @if (user.isLoading()) {
       <p>Loading user...</p>
     } @else if (user.error()) {
       <p>Error: {{ user.error() | json }}</p>
-    } @else if (user.hasValue()) {
-      <p>User: {{ user.value() | json }}</p>
+    } @else {
+      @let u = user.value();
+      @if (u) {
+        <p>
+          Username: {{ u.username }}<br />
+          Firstname: {{ u.firstName }}<br />
+          Lastname: {{ u.lastName }}<br />
+          E-Mail: {{ u.email }}
+        </p>
+      }
     }
     <p>
       <button type="button" mat-stroked-button (click)="user.reload()">
@@ -25,15 +33,17 @@ import { MatButtonModule } from '@angular/material/button';
       </button>
     </p>
 
-    <h2>Quote</h2>
+    <h3>Quote</h3>
     @if (quote.isLoading()) {
       <p>Loading quote...</p>
     } @else if (quote.error()) {
       <p>Error: {{ quote.error() | json }}</p>
-    } @else if (quote.hasValue()) {
+    } @else {
       @let q = quote.value();
-      <p>Quote: {{ q?.quote }}</p>
-      <p>By: {{ q?.author }}</p>
+      @if (q) {
+        <p>Quote: {{ q.quote }}</p>
+        <p>By: {{ q.author }}</p>
+      }
     }
     <p>
       <button type="button" mat-stroked-button (click)="quote.reload()">
@@ -41,6 +51,7 @@ import { MatButtonModule } from '@angular/material/button';
       </button>
     </p>
 
+    <h3>Debug</h3>
     <p>Auth-State: {{ authState() }}</p>
     <p>
       <button type="button" mat-stroked-button (click)="clearToken()">

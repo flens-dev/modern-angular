@@ -1,4 +1,4 @@
-import { HttpClient, HttpRequest } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpRequest } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
 import { MaterialDialogAuthSignInClient } from '@flens-dev/tools/auth';
@@ -56,7 +56,10 @@ export class DummyjsonClient extends MaterialDialogAuthSignInClient {
     return `Bearer ${this.#accessToken}`;
   }
   get #authHeader() {
-    return { [this.#authHeaderKey]: this.#authHeaderValue };
+    const headers = new HttpHeaders();
+    return this.#accessToken == null || this.#accessToken === ''
+      ? headers
+      : headers.append(this.#authHeaderKey, this.#authHeaderValue);
   }
 
   clearToken() {
