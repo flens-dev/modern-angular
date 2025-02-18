@@ -19,4 +19,8 @@ export const appRoutes: Route[] = [
     path: 'dyn-forms',
     loadChildren: () => import('./dyn-forms').then((m) => m.DYN_FORMS_ROUTES),
   },
+  {
+    path: 'auth',
+    loadChildren: () => import('./auth').then((m) => m.AUTH_ROUTES),
+  },
 ];

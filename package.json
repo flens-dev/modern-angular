@@ -17,6 +17,7 @@
     "@angular/router": "19.1.5",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
+    "valibot": "^1.0.0-rc.1",
     "zone.js": "0.15.0"
   },
   "devDependencies": {

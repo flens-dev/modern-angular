@@ -15,7 +15,7 @@ import { exampleForm } from './example-form';
       <button type="submit" [disabled]="submitDisabled()">submit</button>
     </fest-dynamic-form>`,
 })
-export class ExampleComponent {
+export class DynFormsExampleComponent {
   protected readonly form = exampleForm;
 
   protected readonly dynamicForm = viewChild.required(DynamicFormComponent);

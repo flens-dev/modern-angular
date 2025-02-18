@@ -1,24 +1,34 @@
 <h2 matDialogTitle>Sign in</h2>
 
 <form [formGroup]="signInForm">
-  <mat-dialog-content>
-    <mat-form-field>
+  <mat-dialog-content class="container">
+    <mat-form-field class="container__item">
       <mat-label>Username</mat-label>
-      <input matInput formControlName="username" />
+      <input
+        type="text"
+        autocomplete="username"
+        matInput
+        formControlName="username"
+      />
     </mat-form-field>
-    <mat-form-field>
+    <mat-form-field class="container__item">
       <mat-label>Password</mat-label>
-      <input matInput formControlName="password" />
+      <input
+        type="password"
+        autocomplete="current-password"
+        matInput
+        formControlName="password"
+      />
     </mat-form-field>
 
     @if (error()) {
-      <div>
+      <div class="container__item">
         <mat-error>{{ error() }}</mat-error>
       </div>
     }
 
     @if (busy()) {
-      <div>
+      <div class="container__item">
         <mat-progress-bar mode="indeterminate" />
       </div>
     }

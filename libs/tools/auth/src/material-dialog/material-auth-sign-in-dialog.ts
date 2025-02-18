@@ -11,8 +11,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 
-import { Observable } from 'rxjs';
-
 import {
   errorToString,
   injectServiceCall,
@@ -21,9 +19,7 @@ import {
 } from '@flens-dev/tools/common';
 import { formNotValid, validFormSubmit } from '@flens-dev/tools/forms';
 
-export abstract class MaterialAuthSignInDialogConfig {
-  abstract signIn(username: string, password: string): Observable<true>;
-}
+import { AuthSignInClient } from '../auth-sign-in.client';
 
 export type MaterialAuthSignInDialogData = void;
 export type MaterialAuthSignInDialogResult = true;
@@ -38,9 +34,10 @@ export type MaterialAuthSignInDialogResult = true;
     MatProgressBarModule,
   ],
   templateUrl: './material-auth-sign-in-dialog.html',
+  styleUrl: './material-auth-sign-in-dialog.css',
 })
 export class MaterialAuthSignInDialogComponent {
-  readonly #config = inject(MaterialAuthSignInDialogConfig);
+  readonly #authSignInClient = inject(AuthSignInClient);
   readonly #dialogRef =
     inject<
       MatDialogRef<MaterialAuthSignInDialogData, MaterialAuthSignInDialogResult>
@@ -57,7 +54,8 @@ export class MaterialAuthSignInDialogComponent {
 
   readonly #signInState = injectServiceCall(
     this.#signInRequest,
-    ({ username, password }) => this.#config.signIn(username, password),
+    ({ username, password }) =>
+      this.#authSignInClient.signIn(username, password),
     {
       behavior: 'CONCAT',
       onBusyChange: (busy) =>

@@ -4,8 +4,8 @@ export const DYN_FORMS_ROUTES: Routes = [
   {
     path: '',
     loadComponent: () =>
-      import('./example.component').then(
-        ({ ExampleComponent }) => ExampleComponent,
+      import('./dyn-forms-example.component').then(
+        ({ DynFormsExampleComponent }) => DynFormsExampleComponent,
       ),
   },
 ];

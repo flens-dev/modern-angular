@@ -4,21 +4,21 @@ import { HttpInterceptorFn } from '@angular/common/http';
 
 import { catchError, filter, first, mergeMap } from 'rxjs';
 
-import { AuthSignInService } from './auth-sign-in.service';
+import { AuthSignInClient } from './auth-sign-in.client';
 
 export const authSignInInterceptor: HttpInterceptorFn = (req, next) => {
   const injector = inject(Injector);
 
   return next(req).pipe(
     catchError((error) => {
-      const authService = injector.get(AuthSignInService);
+      const authService = injector.get(AuthSignInClient);
 
-      const authState = untracked(authService.state);
-      if (authState === 'SIGNED_IN' || !authService.needsSignIn(error)) {
+      if (!authService.needsSignIn(error)) {
         throw error;
       }
 
       // trigger the sign-in once
+      const authState = untracked(authService.state);
       if (authState !== 'SIGNING_IN') {
         // Trigger the sign-in after creating/returning the "retry" observable,
         // so we can be sure that the authService.stateChanges blocks until the user is signed in.
@@ -28,7 +28,7 @@ export const authSignInInterceptor: HttpInterceptorFn = (req, next) => {
       return toObservable(authService.state, { injector }).pipe(
         filter((state) => state === 'SIGNED_IN'),
         first(),
-        mergeMap(() => next(req)),
+        mergeMap(() => next(authService.modifyRequest(req))),
       );
     }),
   );
