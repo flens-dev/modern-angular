@@ -4,7 +4,7 @@
 sequenceDiagram
   participant A as AngularApp
   participant D as DataClient
-  participant L as SignIn Dialog
+  participant L as SignInDialog
   participant S as AuthClient
   participant H as HttpInterceptor
   participant B as ApiBackend
