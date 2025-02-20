@@ -45,9 +45,11 @@ sequenceDiagram
     end
     S->>H: signal AuthState "SIGNED_IN"
     deactivate H
-    H->>S: call modifyRequest on data request
-    Note over S: e.g. add auth header
-    S->>H: return modified data request
+    opt if auth with token
+      H->>S: call modifyRequest on data request
+      Note over S: e.g. add auth header
+      S->>H: return modified data request
+    end
     H->>B: forward data request
     B->>H: respond data 200 OK
     H->>D: forward data response
