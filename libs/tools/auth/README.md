@@ -21,8 +21,10 @@ sequenceDiagram
     D->>A: report error
   else need sign-in
     S->>H:YES
-    H->>S: call triggerSignIn
-    Note over S: set AuthState "SIGNING_IN"
+    opt if AuthState not "SIGNING_IN"
+      H->>S: call triggerSignIn
+      Note over S: set AuthState "SIGNING_IN"
+    end
     H->>S: observe AuthState for "SIGNED_IN"
     activate H
     S->>L: show sign-in dialog
