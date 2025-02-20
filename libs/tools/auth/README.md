@@ -16,9 +16,11 @@ sequenceDiagram
   B->>H: respond error 400/401/403/404/500...
   H->>S: call needsSignIn with error
   alt don't need sign-in
+    S->>H: NO
     H->>D: throw error
     D->>A: report error
   else need sign-in
+    S->>H:YES
     H->>S: call triggerSignIn
     Note over S: set AuthState "SIGNING_IN"
     H->>S: observe AuthState for "SIGNED_IN"
