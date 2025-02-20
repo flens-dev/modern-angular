@@ -3,16 +3,15 @@
 ```mermaid
 sequenceDiagram
   participant A as AngularApp
+  participant D as DataClient
   participant L as SignIn Dialog
   participant S as AuthClient
-  participant D as DataClient
   participant H as HttpInterceptor
   participant B as ApiBackend
 
   A->>D: call getData
-  activate A
-  D->>H: request data
   activate D
+  D->>H: request data
   H->>B: forward data request
   B->>H: respond data 401 UNAUTHORIZED
   H->>S: call triggerSignIn
@@ -34,14 +33,13 @@ sequenceDiagram
   Note over S: store token
   Note over S: set AuthState "SIGNED_IN"
   S->>H: signal AuthState "SIGNED_IN"
+  deactivate H
   H->>S: call modifyRequest on data request
   Note over S: e.g. add auth header
   S->>H: return modified data request
   H->>B: forward data request
   B->>H: respond data 200 OK
   H->>D: forward data response
-  deactivate H
   D->>A: return data
   deactivate D
-  deactivate A
 ```
