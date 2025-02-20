@@ -27,20 +27,22 @@ sequenceDiagram
     end
     H->>S: observe AuthState for "SIGNED_IN"
     activate H
-    S->>L: show sign-in dialog
-    activate L
-    L->>S: call signIn
-    S->>H: request sign-in
-    Note over H: handle sign-in without intercepting
-    H->>B: forward sign-in request
-    Note over B: create cookie/token
-    B->>H: respond sign-in 200 OK
-    H->>S: forward sign-in response
-    S->>L: return sign-in response
-    deactivate L
-    Note over L: close dialog
-    Note over S: store token
-    Note over S: set AuthState "SIGNED_IN"
+    opt if dialog not open
+      S->>L: show sign-in dialog
+      activate L
+      L->>S: call signIn
+      S->>H: request sign-in
+      Note over H: handle sign-in without intercepting
+      H->>B: forward sign-in request
+      Note over B: create cookie/token
+      B->>H: respond sign-in 200 OK
+      H->>S: forward sign-in response
+      S->>L: return sign-in response
+      deactivate L
+      Note over L: close dialog
+      Note over S: store token
+      Note over S: set AuthState "SIGNED_IN"
+    end
     S->>H: signal AuthState "SIGNED_IN"
     deactivate H
     H->>S: call modifyRequest on data request
