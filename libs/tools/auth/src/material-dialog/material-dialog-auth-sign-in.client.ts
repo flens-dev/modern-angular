@@ -21,7 +21,10 @@ export abstract class MaterialDialogAuthSignInClient extends AuthSignInClient {
   readonly #destroyRef = inject(DestroyRef);
   readonly #dialog = inject(MatDialog);
 
-  #dialogRef: MatDialogRef<unknown, boolean | null> | null = null;
+  #dialogRef: MatDialogRef<
+    MaterialAuthSignInDialogComponent,
+    MaterialAuthSignInDialogResult
+  > | null = null;
 
   override readonly state = this.#state.asReadonly();
 

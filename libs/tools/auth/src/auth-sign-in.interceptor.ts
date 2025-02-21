@@ -11,24 +11,22 @@ export const authSignInInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(req).pipe(
     catchError((error) => {
-      const authService = injector.get(AuthSignInClient);
+      const authClient = injector.get(AuthSignInClient);
 
-      if (!authService.needsSignIn(error)) {
+      if (!authClient.needsSignIn(error)) {
         throw error;
       }
 
       // trigger the sign-in once
-      const authState = untracked(authService.state);
+      const authState = untracked(authClient.state);
       if (authState !== 'SIGNING_IN') {
-        // Trigger the sign-in after creating/returning the "retry" observable,
-        // so we can be sure that the authService.stateChanges blocks until the user is signed in.
-        Promise.resolve().then(() => authService.triggerSignIn());
+        authClient.triggerSignIn();
       }
 
-      return toObservable(authService.state, { injector }).pipe(
+      return toObservable(authClient.state, { injector }).pipe(
         filter((state) => state === 'SIGNED_IN'),
         first(),
-        mergeMap(() => next(authService.modifyRequest(req))),
+        mergeMap(() => next(authClient.modifyRequest(req))),
       );
     }),
   );

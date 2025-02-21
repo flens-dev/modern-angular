@@ -40,7 +40,10 @@ export class MaterialAuthSignInDialogComponent {
   readonly #authSignInClient = inject(AuthSignInClient);
   readonly #dialogRef =
     inject<
-      MatDialogRef<MaterialAuthSignInDialogData, MaterialAuthSignInDialogResult>
+      MatDialogRef<
+        MaterialAuthSignInDialogComponent,
+        MaterialAuthSignInDialogResult
+      >
     >(MatDialogRef);
 
   protected readonly signInForm = inject(NonNullableFormBuilder).group({
