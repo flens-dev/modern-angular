@@ -21,9 +21,6 @@ import { formNotValid, validFormSubmit } from '@flens-dev/tools/forms';
 
 import { AuthSignInClient } from '../auth-sign-in.client';
 
-export type MaterialAuthSignInDialogData = void;
-export type MaterialAuthSignInDialogResult = true;
-
 @Component({
   imports: [
     ReactiveFormsModule,
@@ -39,12 +36,7 @@ export type MaterialAuthSignInDialogResult = true;
 export class MaterialAuthSignInDialogComponent {
   readonly #authSignInClient = inject(AuthSignInClient);
   readonly #dialogRef =
-    inject<
-      MatDialogRef<
-        MaterialAuthSignInDialogComponent,
-        MaterialAuthSignInDialogResult
-      >
-    >(MatDialogRef);
+    inject<MatDialogRef<MaterialAuthSignInDialogComponent, void>>(MatDialogRef);
 
   protected readonly signInForm = inject(NonNullableFormBuilder).group({
     username: ['', [Validators.required]],
@@ -65,7 +57,7 @@ export class MaterialAuthSignInDialogComponent {
         busy
           ? this.signInForm.disable({ emitEvent: false })
           : this.signInForm.enable({ emitEvent: false }),
-      onSuccess: () => this.#dialogRef.close(true),
+      onSuccess: () => this.#dialogRef.close(),
     },
   );
 

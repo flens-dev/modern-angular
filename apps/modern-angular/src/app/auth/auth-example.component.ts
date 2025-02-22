@@ -1,10 +1,10 @@
 import { Component, inject } from '@angular/core';
-
 import { rxResource } from '@angular/core/rxjs-interop';
 import { JsonPipe } from '@angular/common';
 
-import { DummyjsonClient } from '../dummyjson';
 import { MatButtonModule } from '@angular/material/button';
+
+import { DummyjsonAuthSignInClient, DummyjsonClient } from '../dummyjson';
 
 @Component({
   selector: 'app-auth-example',
@@ -51,8 +51,6 @@ import { MatButtonModule } from '@angular/material/button';
       </button>
     </p>
 
-    <h3>Debug</h3>
-    <p>Auth-State: {{ authState() }}</p>
     <p>
       <button type="button" mat-stroked-button (click)="clearToken()">
         Clear token
@@ -60,9 +58,8 @@ import { MatButtonModule } from '@angular/material/button';
     </p>`,
 })
 export class AuthExampleComponent {
+  readonly #dummyjsonAuthSignInClient = inject(DummyjsonAuthSignInClient);
   readonly #dummyjsonClient = inject(DummyjsonClient);
-
-  protected readonly authState = this.#dummyjsonClient.state;
 
   protected readonly user = rxResource({
     loader: () => this.#dummyjsonClient.getMe(),
@@ -73,6 +70,6 @@ export class AuthExampleComponent {
   });
 
   protected clearToken() {
-    this.#dummyjsonClient.clearToken();
+    this.#dummyjsonAuthSignInClient.clearToken();
   }
 }

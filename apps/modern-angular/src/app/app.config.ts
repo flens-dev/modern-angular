@@ -11,7 +11,7 @@ import {
   provideMaterialDialogAuthSignIn,
 } from '@flens-dev/tools/auth';
 
-import { DummyjsonClient } from './dummyjson';
+import { DummyjsonAuthSignInClient } from './dummyjson';
 import { appRoutes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
@@ -20,6 +20,6 @@ export const appConfig: ApplicationConfig = {
     provideRouter(appRoutes, withComponentInputBinding()),
     provideAnimationsAsync(),
     provideHttpClient(withInterceptors([authSignInInterceptor])),
-    provideMaterialDialogAuthSignIn(DummyjsonClient),
+    provideMaterialDialogAuthSignIn(DummyjsonAuthSignInClient),
   ],
 };
