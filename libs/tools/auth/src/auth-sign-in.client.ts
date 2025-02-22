@@ -8,7 +8,7 @@ export abstract class AuthSignInClient {
   /**
    * override if you need more control over detecting errors which should trigger sign-in
    */
-  canRetryAfterSignIn(error: unknown): boolean {
+  canRetryAfterSignIn(request: HttpRequest<unknown>, error: unknown): boolean {
     return error instanceof HttpErrorResponse && error.status === 401;
   }
 

@@ -5,20 +5,20 @@ import { catchError, mergeMap } from 'rxjs';
 
 import { AuthSignInClient } from './auth-sign-in.client';
 
-export const authSignInInterceptor: HttpInterceptorFn = (req, next) => {
+export const authSignInInterceptor: HttpInterceptorFn = (request, next) => {
   const injector = inject(Injector);
 
-  return next(req).pipe(
+  return next(request).pipe(
     catchError((error) => {
       const authClient = injector.get(AuthSignInClient);
 
-      if (!authClient.canRetryAfterSignIn(error)) {
+      if (!authClient.canRetryAfterSignIn(request, error)) {
         throw error;
       }
 
       return authClient
         .triggerSignIn()
-        .pipe(mergeMap(() => next(authClient.modifyRequest(req))));
+        .pipe(mergeMap(() => next(authClient.modifyRequest(request))));
     }),
   );
 };
