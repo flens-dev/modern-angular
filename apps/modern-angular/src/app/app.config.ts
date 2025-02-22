@@ -11,9 +11,11 @@ import {
   provideMaterialDialogAuthSignIn,
 } from '@flens-dev/tools/auth';
 
-import { DummyjsonAuthSignInClient } from './dummyjson';
+import {
+  DummyjsonAuthSignInClient,
+  dummyjsonAuthTokenInterceptor,
+} from './dummyjson';
 import { appRoutes } from './app.routes';
-import { dummyjsonAuthTokenInterceptor } from './dummyjson/dummyjson-auth-token.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
