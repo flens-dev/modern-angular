@@ -44,13 +44,13 @@ sequenceDiagram
   HI->>B: forward data request
   B->>HI: error response 400/401/403/404/500
   HI->>SC: canRetryAfterSignIn(request, error)
-  alt
+  alt cannot recover with sign-in
     SC->>HI: NO
     HI->>DC: throw error
     DC->>C: report error
     deactivate DC
     deactivate C
-  else
+  else can recover with sign-in
     activate C
     activate DC
     SC->>HI:YES
@@ -91,7 +91,7 @@ sequenceDiagram
       SC->>HI: return modified data request
     end
     HI->>B: forward data request
-    alt
+    alt data request invalid
       B->>HI: error data response
       Note over HI: if another error occurs, throw it<br />sign-in is only tried once and it was successful<br />we cannot recover with a sign-in
       HI->>DC: throw error
@@ -99,17 +99,17 @@ sequenceDiagram
       DC->>C: report error
       deactivate DC
       deactivate C
-    else
+    else data request valid
       activate HI
       activate C
       activate DC
       B->>HI: success data response 200 OK
       HI->>DC: forward data response
       deactivate HI
+      DC->>C: return data
+      deactivate DC
+      deactivate C
     end
-    DC->>C: return data
-    deactivate DC
-    deactivate C
   end
 ```
 
