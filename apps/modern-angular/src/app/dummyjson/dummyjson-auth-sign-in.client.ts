@@ -15,7 +15,8 @@ import {
   providedIn: 'root',
 })
 export class DummyjsonAuthSignInClient extends MaterialDialogAuthSignInClient {
-  readonly #baseUrl = 'https://dummyjson.com/auth';
+  readonly #baseUrl = 'https://dummyjson.com';
+  readonly #authBaseUrl = `${this.#baseUrl}/auth`;
   readonly #client = inject(HttpClient);
   #accessToken: string | null = null;
 
@@ -37,7 +38,7 @@ export class DummyjsonAuthSignInClient extends MaterialDialogAuthSignInClient {
       expiresInMins: 1,
     };
 
-    return this.#client.post(`${this.#baseUrl}/login`, request).pipe(
+    return this.#client.post(`${this.#authBaseUrl}/login`, request).pipe(
       map((response) => v.parse(DummyjsonLoginResponseSchema, response)),
       tap(({ accessToken }) => (this.#accessToken = accessToken)),
       map(() => true),
@@ -45,7 +46,11 @@ export class DummyjsonAuthSignInClient extends MaterialDialogAuthSignInClient {
   }
 
   override modifyRequest(request: HttpRequest<unknown>): HttpRequest<unknown> {
-    if (this.#accessToken == null) {
+    if (
+      this.#accessToken == null ||
+      request.url === `${this.#authBaseUrl}/login` ||
+      !request.url.startsWith(this.#authBaseUrl)
+    ) {
       return request;
     }
 

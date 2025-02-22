@@ -10,7 +10,6 @@ import {
   DummyjsonUser,
   DummyjsonUserSchema,
 } from './dummyjson.types';
-import { DummyjsonAuthSignInClient } from './dummyjson-auth-sign-in.client';
 
 @Injectable({
   providedIn: 'root',
@@ -18,21 +17,16 @@ import { DummyjsonAuthSignInClient } from './dummyjson-auth-sign-in.client';
 export class DummyjsonClient {
   readonly #baseUrl = 'https://dummyjson.com/auth';
   readonly #client = inject(HttpClient);
-  readonly #authSignInClient = inject(DummyjsonAuthSignInClient);
 
   getMe(): Observable<DummyjsonUser> {
     return this.#client
-      .get(`${this.#baseUrl}/me`, {
-        headers: this.#authSignInClient.authHeader,
-      })
+      .get(`${this.#baseUrl}/me`)
       .pipe(map((response) => v.parse(DummyjsonUserSchema, response)));
   }
 
   getRandomQuote(): Observable<DummyjsonQuote> {
     return this.#client
-      .get(`${this.#baseUrl}/quotes/random`, {
-        headers: this.#authSignInClient.authHeader,
-      })
+      .get(`${this.#baseUrl}/quotes/random`)
       .pipe(map((response) => v.parse(DummyjsonQuoteSchema, response)));
   }
 }
