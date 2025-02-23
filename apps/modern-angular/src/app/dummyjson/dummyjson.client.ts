@@ -15,18 +15,27 @@ import {
   providedIn: 'root',
 })
 export class DummyjsonClient {
-  readonly #baseUrl = 'https://dummyjson.com/auth';
+  readonly #baseUrl = 'https://dummyjson.com';
+  readonly #authUrl = `${this.#baseUrl}/auth`;
   readonly #client = inject(HttpClient);
 
   getMe(): Observable<DummyjsonUser> {
     return this.#client
-      .get(`${this.#baseUrl}/me`)
+      .get(`${this.#authUrl}/me`)
       .pipe(map((response) => v.parse(DummyjsonUserSchema, response)));
   }
 
-  getRandomQuote(): Observable<DummyjsonQuote> {
+  #getRandomQuote(baseUrl: string): Observable<DummyjsonQuote> {
     return this.#client
-      .get(`${this.#baseUrl}/quotes/random`)
+      .get(`${baseUrl}/quotes/random`)
       .pipe(map((response) => v.parse(DummyjsonQuoteSchema, response)));
+  }
+
+  getAuthRandomQuote(): Observable<DummyjsonQuote> {
+    return this.#getRandomQuote(this.#authUrl);
+  }
+
+  getRandomQuote(): Observable<DummyjsonQuote> {
+    return this.#getRandomQuote(this.#baseUrl);
   }
 }

@@ -66,7 +66,7 @@ export class AuthExampleComponent {
   });
 
   protected readonly quote = rxResource({
-    loader: () => this.#dummyjsonClient.getRandomQuote(),
+    loader: () => this.#dummyjsonClient.getAuthRandomQuote(),
   });
 
   protected clearToken() {
