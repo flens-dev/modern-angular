@@ -2,10 +2,10 @@
   "name": "@flens-dev/tools",
   "version": "0.0.1",
   "peerDependencies": {
-    "@angular/core": "19.1.5",
-    "@angular/common": "19.1.5",
-    "@angular/forms": "19.1.5",
-    "@angular/material": "19.1.4",
+    "@angular/core": "19.2.0-rc.0",
+    "@angular/common": "19.2.0-rc.0",
+    "@angular/forms": "19.2.0-rc.0",
+    "@angular/material": "19.2.0-rc.0",
     "rxjs": "~7.8.0"
   },
   "sideEffects": false

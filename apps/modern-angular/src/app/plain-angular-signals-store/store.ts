@@ -20,7 +20,7 @@ export type SearchFormGroup = FormGroup<{
 
 export type Store = Readonly<{
   searchForm: SearchFormGroup;
-  //users: Resource<DummyjsonUserSearchResponse>;
+  users: Resource<DummyjsonUserSearchResponse>;
 }>;
 
 export const injectStore = (): Store => {
@@ -52,11 +52,11 @@ export const injectStore = (): Store => {
     request: usersSearchRequest,
     loader: ({ request, abortSignal }) =>
       dummyjsonClient.searchUsers(request, abortSignal),
-    // TODO defaultValue: usersDefaultValue,
+    defaultValue: usersDefaultValue,
   });
 
   return {
     searchForm,
-    //users,
+    users,
   };
 };
