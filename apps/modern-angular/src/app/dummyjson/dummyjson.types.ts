@@ -12,9 +12,13 @@ export const DummyjsonUserSchema = v.object({
 
 export type DummyjsonUser = v.InferOutput<typeof DummyjsonUserSchema>;
 
-export type DummyjsonUserSearchRequest = {
-  readonly q: string;
-};
+export const DummyjsonUserSearchRequestSchema = v.object({
+  q: v.string(),
+});
+
+export type DummyjsonUserSearchRequest = v.InferOutput<
+  typeof DummyjsonUserSearchRequestSchema
+>;
 
 export const DummyjsonUserSearchResponseSchema = v.object({
   users: v.array(DummyjsonUserSchema),

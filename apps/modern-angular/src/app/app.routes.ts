@@ -23,4 +23,11 @@ export const appRoutes: Route[] = [
     path: 'auth',
     loadChildren: () => import('./auth').then((m) => m.AUTH_ROUTES),
   },
+  {
+    path: 'plain-angular-signals-store',
+    loadChildren: () =>
+      import('./plain-angular-signals-store').then(
+        (m) => m.PLAIN_ANGULAR_SIGNALS_STORE_ROUTES,
+      ),
+  },
 ];

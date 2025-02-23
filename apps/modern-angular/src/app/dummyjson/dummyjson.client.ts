@@ -13,6 +13,7 @@ import {
   DummyjsonUserSearchResponse,
   DummyjsonUserSearchResponseSchema,
 } from './dummyjson.types';
+import { takeUntilAborted } from '@flens-dev/tools/common';
 
 @Injectable({
   providedIn: 'root',
@@ -44,12 +45,12 @@ export class DummyjsonClient {
 
   searchUsers(
     request: DummyjsonUserSearchRequest,
+    abortSignal: AbortSignal,
   ): Observable<DummyjsonUserSearchResponse> {
     const params = new HttpParams().append('q', request.q);
-    return this.#client
-      .get(`${this.#baseUrl}/users/search`, { params })
-      .pipe(
-        map((response) => v.parse(DummyjsonUserSearchResponseSchema, response)),
-      );
+    return this.#client.get(`${this.#baseUrl}/users/search`, { params }).pipe(
+      takeUntilAborted(abortSignal),
+      map((response) => v.parse(DummyjsonUserSearchResponseSchema, response)),
+    );
   }
 }
