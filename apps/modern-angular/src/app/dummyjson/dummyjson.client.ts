@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
 import { map, Observable } from 'rxjs';
@@ -9,6 +9,9 @@ import {
   DummyjsonQuoteSchema,
   DummyjsonUser,
   DummyjsonUserSchema,
+  DummyjsonUserSearchRequest,
+  DummyjsonUserSearchResponse,
+  DummyjsonUserSearchResponseSchema,
 } from './dummyjson.types';
 
 @Injectable({
@@ -37,5 +40,16 @@ export class DummyjsonClient {
 
   getRandomQuote(): Observable<DummyjsonQuote> {
     return this.#getRandomQuote(this.#baseUrl);
+  }
+
+  searchUsers(
+    request: DummyjsonUserSearchRequest,
+  ): Observable<DummyjsonUserSearchResponse> {
+    const params = new HttpParams().append('q', request.q);
+    return this.#client
+      .get(`${this.#baseUrl}/users/search`, { params })
+      .pipe(
+        map((response) => v.parse(DummyjsonUserSearchResponseSchema, response)),
+      );
   }
 }

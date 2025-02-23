@@ -12,6 +12,21 @@ export const DummyjsonUserSchema = v.object({
 
 export type DummyjsonUser = v.InferOutput<typeof DummyjsonUserSchema>;
 
+export type DummyjsonUserSearchRequest = {
+  readonly q: string;
+};
+
+export const DummyjsonUserSearchResponseSchema = v.object({
+  users: v.array(DummyjsonUserSchema),
+  total: v.number(),
+  skip: v.number(),
+  limit: v.number(),
+});
+
+export type DummyjsonUserSearchResponse = v.InferOutput<
+  typeof DummyjsonUserSearchResponseSchema
+>;
+
 export const DummyjsonQuoteSchema = v.object({
   id: v.number(),
   quote: v.string(),
@@ -20,18 +35,18 @@ export const DummyjsonQuoteSchema = v.object({
 
 export type DummyjsonQuote = v.InferOutput<typeof DummyjsonQuoteSchema>;
 
-export type DummyjsonRequestLogin = {
+export type DummyjsonAuthLoginRequest = {
   readonly username: string;
   readonly password: string;
   readonly expiresInMins?: number;
 };
 
-export const DummyjsonLoginResponseSchema = v.object({
+export const DummyjsonAuthLoginResponseSchema = v.object({
   ...DummyjsonUserSchema.entries,
   accessToken: v.string(),
   refreshToken: v.string(),
 });
 
-export type DummyjsonLoginResponse = v.InferOutput<
-  typeof DummyjsonLoginResponseSchema
+export type DummyjsonAuthLoginResponse = v.InferOutput<
+  typeof DummyjsonAuthLoginResponseSchema
 >;

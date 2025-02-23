@@ -7,8 +7,8 @@ import { map, Observable, tap } from 'rxjs';
 import * as v from 'valibot';
 
 import {
-  DummyjsonLoginResponseSchema,
-  DummyjsonRequestLogin,
+  DummyjsonAuthLoginResponseSchema,
+  DummyjsonAuthLoginRequest,
 } from './dummyjson.types';
 
 @Injectable({
@@ -32,14 +32,14 @@ export class DummyjsonAuthSignInClient extends MaterialDialogAuthSignInClient {
   }
 
   signIn(username: string, password: string): Observable<true> {
-    const request: DummyjsonRequestLogin = {
+    const request: DummyjsonAuthLoginRequest = {
       username,
       password,
       expiresInMins: 1,
     };
 
     return this.#client.post(`${this.#authBaseUrl}/login`, request).pipe(
-      map((response) => v.parse(DummyjsonLoginResponseSchema, response)),
+      map((response) => v.parse(DummyjsonAuthLoginResponseSchema, response)),
       tap(({ accessToken }) => (this.#accessToken = accessToken)),
       map(() => true),
     );
