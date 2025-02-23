@@ -1,62 +1,55 @@
 import { inject, Resource } from '@angular/core';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
-import { FormControl, FormGroup, NonNullableFormBuilder } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 
-import { filter, map } from 'rxjs';
+import { EMPTY, filter, map } from 'rxjs';
 import * as v from 'valibot';
 
 import { debounceForm } from '@flens-dev/tools/forms';
 
 import {
   DummyjsonClient,
-  DummyjsonUserSearchRequest,
   DummyjsonUserSearchRequestSchema,
   DummyjsonUserSearchResponse,
 } from '../dummyjson';
 
-export type SearchFormGroup = FormGroup<{
+export type UsersSearchFormGroup = FormGroup<{
   q: FormControl<string>;
 }>;
 
-export type Store = Readonly<{
-  searchForm: SearchFormGroup;
-  users: Resource<DummyjsonUserSearchResponse>;
+export type PlainAngularSignalsStore = Readonly<{
+  usersSearchForm: UsersSearchFormGroup;
+  users: Resource<DummyjsonUserSearchResponse | undefined>;
 }>;
 
-export const injectStore = (): Store => {
-  const fb = inject(NonNullableFormBuilder);
+export const injectPlainAngularSignalsStore = (
+  usersSearchForm: UsersSearchFormGroup,
+): PlainAngularSignalsStore => {
   const dummyjsonClient = inject(DummyjsonClient);
 
-  const searchForm = fb.group({
-    q: [''],
-  });
-
-  const debouncedSearch = debounceForm(searchForm, 250, 'q').pipe(
+  const debouncedUsersSearchRequest = debounceForm(
+    usersSearchForm,
+    500,
+    'q',
+  ).pipe(
     map((value) => {
       const parseResult = v.safeParse(DummyjsonUserSearchRequestSchema, value);
       return parseResult.success ? parseResult.output : null;
     }),
-    filter((request): request is DummyjsonUserSearchRequest => request != null),
+    filter((request) => request != null),
   );
 
-  const usersSearchRequest = toSignal(debouncedSearch, {
-    initialValue: searchForm.getRawValue(),
-  });
-  const usersDefaultValue: DummyjsonUserSearchResponse = {
-    users: [],
-    total: 0,
-    skip: 0,
-    limit: 0,
-  };
+  const usersSearchRequest = toSignal(debouncedUsersSearchRequest);
   const users = rxResource({
     request: usersSearchRequest,
     loader: ({ request, abortSignal }) =>
-      dummyjsonClient.searchUsers(request, abortSignal),
-    defaultValue: usersDefaultValue,
+      request == null
+        ? EMPTY
+        : dummyjsonClient.searchUsers(request, abortSignal),
   });
 
   return {
-    searchForm,
+    usersSearchForm,
     users,
   };
 };
