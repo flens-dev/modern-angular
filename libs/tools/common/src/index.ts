@@ -2,6 +2,7 @@ export type * from './utility-types';
 
 export * from './abort-on-destroy';
 export * from './combine-reload';
+export * from './combined-resource';
 export * from './error.pipe';
 export * from './from-event-to-observable';
 export * from './from-output-to-observable';
