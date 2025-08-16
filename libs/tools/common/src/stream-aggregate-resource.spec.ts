@@ -1,11 +1,11 @@
-import { DestroyRef, ResourceStatus, untracked } from '@angular/core';
+import { DestroyRef, untracked } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 
-import { NEVER, Observable, Subject, from, of } from 'rxjs';
+import { NEVER, Observable, Subject, from, of, startWith } from 'rxjs';
 
 import { streamAggregateResource } from './stream-aggregate-resource';
 
-describe('streamAggreateResource', () => {
+describe('streamAggregateResource', () => {
   it('should have the initialValue before the first request', () => {
     const initialValue: readonly string[] = [];
 
@@ -17,7 +17,7 @@ describe('streamAggreateResource', () => {
       destroyRef: TestBed.inject(DestroyRef),
     });
 
-    expect(untracked(resource.status)).toEqual(ResourceStatus.Idle);
+    expect(untracked(resource.status)).toEqual('idle');
     expect(untracked(resource.hasValue)).toBeTruthy();
     expect(untracked(resource.value)).toEqual(initialValue);
   });
@@ -37,7 +37,7 @@ describe('streamAggreateResource', () => {
       destroyRef: TestBed.inject(DestroyRef),
     });
 
-    expect(untracked(resource.status)).toEqual(ResourceStatus.Loading);
+    expect(untracked(resource.status)).toEqual('loading');
     expect(untracked(resource.hasValue)).toBeTruthy();
     expect(untracked(resource.value)).toEqual(initialValue);
   });
@@ -47,9 +47,11 @@ describe('streamAggreateResource', () => {
     const expectedResponse = 'response';
     const initialValue: readonly string[] = [];
 
+    const request$ = NEVER.pipe(startWith(expectedRequest));
+
     const resource = streamAggregateResource({
       initialValue,
-      request: of(expectedRequest),
+      request: request$,
       loader: (actualRequest): Observable<string> => {
         expect(actualRequest).toEqual(expectedRequest);
         return of(expectedResponse);
@@ -58,7 +60,7 @@ describe('streamAggreateResource', () => {
       destroyRef: TestBed.inject(DestroyRef),
     });
 
-    expect(untracked(resource.status)).toEqual(ResourceStatus.Resolved);
+    expect(untracked(resource.status)).toEqual('resolved');
     expect(untracked(resource.hasValue)).toBeTruthy();
     expect(untracked(resource.value)).toEqual([expectedResponse]);
   });
@@ -68,9 +70,11 @@ describe('streamAggreateResource', () => {
     const expectedResponses = ['response 1', 'response 2', 'response 3'];
     const initialValue: readonly string[] = [];
 
+    const request$ = NEVER.pipe(startWith(expectedRequest));
+
     const resource = streamAggregateResource({
       initialValue,
-      request: of(expectedRequest),
+      request: request$,
       loader: (actualRequest): Observable<string> => {
         expect(actualRequest).toEqual(expectedRequest);
         return from(expectedResponses);
@@ -79,7 +83,7 @@ describe('streamAggreateResource', () => {
       destroyRef: TestBed.inject(DestroyRef),
     });
 
-    expect(untracked(resource.status)).toEqual(ResourceStatus.Resolved);
+    expect(untracked(resource.status)).toEqual('resolved');
     expect(untracked(resource.hasValue)).toBeTruthy();
     expect(untracked(resource.value)).toEqual(expectedResponses);
   });
@@ -89,9 +93,11 @@ describe('streamAggreateResource', () => {
     const initialValue: readonly string[] = [];
     const error = 'error';
 
+    const request$ = NEVER.pipe(startWith(expectedRequest));
+
     const resource = streamAggregateResource({
       initialValue,
-      request: of(expectedRequest),
+      request: request$,
       loader: (actualRequest): Observable<string> => {
         expect(actualRequest).toEqual(expectedRequest);
         throw error;
@@ -100,82 +106,12 @@ describe('streamAggreateResource', () => {
       destroyRef: TestBed.inject(DestroyRef),
     });
 
-    expect(untracked(resource.status)).toEqual(ResourceStatus.Error);
+    expect(untracked(resource.status)).toEqual('error');
     expect(untracked(resource.hasValue)).toBeTruthy();
     expect(untracked(resource.value)).toEqual(initialValue);
-    expect(untracked(resource.error)).toEqual(error);
-  });
-
-  it('should be in reloading state when the resource is reloaded', () => {
-    const request = new Subject<string>();
-    const expectedRequest = 'request';
-    const initialValue: readonly string[] = [];
-    const error = 'error';
-
-    let loaderState = 0;
-    const resource = streamAggregateResource({
-      initialValue,
-      request,
-      loader: (actualRequest): Observable<string> => {
-        if (loaderState === 0) {
-          loaderState++;
-          throw error;
-        }
-
-        expect(actualRequest).toEqual(expectedRequest);
-        return NEVER;
-      },
-      aggregate: (acc, current) => [...acc, current],
-      destroyRef: TestBed.inject(DestroyRef),
-    });
-
-    request.next(expectedRequest);
-
-    expect(untracked(resource.status)).toEqual(ResourceStatus.Error);
-    expect(untracked(resource.hasValue)).toBeTruthy();
-    expect(untracked(resource.value)).toEqual(initialValue);
-    expect(untracked(resource.error)).toEqual(error);
-
-    const isReloading = resource.reload();
-
-    expect(isReloading).toBeTruthy();
-    expect(untracked(resource.status)).toEqual(ResourceStatus.Reloading);
-    expect(untracked(resource.hasValue)).toBeTruthy();
-    expect(untracked(resource.value)).toEqual(initialValue);
-    expect(untracked(resource.error)).toBeUndefined();
-  });
-
-  it('should be in loading state after reloading when a new request is emitted', () => {
-    const request = new Subject<string>();
-    const expectedRequest = 'request';
-    const initialValue: readonly string[] = [];
-    const error = 'error';
-
-    let loaderState = 0;
-    const resource = streamAggregateResource({
-      initialValue,
-      request,
-      loader: (actualRequest): Observable<string> => {
-        if (loaderState === 0) {
-          loaderState++;
-          throw error;
-        }
-
-        expect(actualRequest).toEqual(expectedRequest);
-        return NEVER;
-      },
-      aggregate: (acc, current) => [...acc, current],
-      destroyRef: TestBed.inject(DestroyRef),
-    });
-
-    request.next(expectedRequest);
-    resource.reload();
-    request.next(expectedRequest);
-
-    expect(untracked(resource.status)).toEqual(ResourceStatus.Loading);
-    expect(untracked(resource.hasValue)).toBeTruthy();
-    expect(untracked(resource.value)).toEqual(initialValue);
-    expect(untracked(resource.error)).toBeUndefined();
+    expect(untracked(resource.error)?.message).toEqual(
+      `Unknown error: ${error}`,
+    );
   });
 
   it('should be in idle state without error when the request is undefined', () => {
@@ -202,20 +138,22 @@ describe('streamAggreateResource', () => {
 
     request.next(expectedRequest);
 
-    expect(untracked(resource.status)).toEqual(ResourceStatus.Resolved);
+    expect(untracked(resource.status)).toEqual('resolved');
     expect(untracked(resource.hasValue)).toBeTruthy();
     expect(untracked(resource.value)).toEqual([expectedResponse]);
 
     request.next(null);
 
-    expect(untracked(resource.status)).toEqual(ResourceStatus.Error);
+    expect(untracked(resource.status)).toEqual('error');
     expect(untracked(resource.hasValue)).toBeTruthy();
     expect(untracked(resource.value)).toEqual([expectedResponse]);
-    expect(untracked(resource.error)).toEqual(error);
+    expect(untracked(resource.error)?.message).toEqual(
+      `Unknown error: ${error}`,
+    );
 
     request.next(undefined);
 
-    expect(untracked(resource.status)).toEqual(ResourceStatus.Idle);
+    expect(untracked(resource.status)).toEqual('idle');
     expect(untracked(resource.hasValue)).toBeTruthy();
     expect(untracked(resource.value)).toEqual([expectedResponse]);
     expect(untracked(resource.error)).toBeUndefined();

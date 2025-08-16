@@ -41,12 +41,7 @@ import { UserResultComponent } from './user-result.component';
     @let users = usersValue();
     @if (users !== undefined) {
       @if (users.users.length > 0) {
-        <h3>
-          Results
-          <button type="button" mat-icon-button (click)="reloadUsers()">
-            <mat-icon>refresh</mat-icon>
-          </button>
-        </h3>
+        <h3>Results</h3>
         @for (user of users.users; track user.id) {
           <app-user-result [user]="user" />
         }
@@ -66,6 +61,4 @@ export class PlainAngularSignalsStoreExampleComponent {
 
   protected readonly usersIsLoading = this.#store.users.isLoading;
   protected readonly usersValue = this.#store.users.value;
-
-  protected readonly reloadUsers = () => this.#store.users.reload();
 }

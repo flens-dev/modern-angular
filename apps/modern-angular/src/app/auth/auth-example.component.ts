@@ -62,11 +62,11 @@ export class AuthExampleComponent {
   readonly #dummyjsonClient = inject(DummyjsonClient);
 
   protected readonly user = rxResource({
-    loader: () => this.#dummyjsonClient.getMe(),
+    stream: () => this.#dummyjsonClient.getMe(),
   });
 
   protected readonly quote = rxResource({
-    loader: () => this.#dummyjsonClient.getAuthRandomQuote(),
+    stream: () => this.#dummyjsonClient.getAuthRandomQuote(),
   });
 
   protected clearToken() {

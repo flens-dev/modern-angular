@@ -41,11 +41,9 @@ export const injectPlainAngularSignalsStore = (
 
   const usersSearchRequest = toSignal(debouncedUsersSearchRequest);
   const users = rxResource({
-    request: usersSearchRequest,
-    loader: ({ request, abortSignal }) =>
-      request == null
-        ? EMPTY
-        : dummyjsonClient.searchUsers(request, abortSignal),
+    params: usersSearchRequest,
+    stream: ({ params, abortSignal }) =>
+      params == null ? EMPTY : dummyjsonClient.searchUsers(params, abortSignal),
   });
 
   return {

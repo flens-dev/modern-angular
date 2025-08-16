@@ -8,7 +8,7 @@ import { provideLocationMocks } from '@angular/common/testing';
 import {
   ChangeDetectionStrategy,
   Component,
-  provideExperimentalZonelessChangeDetection,
+  provideZonelessChangeDetection,
 } from '@angular/core';
 import { ComponentFixtureAutoDetect, TestBed } from '@angular/core/testing';
 import {
@@ -66,7 +66,7 @@ const testRoutes: Routes = [
 ];
 
 const testProviders = () => [
-  provideExperimentalZonelessChangeDetection(),
+  provideZonelessChangeDetection(),
   { provide: ComponentFixtureAutoDetect, useValue: true },
   provideRouter(testRoutes, withComponentInputBinding()),
   provideLocationMocks(),
