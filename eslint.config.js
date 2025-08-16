@@ -57,7 +57,7 @@ module.exports = [
       ...baseRules,
     },
   })),
-  ...compat.config({ env: { jest: true } }).map((config) => ({
+  ...compat.config().map((config) => ({
     ...config,
     files: ['**/*.spec.ts', '**/*.spec.tsx', '**/*.spec.js', '**/*.spec.jsx'],
     rules: {
@@ -67,4 +67,7 @@ module.exports = [
   })),
   eslintConfigPrettier,
   eslintPluginPrettierRecommended,
+  {
+    ignores: ['**/vite.config.*.timestamp*', '**/vitest.config.*.timestamp*'],
+  },
 ];
