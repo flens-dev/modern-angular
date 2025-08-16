@@ -53,7 +53,12 @@ module.exports = [
     rules: {
       '@nx/dependency-checks': [
         'error',
-        { ignoredFiles: ['{projectRoot}/eslint.config.{js,cjs,mjs}'] },
+        {
+          ignoredFiles: [
+            '{projectRoot}/eslint.config.{js,cjs,mjs}',
+            '{projectRoot}/vite.config.{js,cjs,mjs,ts,mts}',
+          ],
+        },
       ],
     },
     languageOptions: { parser: require('jsonc-eslint-parser') },
