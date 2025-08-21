@@ -4,13 +4,13 @@ const chooseResourceStatusFn: Record<
   ResourceStatus,
   (next: ResourceStatus) => ResourceStatus
 > = {
-  ['idle']: (next) => next,
-  ['error']: (next) => 'error',
-  ['loading']: (next) => (next === 'error' ? next : 'loading'),
-  ['reloading']: (next) => (next === 'error' ? next : 'reloading'),
-  ['resolved']: (next) =>
+  idle: (next) => next,
+  error: (next) => 'error',
+  loading: (next) => (next === 'error' ? next : 'loading'),
+  reloading: (next) => (next === 'error' ? next : 'reloading'),
+  resolved: (next) =>
     next === 'error' || next === 'local' ? next : 'resolved',
-  ['local']: (next) => (next === 'error' ? next : 'local'),
+  local: (next) => (next === 'error' ? next : 'local'),
 };
 
 const chooseResourceStatus = (
